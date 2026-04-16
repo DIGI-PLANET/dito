@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DITO API Documentation - Developer's Guide</title>
+    <meta name="description" content="Complete DITO API documentation for developers and AI agents. Build talent discovery applications with our comprehensive SDK.">
+    <meta property="og:title" content="DITO API Documentation">
+    <meta property="og:description" content="Transform human potential into digital assets with DITO API">
+    <meta property="og:url" content="https://forge.dito.guru">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'dito-purple': '#6366f1',
+                        'dito-pink': '#ec4899',
+                        'dito-amber': '#f59e0b',
+                        'dito-gray': '#374151'
+                    },
+                    fontFamily: {
+                        'mono': ['JetBrains Mono', 'Fira Code', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Prism.js for syntax highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .code-block {
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .sidebar-item:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
+        .api-response {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold">🔥 DITO API Documentation</h1>
+                    <span class="ml-4 bg-white/20 px-2 py-1 rounded-full text-sm">v1.0</span>
+                </div>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#quickstart" class="hover:text-yellow-300 transition">Quick Start</a>
+                    <a href="#authentication" class="hover:text-yellow-300 transition">Auth</a>
+                    <a href="#api-reference" class="hover:text-yellow-300 transition">API</a>
+                    <a href="#examples" class="hover:text-yellow-300 transition">Examples</a>
+                    <a href="https://github.com/DIGI-PLANET" class="hover:text-yellow-300 transition">GitHub</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-80 bg-white shadow-lg h-screen sticky top-16 overflow-y-auto">
+            <div class="p-6">
+                <div class="space-y-4">
+                    <!-- Quick Links -->
+                    <div>
+                        <h3 class="font-semibold text-gray-800 mb-2">🚀 Getting Started</h3>
+                        <ul class="space-y-1">
+                            <li><a href="#introduction" class="sidebar-item block px-3 py-2 rounded">Introduction</a></li>
+                            <li><a href="#quickstart" class="sidebar-item block px-3 py-2 rounded">Quick Start</a></li>
+                            <li><a href="#installation" class="sidebar-item block px-3 py-2 rounded">Installation</a></li>
+                            <li><a href="#authentication" class="sidebar-item block px-3 py-2 rounded">Authentication</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- API Endpoints -->
+                    <div>
+                        <h3 class="font-semibold text-gray-800 mb-2">🔐 Authentication</h3>
+                        <ul class="space-y-1">
+                            <li><a href="#2fa-status" class="sidebar-item block px-3 py-2 rounded text-sm">2FA Status</a></li>
+                            <li><a href="#2fa-setup" class="sidebar-item block px-3 py-2 rounded text-sm">2FA Setup</a></li>
+                            <li><a href="#2fa-verify" class="sidebar-item block px-3 py-2 rounded text-sm">2FA Verify</a></li>
+                            <li><a href="#2fa-disable" class="sidebar-item block px-3 py-2 rounded text-sm">2FA Disable</a></li>
+                            <li><a href="#2fa-email-recovery" class="sidebar-item block px-3 py-2 rounded text-sm">Email Recovery</a></li>
+                            <li><a href="#2fa-email-verify" class="sidebar-item block px-3 py-2 rounded text-sm">Email Verify</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="font-semibold text-gray-800 mb-2">👤 Soul Management</h3>
+                        <ul class="space-y-1">
+                            <li><a href="#get-soul" class="sidebar-item block px-3 py-2 rounded text-sm">Get Soul</a></li>
+                            <li><a href="#list-souls" class="sidebar-item block px-3 py-2 rounded text-sm">List Souls</a></li>
+                            <li><a href="#update-soul" class="sidebar-item block px-3 py-2 rounded text-sm">Update Soul</a></li>
+                            <li><a href="#delete-soul" class="sidebar-item block px-3 py-2 rounded text-sm">Delete Soul</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="font-semibold text-gray-800 mb-2">⚡ Ember Economy</h3>
+                        <ul class="space-y-1">
+                            <li><a href="#ember-balance" class="sidebar-item block px-3 py-2 rounded text-sm">Get Balance</a></li>
+                            <li><a href="#ember-transaction" class="sidebar-item block px-3 py-2 rounded text-sm">Transfer Ember</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="font-semibold text-gray-800 mb-2">🎨 Talents</h3>
+                        <ul class="space-y-1">
+                            <li><a href="#get-talent" class="sidebar-item block px-3 py-2 rounded text-sm">Get Talent</a></li>
+                            <li><a href="#talent-recommendations" class="sidebar-item block px-3 py-2 rounded text-sm">Recommendations</a></li>
+                            <li><a href="#list-talents" class="sidebar-item block px-3 py-2 rounded text-sm">List Talents</a></li>
+                            <li><a href="#update-talent" class="sidebar-item block px-3 py-2 rounded text-sm">Update Progress</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="font-semibold text-gray-800 mb-2">🏟️ Arena Events</h3>
+                        <ul class="space-y-1">
+                            <li><a href="#arena-events" class="sidebar-item block px-3 py-2 rounded text-sm">List Events</a></li>
+                            <li><a href="#arena-event" class="sidebar-item block px-3 py-2 rounded text-sm">Get Event</a></li>
+                            <li><a href="#join-arena" class="sidebar-item block px-3 py-2 rounded text-sm">Join Arena</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- AI Agent Examples -->
+                    <div>
+                        <h3 class="font-semibold text-gray-800 mb-2">📊 Analytics</h3>
+                        <ul class="space-y-1">
+                            <li><a href="#get-analytics" class="sidebar-item block px-3 py-2 rounded text-sm">User Analytics</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="font-semibold text-gray-800 mb-2">👥 User Management</h3>
+                        <ul class="space-y-1">
+                            <li><a href="#signup-with-2fa" class="sidebar-item block px-3 py-2 rounded text-sm">Sign Up</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="font-semibold text-gray-800 mb-2">🤖 AI Agent Examples</h3>
+                        <ul class="space-y-1">
+                            <li><a href="#ai-natural-language" class="sidebar-item block px-3 py-2 rounded text-sm">Natural Language</a></li>
+                            <li><a href="#ai-automation" class="sidebar-item block px-3 py-2 rounded text-sm">Automation</a></li>
+                            <li><a href="#ai-monitoring" class="sidebar-item block px-3 py-2 rounded text-sm">Monitoring</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+            <!-- Introduction -->
+            <section id="introduction" class="mb-12">
+                <h1 class="text-4xl font-bold text-gray-800 mb-4">DITO API Documentation</h1>
+                <p class="text-xl text-gray-600 mb-6">
+                    Transform human potential into digital assets with our comprehensive API for talent discovery and Soul NFT management.
+                </p>
+                
+                <div class="bg-gradient-to-r from-purple-500 to-pink-500 text-white p-6 rounded-lg mb-6">
+                    <h3 class="text-xl font-semibold mb-2">🌟 What is DITO?</h3>
+                    <p>DITO is a revolutionary platform that helps people discover their hidden talents through AI and mint them as Soul NFTs on Solana blockchain. Our API enables developers to build amazing talent-focused applications.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <h4 class="font-semibold text-lg mb-2">🔮 For Developers</h4>
+                        <p class="text-gray-600">Build applications that help users discover and develop their talents with our powerful API and SDK.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <h4 class="font-semibold text-lg mb-2">🤖 For AI Agents</h4>
+                        <p class="text-gray-600">Natural language interfaces and automation-friendly endpoints perfect for AI-powered applications.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Start -->
+            <section id="quickstart" class="mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">🚀 Quick Start</h2>
+                
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+                    <div class="flex">
+                        <div class="ml-3">
+                            <p class="text-sm text-yellow-700">
+                                <strong>Base URL:</strong> <code>https://gateway.dito.guru</code> (Production) | <code>http://localhost:8099</code> (Development)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="installation" class="mb-8">
+                    <h3 class="text-2xl font-semibold mb-4">📦 Installation</h3>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Install DITO SDK
+npm install dito-sdk
+
+# Or with yarn
+yarn add dito-sdk</code></pre>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-2xl font-semibold mb-4">💻 Basic Usage</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">// Import the SDK
+import { DitoClient, DitoAgent } from 'dito-sdk';
+
+// Initialize client
+const dito = new DitoClient('https://gateway.dito.guru', 'your-auth-token');
+
+// For AI Agents - natural language interface
+const agent = new DitoAgent(dito);
+
+// Basic API calls
+const soul = await dito.getSoul('user-soul-id');
+const balance = await dito.getEmberBalance();
+const talents = await dito.getTalents();
+
+// AI-friendly natural language
+const statusMessage = await agent.check2FAStatus();
+const soulInfo = await agent.showSoulStatus('roy-soul');
+console.log(statusMessage); // "2FA가 활성화되어 있습니다 (사용자: Roy)"</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Authentication -->
+            <section id="authentication" class="mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">🔐 Authentication</h2>
+                
+                <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+                    <p class="text-blue-700">
+                        All API requests require authentication. DITO uses token-based authentication with mandatory 2FA for enhanced security.
+                    </p>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4">🔑 Authentication Headers</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">// Required headers for all requests
+const headers = {
+    'Authorization': 'Bearer your-auth-token-here',
+    'Content-Type': 'application/json',
+    'User-Agent': 'YourApp/1.0'
+};</code></pre>
+                    </div>
+                </div>
+
+                <!-- 2FA Status -->
+                <div id="2fa-status" class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4">🔍 Check 2FA Status</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-medium mb-2">Request</h4>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// SDK Method
+const status = await dito.get2FAStatus();
+
+// Direct API Call
+POST /command
+{
+    "action": "2fa_status"
+}</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">Response</h4>
+                            <div class="code-block api-response text-white">
+                                <pre><code class="language-json">{
+    "success": true,
+    "data": {
+        "enabled": true,
+        "user_id": "user_12345",
+        "user_name": "Roy",
+        "setup_date": "2026-03-15T10:30:00Z",
+        "backup_codes_remaining": 8
+    },
+    "meta": {
+        "timestamp": "2026-03-17T08:34:00Z",
+        "request_id": "req_abc123"
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h4 class="font-medium mb-2">🤖 AI Agent Example</h4>
+                        <div class="code-block">
+                            <pre><code class="language-javascript">// Natural language check
+const agent = new DitoAgent(dito);
+const message = await agent.check2FAStatus();
+console.log(message); 
+// Output: "2FA가 활성화되어 있습니다 (사용자: Roy)"</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2FA Setup -->
+                <div id="2fa-setup" class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4">⚙️ Setup 2FA</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-medium mb-2">Request</h4>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// SDK Method
+const setup = await dito.setup2FA();
+
+// Direct API Call
+POST /command
+{
+    "action": "2fa_setup"
+}</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">Response</h4>
+                            <div class="code-block api-response text-white">
+                                <pre><code class="language-json">{
+    "success": true,
+    "data": {
+        "secret": "JBSWY3DPEHPK3PXP",
+        "qr_code_url": "https://api.qrserver.com/v1/create-qr-code/?data=otpauth://...",
+        "backup_codes": [
+            "12345678", "87654321", "11111111",
+            "22222222", "33333333", "44444444",
+            "55555555", "66666666", "77777777", "88888888"
+        ],
+        "instructions": "Scan QR code with Google Authenticator"
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2FA Email Recovery -->
+                <div id="2fa-email-recovery" class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4">📧 Request Email Recovery</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-medium mb-2">Request</h4>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// SDK Method
+const recovery = await dito.request2FAEmailRecovery('user@example.com');
+
+// Direct API Call
+POST /command
+{
+    "action": "2fa_email_recovery",
+    "params": {
+        "email": "user@example.com"
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">Response</h4>
+                            <div class="code-block api-response text-white">
+                                <pre><code class="language-json">{
+    "success": true,
+    "data": {
+        "email_sent": true,
+        "email": "user@example.com",
+        "expires_in_minutes": 15
+    },
+    "message": "Recovery email sent successfully"
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2FA Email Verify -->
+                <div id="2fa-email-verify" class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4">🔍 Verify Email Recovery Code</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-medium mb-2">Request</h4>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// SDK Method
+const result = await dito.verify2FAEmailCode('ABC123');
+
+// Direct API Call
+POST /command
+{
+    "action": "2fa_email_verify",
+    "params": {
+        "email_code": "ABC123"
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">Response</h4>
+                            <div class="code-block api-response text-white">
+                                <pre><code class="language-json">{
+    "success": true,
+    "data": {
+        "verified": true,
+        "temp_access": true
+    },
+    "message": "Email verification successful"
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2FA Verify -->
+                <div id="2fa-verify" class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4">✅ Verify 2FA Code</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-medium mb-2">Request</h4>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// SDK Method
+const result = await dito.verify2FA('123456');
+
+// Direct API Call
+POST /command
+{
+    "action": "2fa_verify",
+    "params": {
+        "code": "123456"
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">Response</h4>
+                            <div class="code-block api-response text-white">
+                                <pre><code class="language-json">{
+    "success": true,
+    "data": {
+        "enabled": true
+    },
+    "message": "2FA successfully enabled"
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Soul Management -->
+            <section id="soul-management" class="mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">👤 Soul Management</h2>
+                
+                <div class="bg-purple-50 border-l-4 border-purple-400 p-4 mb-6">
+                    <p class="text-purple-700">
+                        Souls are the core digital identity in DITO. Each Soul represents a person's talent journey and can hold multiple talents.
+                    </p>
+                </div>
+
+                <!-- Get Soul -->
+                <div id="get-soul" class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4">🔍 Get Soul by ID</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-medium mb-2">Request</h4>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// SDK Method
+const soul = await dito.getSoul('roy-soul-123');
+
+// Direct API Call
+POST /command
+{
+    "action": "get_soul",
+    "params": {
+        "soul_id": "roy-soul-123"
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">Response</h4>
+                            <div class="code-block api-response text-white">
+                                <pre><code class="language-json">{
+    "success": true,
+    "data": {
+        "id": "roy-soul-123",
+        "seeker_name": "Roy DARGONNE",
+        "current_level": "Skilled Seeker",
+        "ember_points": 1500,
+        "total_talents": 5,
+        "active_talents": 3,
+        "conviction_level": 85,
+        "next_milestone": "Master Developer",
+        "arena_eligible": true,
+        "last_activity": "2026-03-17T08:00:00Z",
+        "talents": [
+            {
+                "id": "talent-programming",
+                "name": "Software Development", 
+                "category": "Technology",
+                "progress_percentage": 75,
+                "ember_earned": 800,
+                "days_active": 120,
+                "mastery_level": "Advanced"
+            }
+        ]
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h4 class="font-medium mb-2">🤖 AI Agent Example</h4>
+                        <div class="code-block">
+                            <pre><code class="language-javascript">// Natural language Soul status
+const agent = new DitoAgent(dito);
+const status = await agent.showSoulStatus('roy-soul-123');
+console.log(status);
+// Output: "🔥 Roy DARGONNE님의 Soul
+// 레벨: Skilled Seeker
+// Ember: 1500
+// 활성 재능: 3/5
+// 다음 목표: Master Developer"</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- List Souls -->
+                <div id="list-souls" class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4">📋 List All Souls</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-medium mb-2">Request</h4>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// SDK Method
+const souls = await dito.getSouls();
+
+// Direct API Call  
+POST /command
+{
+    "action": "list_souls"
+}</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">Response</h4>
+                            <div class="code-block api-response text-white">
+                                <pre><code class="language-json">{
+    "success": true,
+    "data": [
+        {
+            "id": "roy-soul-123",
+            "seeker_name": "Roy DARGONNE",
+            "current_level": "Skilled Seeker",
+            "ember_points": 1500,
+            "total_talents": 5,
+            "active_talents": 3
+        },
+        {
+            "id": "alice-soul-456",
+            "seeker_name": "Alice Developer",
+            "current_level": "Rising Star",
+            "ember_points": 800,
+            "total_talents": 3,
+            "active_talents": 2
+        }
+    ]
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Update Soul -->
+                <div id="update-soul" class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4">✏️ Update Soul Information</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-medium mb-2">Request</h4>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// SDK Method
+const updatedSoul = await dito.updateSoul('roy-soul-123', {
+    seeker_name: 'Roy DARGONNE Master',
+    bio: 'Full-stack developer and AI enthusiast'
+});
+
+// Direct API Call
+POST /command  
+{
+    "action": "update_soul",
+    "params": {
+        "soul_id": "roy-soul-123",
+        "seeker_name": "Roy DARGONNE Master",
+        "bio": "Full-stack developer and AI enthusiast"
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">Response</h4>
+                            <div class="code-block api-response text-white">
+                                <pre><code class="language-json">{
+    "success": true,
+    "data": {
+        "id": "roy-soul-123",
+        "seeker_name": "Roy DARGONNE Master",
+        "bio": "Full-stack developer and AI enthusiast",
+        "updated_at": "2026-03-17T08:34:00Z"
+    },
+    "message": "Soul successfully updated"
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Ember Economy -->
+            <section id="ember-economy" class="mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">⚡ Ember Economy</h2>
+                
+                <div class="bg-amber-50 border-l-4 border-amber-400 p-4 mb-6">
+                    <p class="text-amber-700">
+                        Ember is DITO's native currency earned through talent development and used for premium features, competitions, and talent sharing.
+                    </p>
+                </div>
+
+                <!-- Get Ember Balance -->
+                <div id="ember-balance" class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4">💰 Get Ember Balance</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-medium mb-2">Request</h4>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// SDK Method
+const balance = await dito.getEmberBalance();
+
+// Direct API Call
+POST /command
+{
+    "action": "get_ember_balance"
+}</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">Response</h4>
+                            <div class="code-block api-response text-white">
+                                <pre><code class="language-json">{
+    "success": true,
+    "data": {
+        "ember_balance": 1500,
+        "soul_id": "roy-soul-123"
+    },
+    "meta": {
+        "currency": "EMBER",
+        "last_updated": "2026-03-17T08:34:00Z"
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h4 class="font-medium mb-2">🤖 AI Agent Example</h4>
+                        <div class="code-block">
+                            <pre><code class="language-javascript">// Natural language balance check
+const agent = new DitoAgent(dito);
+const balanceMessage = await agent.checkEmberBalance();
+console.log(balanceMessage); 
+// Output: "현재 Ember 잔액: 1500"</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ember Transaction -->
+                <div id="ember-transaction" class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4">🔄 Transfer Ember</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-medium mb-2">Request</h4>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// SDK Method
+const transaction = await dito.emberTransaction({
+    type: 'transfer',
+    amount: 100,
+    target_soul_id: 'alice-soul-456',
+    message: 'Great collaboration!'
+});
+
+// Direct API Call
+POST /command
+{
+    "action": "ember_transaction",
+    "params": {
+        "type": "transfer",
+        "amount": 100,
+        "target_soul_id": "alice-soul-456",
+        "message": "Great collaboration!"
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">Response</h4>
+                            <div class="code-block api-response text-white">
+                                <pre><code class="language-json">{
+    "success": true,
+    "data": {
+        "transaction_id": "tx_ember_789",
+        "status": "completed",
+        "from_soul": "roy-soul-123",
+        "to_soul": "alice-soul-456",
+        "amount": 100,
+        "message": "Great collaboration!",
+        "timestamp": "2026-03-17T08:34:00Z"
+    },
+    "message": "Ember transfer completed successfully"
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Talents -->
+            <section id="talents" class="mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">🎨 Talent Management</h2>
+                
+                <div class="bg-pink-50 border-l-4 border-pink-400 p-4 mb-6">
+                    <p class="text-pink-700">
+                        Talents represent specific skills or abilities. DITO's AI helps users discover new talents and track their development progress.
+                    </p>
+                </div>
+
+                <!-- Get Talent Recommendations -->
+                <div id="talent-recommendations" class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4">🔍 Get AI Talent Recommendations</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-medium mb-2">Request</h4>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// SDK Method
+const recommendations = await dito.getTalentRecommendations();
+
+// Direct API Call
+POST /command
+{
+    "action": "get_talent_recommendations"
+}</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">Response</h4>
+                            <div class="code-block api-response text-white">
+                                <pre><code class="language-json">{
+    "success": true,
+    "data": {
+        "recommendations": [
+            {
+                "id": "talent-ai-ml",
+                "name": "Machine Learning",
+                "category": "Artificial Intelligence",
+                "description": "Build intelligent systems that learn from data",
+                "difficulty": "Advanced",
+                "trending": true,
+                "estimated_time": "6 months",
+                "ember_potential": 2000
+            },
+            {
+                "id": "talent-blockchain",
+                "name": "Blockchain Development", 
+                "category": "Technology",
+                "description": "Create decentralized applications and smart contracts",
+                "difficulty": "Intermediate",
+                "trending": true,
+                "estimated_time": "4 months",
+                "ember_potential": 1500
+            }
+        ]
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h4 class="font-medium mb-2">🤖 AI Agent Example</h4>
+                        <div class="code-block">
+                            <pre><code class="language-javascript">// Natural language talent suggestions
+const agent = new DitoAgent(dito);
+const suggestions = await agent.suggestTalents();
+console.log(suggestions);
+// Output: "🎨 추천 재능들:
+// • Machine Learning: Build intelligent systems that learn from data (Advanced)  
+// • Blockchain Development: Create decentralized applications (Intermediate)"</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- List Talents -->
+                <div id="list-talents" class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4">📋 List User's Talents</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-medium mb-2">Request</h4>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// SDK Method
+const talents = await dito.getTalents();
+
+// Direct API Call
+POST /command
+{
+    "action": "list_talents"
+}</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">Response</h4>
+                            <div class="code-block api-response text-white">
+                                <pre><code class="language-json">{
+    "success": true,
+    "data": [
+        {
+            "id": "talent-programming",
+            "name": "Software Development",
+            "category": "Technology", 
+            "progress_percentage": 75,
+            "ember_earned": 800,
+            "days_active": 120,
+            "mastery_level": "Advanced",
+            "last_progress": "2026-03-16T15:30:00Z"
+        },
+        {
+            "id": "talent-design",
+            "name": "UI/UX Design",
+            "category": "Design",
+            "progress_percentage": 60,
+            "ember_earned": 500,
+            "days_active": 90,
+            "mastery_level": "Intermediate",
+            "last_progress": "2026-03-15T10:00:00Z"
+        }
+    ]
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Update Talent Progress -->
+                <div id="update-talent" class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4">📈 Add Talent Progress</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-medium mb-2">Request</h4>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// SDK Method
+const result = await dito.addTalentProgress('talent-programming', 10, 'Completed React advanced course');
+
+// Direct API Call
+POST /command
+{
+    "action": "add_talent_progress",
+    "params": {
+        "talent_id": "talent-programming",
+        "progress": 10,
+        "notes": "Completed React advanced course"
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">Response</h4>
+                            <div class="code-block api-response text-white">
+                                <pre><code class="language-json">{
+    "success": true,
+    "data": {
+        "ember_gained": 50,
+        "level_up": false,
+        "new_progress_percentage": 85,
+        "total_ember_earned": 850,
+        "next_milestone": {
+            "name": "Expert Developer",
+            "required_progress": 90,
+            "ember_reward": 200
+        }
+    },
+    "message": "Progress added successfully! +50 Ember earned"
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analytics -->
+            <section id="analytics" class="mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">📊 Analytics & Insights</h2>
+                
+                <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+                    <p class="text-blue-700">
+                        Get comprehensive analytics about user progress, talent development, and system performance.
+                    </p>
+                </div>
+
+                <!-- Get Analytics -->
+                <div id="get-analytics" class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4">📈 Get User Analytics</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-medium mb-2">Request</h4>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// SDK Method
+const analytics = await dito.getAnalytics();
+
+// Direct API Call
+POST /command
+{
+    "action": "get_analytics"
+}</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">Response</h4>
+                            <div class="code-block api-response text-white">
+                                <pre><code class="language-json">{
+    "success": true,
+    "data": {
+        "total_ember": 2500,
+        "talents_discovered": 8,
+        "arena_participations": 3,
+        "growth_trend": "upward",
+        "weekly_progress": 15,
+        "talent_completion_rate": 0.75,
+        "average_session_time": 45,
+        "streak_days": 7,
+        "next_milestone_progress": 0.8
+    },
+    "meta": {
+        "period": "last_30_days",
+        "generated_at": "2026-03-17T08:40:00Z"
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- User Registration -->
+            <section id="user-registration" class="mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">👥 User Registration</h2>
+                
+                <div class="bg-purple-50 border-l-4 border-purple-400 p-4 mb-6">
+                    <p class="text-purple-700">
+                        DITO requires 2FA for all new user registrations to ensure maximum security.
+                    </p>
+                </div>
+
+                <!-- Signup with 2FA -->
+                <div id="signup-with-2fa" class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4">🔐 Sign Up with Mandatory 2FA</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-medium mb-2">Request</h4>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// SDK Method
+const signup = await dito.signupWith2FA({
+    email: 'newuser@example.com',
+    password: 'securePassword123!',
+    name: 'New User'
+});
+
+// Direct API Call
+POST /command
+{
+    "action": "signup_with_2fa",
+    "params": {
+        "email": "newuser@example.com",
+        "password": "securePassword123!",
+        "name": "New User"
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">Response</h4>
+                            <div class="code-block api-response text-white">
+                                <pre><code class="language-json">{
+    "success": true,
+    "data": {
+        "user_created": true,
+        "user_id": "user_new_789",
+        "totp_setup": {
+            "secret": "JBSWY3DPEHPK3PXP",
+            "qr_code_url": "https://api.qrserver.com/v1/create-qr-code/?data=otpauth://...",
+            "backup_codes": [
+                "12345678", "87654321", "11111111",
+                "22222222", "33333333", "44444444",
+                "55555555", "66666666", "77777777", "88888888"
+            ],
+            "instructions": "Scan QR code with Google Authenticator to complete registration"
+        }
+    },
+    "message": "User created successfully. Please complete 2FA setup to activate account."
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Arena Events -->
+            <section id="arena-events-section" class="mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">🏟️ Arena Events</h2>
+                
+                <div class="bg-green-50 border-l-4 border-green-400 p-4 mb-6">
+                    <p class="text-green-700">
+                        Arena Events are competitive challenges where users can showcase their talents and win Ember rewards.
+                    </p>
+                </div>
+
+                <!-- List Arena Events -->
+                <div id="arena-events" class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4">🎮 List Live Arena Events</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-medium mb-2">Request</h4>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// SDK Method
+const events = await dito.getArenaEvents();
+
+// Direct API Call
+POST /command
+{
+    "action": "list_arena_events"
+}</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">Response</h4>
+                            <div class="code-block api-response text-white">
+                                <pre><code class="language-json">{
+    "success": true,
+    "data": [
+        {
+            "id": "arena-coding-marathon",
+            "name": "24-Hour Coding Marathon",
+            "type": "programming",
+            "status": "open",
+            "participants": 25,
+            "max_participants": 50,
+            "prize_ember": 5000,
+            "start_time": "2026-03-18T09:00:00Z",
+            "end_time": "2026-03-19T09:00:00Z",
+            "description": "Build the most innovative app in 24 hours"
+        },
+        {
+            "id": "arena-design-challenge",
+            "name": "UI Design Sprint",
+            "type": "design",
+            "status": "starting_soon", 
+            "participants": 12,
+            "max_participants": 20,
+            "prize_ember": 2000,
+            "start_time": "2026-03-17T14:00:00Z",
+            "end_time": "2026-03-17T20:00:00Z",
+            "description": "Design the future of mobile apps"
+        }
+    ]
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Join Arena -->
+                <div id="join-arena" class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4">🚀 Join Arena Event</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="font-medium mb-2">Request</h4>
+                            <div class="code-block">
+                                <pre><code class="language-javascript">// SDK Method
+const result = await dito.joinArena('arena-coding-marathon');
+
+// Direct API Call
+POST /command
+{
+    "action": "join_arena",
+    "params": {
+        "event_id": "arena-coding-marathon"
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium mb-2">Response</h4>
+                            <div class="code-block api-response text-white">
+                                <pre><code class="language-json">{
+    "success": true,
+    "data": {
+        "joined": true,
+        "position": 26,
+        "event_id": "arena-coding-marathon",
+        "confirmation_code": "AC2026-26-ROY",
+        "next_steps": "Check your email for detailed instructions"
+    },
+    "message": "Successfully joined 24-Hour Coding Marathon! You're participant #26"
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI Agent Examples -->
+            <section id="ai-examples" class="mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">🤖 AI Agent Examples</h2>
+                
+                <div class="bg-indigo-50 border-l-4 border-indigo-400 p-4 mb-6">
+                    <p class="text-indigo-700">
+                        DITO API is designed to be AI Agent-friendly. Here are comprehensive examples for natural language interactions and automation.
+                    </p>
+                </div>
+
+                <!-- Natural Language Processing -->
+                <div id="ai-natural-language" class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4">🗣️ Natural Language Processing</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">import { DitoClient, DitoAgent } from 'dito-sdk';
+
+// Initialize for AI Agent use
+const dito = new DitoClient('https://gateway.dito.guru', process.env.DITO_TOKEN);
+const agent = new DitoAgent(dito);
+
+// Natural language intent processing
+async function processUserIntent(userMessage) {
+    const intent = analyzeIntent(userMessage);
+    
+    switch (intent.type) {
+        case 'check_status':
+            if (intent.includes('2fa') || intent.includes('보안')) {
+                return await agent.check2FAStatus();
+            }
+            if (intent.includes('soul') || intent.includes('영혼')) {
+                return await agent.showSoulStatus(intent.soulId);
+            }
+            if (intent.includes('ember') || intent.includes('잔액')) {
+                return await agent.checkEmberBalance();
+            }
+            break;
+            
+        case 'get_recommendations':
+            if (intent.includes('talent') || intent.includes('재능')) {
+                return await agent.suggestTalents();
+            }
+            break;
+            
+        case 'update_progress':
+            if (intent.includes('progress') || intent.includes('진행')) {
+                const result = await dito.addTalentProgress(
+                    intent.talentId, 
+                    intent.progressAmount, 
+                    intent.notes
+                );
+                return `✅ 진행상황 업데이트 완료! ${result.data.ember_gained} Ember 획득`;
+            }
+            break;
+    }
+    
+    return "죄송합니다. 요청을 이해하지 못했습니다. 다시 말씀해 주세요.";
+}
+
+// Example usage with various user inputs
+const responses = await Promise.all([
+    processUserIntent("내 2FA 상태가 어떻게 되나?"),
+    processUserIntent("Ember 잔액 확인해줘"), 
+    processUserIntent("새로운 재능 추천받고 싶어"),
+    processUserIntent("프로그래밍 실력이 10% 늘었어")
+]);
+
+console.log(responses);
+// Output: Natural Korean responses for each intent</code></pre>
+                    </div>
+                </div>
+
+                <!-- Automation Workflows -->
+                <div id="ai-automation" class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4">⚙️ AI Automation Workflows</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">// Automated talent development assistant
+class TalentDevelopmentBot {
+    constructor(ditoClient) {
+        this.dito = ditoClient;
+        this.agent = new DitoAgent(ditoClient);
+    }
+
+    // Daily routine: check progress and provide suggestions
+    async dailyCheckIn(soulId) {
+        try {
+            // Get user's Soul status
+            const soul = await this.dito.getSoul(soulId);
+            const talents = await this.dito.getTalents();
+            const recommendations = await this.dito.getTalentRecommendations();
+            
+            // Analyze progress
+            const stagnantTalents = talents.data.filter(talent => {
+                const daysSinceProgress = this.daysSince(talent.last_progress);
+                return daysSinceProgress > 7; // No progress for a week
+            });
+            
+            // Generate personalized report
+            let report = `🌟 ${soul.data.seeker_name}님의 일일 점검 보고서\n\n`;
+            
+            // Current status
+            report += `📊 현재 상태:\n`;
+            report += `- Ember: ${soul.data.ember_points}\n`;
+            report += `- 활성 재능: ${soul.data.active_talents}개\n`;
+            report += `- 레벨: ${soul.data.current_level}\n\n`;
+            
+            // Stagnant talents alert
+            if (stagnantTalents.length > 0) {
+                report += `⚠️ 관심이 필요한 재능들:\n`;
+                stagnantTalents.forEach(talent => {
+                    report += `- ${talent.name}: ${this.daysSince(talent.last_progress)}일 동안 진행 없음\n`;
+                });
+                report += `\n`;
+            }
+            
+            // New recommendations
+            report += `💡 오늘의 추천 재능:\n`;
+            recommendations.data.recommendations.slice(0, 2).forEach(rec => {
+                report += `- ${rec.name}: ${rec.description}\n`;
+            });
+            
+            // Next milestone
+            if (soul.data.next_milestone) {
+                report += `\n🎯 다음 목표: ${soul.data.next_milestone}`;
+            }
+            
+            return report;
+            
+        } catch (error) {
+            return `오류가 발생했습니다: ${error.message}`;
+        }
+    }
+
+    // Automated progress tracking from external sources
+    async trackProgressFromGitHub(soulId, githubActivity) {
+        const progressUpdates = [];
+        
+        for (const activity of githubActivity) {
+            if (activity.type === 'PushEvent') {
+                // Award progress for code commits
+                const result = await this.dito.addTalentProgress(
+                    'talent-programming',
+                    5, // 5% progress for each significant commit
+                    `GitHub commit: ${activity.payload.commits[0].message}`
+                );
+                progressUpdates.push(result);
+            }
+        }
+        
+        return progressUpdates;
+    }
+
+    // Smart ember spending recommendations
+    async optimizeEmberSpending(soulId) {
+        const balance = await this.dito.getEmberBalance();
+        const soul = await this.dito.getSoul(soulId);
+        
+        const recommendations = [];
+        
+        if (balance.data.ember_balance > 1000) {
+            recommendations.push({
+                type: 'arena_entry',
+                message: '큰 Arena 이벤트 참가 추천 (고수익 잠재력)',
+                cost: 500,
+                expected_return: 2000
+            });
+        }
+        
+        if (soul.data.conviction_level < 50) {
+            recommendations.push({
+                type: 'talent_boost',
+                message: '재능 부스터 구매 추천 (확신 레벨 향상)',
+                cost: 200,
+                benefit: 'conviction_level +20'
+            });
+        }
+        
+        return recommendations;
+    }
+    
+    daysSince(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        return Math.floor((now - date) / (1000 * 60 * 60 * 24));
+    }
+}
+
+// Usage example
+const bot = new TalentDevelopmentBot(dito);
+const dailyReport = await bot.dailyCheckIn('roy-soul-123');
+console.log(dailyReport);</code></pre>
+                    </div>
+                </div>
+
+                <!-- Monitoring and Analytics -->
+                <div id="ai-monitoring" class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4">📊 Monitoring & Analytics</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">// Comprehensive monitoring system for talent progression
+class DitoAnalyticsAgent {
+    constructor(ditoClient) {
+        this.dito = ditoClient;
+    }
+
+    // Real-time talent ecosystem monitoring
+    async generateEcosystemReport() {
+        try {
+            const analytics = await this.dito.getAnalytics();
+            const souls = await this.dito.getSouls();
+            const arenaEvents = await this.dito.getArenaEvents();
+            
+            // Calculate key metrics
+            const totalActiveUsers = souls.data.length;
+            const totalEmberInCirculation = souls.data.reduce((sum, soul) => sum + soul.ember_points, 0);
+            const averageProgressRate = this.calculateAverageProgress(souls.data);
+            const liveArenaCount = arenaEvents.data.filter(event => event.status === 'open').length;
+            
+            // Generate insights
+            const insights = {
+                ecosystem_health: this.assessEcosystemHealth(analytics.data),
+                growth_trends: this.identifyGrowthTrends(souls.data),
+                ember_economy: this.analyzeEmberEconomy(totalEmberInCirculation, totalActiveUsers),
+                arena_participation: this.analyzeArenaEngagement(arenaEvents.data),
+                recommendations: this.generateSystemRecommendations({
+                    totalActiveUsers,
+                    averageProgressRate,
+                    liveArenaCount
+                })
+            };
+            
+            return this.formatAnalyticsReport(insights);
+            
+        } catch (error) {
+            return `분석 중 오류 발생: ${error.message}`;
+        }
+    }
+
+    // Predictive talent success modeling
+    async predictTalentSuccess(talentId, soulId) {
+        const talent = await this.dito.getTalent(talentId);
+        const soul = await this.dito.getSoul(soulId);
+        
+        // Machine learning model inputs (simplified)
+        const factors = {
+            current_progress: talent.data.progress_percentage,
+            consistency: this.calculateConsistency(talent.data),
+            user_engagement: soul.data.conviction_level,
+            category_demand: await this.getCategoryDemand(talent.data.category),
+            historical_performance: this.getUserHistoricalPerformance(soul.data)
+        };
+        
+        // Success prediction algorithm
+        const successScore = this.calculateSuccessScore(factors);
+        const timeToMastery = this.estimateTimeToMastery(factors);
+        const emberPotential = this.estimateEmberPotential(factors);
+        
+        return {
+            success_probability: successScore,
+            estimated_mastery_time: timeToMastery,
+            ember_earning_potential: emberPotential,
+            recommendations: this.generatePersonalizedAdvice(factors)
+        };
+    }
+
+    // Automated alert system
+    async checkForAlerts(soulId) {
+        const alerts = [];
+        
+        // Check for stagnant progress
+        const talents = await this.dito.getTalents();
+        talents.data.forEach(talent => {
+            if (this.daysSince(talent.last_progress) > 14) {
+                alerts.push({
+                    type: 'stagnation',
+                    severity: 'medium',
+                    message: `${talent.name} 재능이 2주 동안 진전이 없습니다`,
+                    action: 'progress_reminder'
+                });
+            }
+        });
+        
+        // Check ember balance anomalies
+        const balance = await this.dito.getEmberBalance();
+        if (balance.data.ember_balance > 5000) {
+            alerts.push({
+                type: 'high_balance',
+                severity: 'info',
+                message: '높은 Ember 잔액 - 투자 기회를 고려해보세요',
+                action: 'investment_suggestion'
+            });
+        }
+        
+        // Check for Arena opportunities
+        const arenaEvents = await this.dito.getArenaEvents();
+        const suitableEvents = arenaEvents.data.filter(event => 
+            event.participants < event.max_participants * 0.8 // Less than 80% full
+        );
+        
+        if (suitableEvents.length > 0) {
+            alerts.push({
+                type: 'arena_opportunity',
+                severity: 'high',
+                message: `${suitableEvents.length}개의 Arena 이벤트 참가 기회가 있습니다`,
+                action: 'arena_recommendation',
+                data: suitableEvents[0]
+            });
+        }
+        
+        return alerts;
+    }
+    
+    // Helper methods
+    calculateSuccessScore(factors) {
+        // Weighted algorithm for success prediction
+        return (
+            factors.current_progress * 0.3 +
+            factors.consistency * 0.25 +
+            factors.user_engagement * 0.2 +
+            factors.category_demand * 0.15 +
+            factors.historical_performance * 0.1
+        );
+    }
+    
+    formatAnalyticsReport(insights) {
+        return `🔍 DITO 생태계 분석 보고서
+        
+📊 전체 현황:
+- 생태계 건강도: ${insights.ecosystem_health}
+- 성장 트렌드: ${insights.growth_trends}
+- Ember 경제: ${insights.ember_economy}
+
+🏟️ Arena 참여도:
+${insights.arena_participation}
+
+💡 시스템 권장사항:
+${insights.recommendations.join('\n')}
+
+📅 생성 시간: ${new Date().toLocaleString('ko-KR')}`;
+    }
+}
+
+// Usage example
+const analytics = new DitoAnalyticsAgent(dito);
+
+// Automated monitoring workflow
+setInterval(async () => {
+    const report = await analytics.generateEcosystemReport();
+    const alerts = await analytics.checkForAlerts('roy-soul-123');
+    
+    console.log('=== 시스템 상태 ===');
+    console.log(report);
+    
+    if (alerts.length > 0) {
+        console.log('\n🚨 알림 사항:');
+        alerts.forEach(alert => console.log(`- ${alert.message}`));
+    }
+}, 30 * 60 * 1000); // Every 30 minutes</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Error Handling -->
+            <section id="error-handling" class="mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">🚨 Error Handling</h2>
+                
+                <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-6">
+                    <p class="text-red-700">
+                        DITO API uses consistent error response format. Always check the <code>success</code> field before processing data.
+                    </p>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-4">📋 Error Response Format</h3>
+                    <div class="code-block api-response text-white">
+                        <pre><code class="language-json">{
+    "success": false,
+    "error": {
+        "code": "invalid_soul_id",
+        "type": "validation_error",
+        "details": {
+            "field": "soul_id",
+            "provided": "invalid-id-123",
+            "expected": "valid Soul ID format"
+        }
+    },
+    "message": "The provided Soul ID is invalid",
+    "meta": {
+        "timestamp": "2026-03-17T08:34:00Z",
+        "request_id": "req_error_456"
+    }
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-4">⚡ Common Error Codes</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white border border-gray-300">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="px-4 py-2 text-left font-semibold">Code</th>
+                                    <th class="px-4 py-2 text-left font-semibold">Type</th>
+                                    <th class="px-4 py-2 text-left font-semibold">Description</th>
+                                    <th class="px-4 py-2 text-left font-semibold">Resolution</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-t">
+                                    <td class="px-4 py-2 font-mono text-sm">invalid_token</td>
+                                    <td class="px-4 py-2">auth_error</td>
+                                    <td class="px-4 py-2">Authentication token is invalid</td>
+                                    <td class="px-4 py-2">Provide valid Bearer token</td>
+                                </tr>
+                                <tr class="border-t bg-gray-50">
+                                    <td class="px-4 py-2 font-mono text-sm">soul_not_found</td>
+                                    <td class="px-4 py-2">resource_error</td>
+                                    <td class="px-4 py-2">Soul ID does not exist</td>
+                                    <td class="px-4 py-2">Check Soul ID format and existence</td>
+                                </tr>
+                                <tr class="border-t">
+                                    <td class="px-4 py-2 font-mono text-sm">insufficient_ember</td>
+                                    <td class="px-4 py-2">business_error</td>
+                                    <td class="px-4 py-2">Not enough Ember for transaction</td>
+                                    <td class="px-4 py-2">Earn more Ember or reduce amount</td>
+                                </tr>
+                                <tr class="border-t bg-gray-50">
+                                    <td class="px-4 py-2 font-mono text-sm">2fa_required</td>
+                                    <td class="px-4 py-2">security_error</td>
+                                    <td class="px-4 py-2">2FA verification needed</td>
+                                    <td class="px-4 py-2">Provide valid 2FA code</td>
+                                </tr>
+                                <tr class="border-t">
+                                    <td class="px-4 py-2 font-mono text-sm">rate_limit_exceeded</td>
+                                    <td class="px-4 py-2">rate_limit</td>
+                                    <td class="px-4 py-2">Too many requests</td>
+                                    <td class="px-4 py-2">Wait and retry with backoff</td>
+                                </tr>
+                                <tr class="border-t bg-gray-50">
+                                    <td class="px-4 py-2 font-mono text-sm">email_not_found</td>
+                                    <td class="px-4 py-2">validation_error</td>
+                                    <td class="px-4 py-2">Email not registered in system</td>
+                                    <td class="px-4 py-2">Check email or sign up first</td>
+                                </tr>
+                                <tr class="border-t">
+                                    <td class="px-4 py-2 font-mono text-sm">invalid_email_code</td>
+                                    <td class="px-4 py-2">validation_error</td>
+                                    <td class="px-4 py-2">Email recovery code is invalid</td>
+                                    <td class="px-4 py-2">Request new code or check spelling</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-4">🛠️ Error Handling Best Practices</h3>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">// Robust error handling example
+async function safeApiCall(apiFunction) {
+    try {
+        const result = await apiFunction();
+        
+        if (!result.success) {
+            // Handle API-level errors
+            switch (result.error.code) {
+                case 'invalid_token':
+                    await refreshAuthToken();
+                    return await apiFunction(); // Retry once
+                    
+                case 'rate_limit_exceeded':
+                    const retryAfter = result.error.details?.retry_after || 60;
+                    await sleep(retryAfter * 1000);
+                    return await apiFunction(); // Retry after delay
+                    
+                case 'soul_not_found':
+                    throw new Error('Soul not found. Please check the Soul ID.');
+                    
+                case 'insufficient_ember':
+                    throw new Error(`Not enough Ember. Current: ${result.error.details?.current_balance}`);
+                    
+                case '2fa_required':
+                    const code = await prompt2FACode();
+                    return await apiFunction(code);
+                    
+                default:
+                    throw new Error(`API Error: ${result.message}`);
+            }
+        }
+        
+        return result.data;
+        
+    } catch (networkError) {
+        // Handle network/connection errors
+        if (networkError.name === 'AbortError') {
+            throw new Error('Request timed out. Please try again.');
+        }
+        
+        if (!navigator.onLine) {
+            throw new Error('No internet connection. Please check your network.');
+        }
+        
+        throw new Error(`Network error: ${networkError.message}`);
+    }
+}
+
+// Usage with automatic retry logic
+async function robustTalentUpdate(talentId, progress) {
+    const maxRetries = 3;
+    let lastError;
+    
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+            return await safeApiCall(() => 
+                dito.addTalentProgress(talentId, progress)
+            );
+        } catch (error) {
+            lastError = error;
+            
+            if (attempt < maxRetries) {
+                const delay = Math.pow(2, attempt) * 1000; // Exponential backoff
+                console.log(`Attempt ${attempt} failed, retrying in ${delay}ms...`);
+                await sleep(delay);
+            }
+        }
+    }
+    
+    throw lastError; // All retries failed
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="border-t pt-8 mt-12">
+                <div class="text-center">
+                    <p class="text-gray-600 mb-4">Built with ❤️ by the <a href="https://github.com/DIGI-PLANET" class="text-dito-purple hover:underline">DIGI-PLANET</a> team</p>
+                    <div class="flex justify-center space-x-6">
+                        <a href="https://github.com/DIGI-PLANET/dito-gateway" class="text-gray-400 hover:text-gray-600">Gateway</a>
+                        <a href="https://github.com/DIGI-PLANET/dito-guru" class="text-gray-400 hover:text-gray-600">Frontend</a>
+                        <a href="https://github.com/DIGI-PLANET/dito-soul" class="text-gray-400 hover:text-gray-600">Soul NFTs</a>
+                        <a href="https://github.com/DIGI-PLANET/dito-sdk" class="text-gray-400 hover:text-gray-600">SDK</a>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-4">
+                        © 2026 DIGI-PLANET. Transforming human potential into digital assets.
+                    </p>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Scroll-to-top button -->
+    <button id="scrollToTop" class="fixed bottom-8 right-8 bg-dito-purple text-white p-3 rounded-full shadow-lg opacity-0 transition-opacity duration-300 hover:bg-purple-700">
+        ↑
+    </button>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Scroll to top button
+        const scrollToTopBtn = document.getElementById('scrollToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollToTopBtn.style.opacity = '1';
+            } else {
+                scrollToTopBtn.style.opacity = '0';
+            }
+        });
+
+        scrollToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Highlight active navigation item
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const id = entry.target.getAttribute('id');
+                const navLink = document.querySelector(`a[href="#${id}"]`);
+                
+                if (entry.isIntersecting) {
+                    document.querySelectorAll('.sidebar-item').forEach(link => {
+                        link.classList.remove('bg-dito-purple', 'text-white');
+                    });
+                    if (navLink) {
+                        navLink.classList.add('bg-dito-purple', 'text-white');
+                    }
+                }
+            });
+        }, {
+            threshold: 0.3
+        });
+
+        // Observe all sections
+        document.querySelectorAll('section[id], div[id]').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Copy code to clipboard
+        document.querySelectorAll('pre code').forEach(block => {
+            block.addEventListener('click', () => {
+                navigator.clipboard.writeText(block.textContent).then(() => {
+                    // Show temporary success message
+                    const originalText = block.textContent;
+                    block.textContent = 'Copied to clipboard!';
+                    setTimeout(() => {
+                        block.textContent = originalText;
+                    }, 1000);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

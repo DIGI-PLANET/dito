@@ -28,6 +28,7 @@ DITO Soul helps users discover hidden talents through conversations with Ember, 
 | `app/` | Next.js 16, React 19, TypeScript | Frontend with Ember AI chat, wallet integration, Soul minting UI |
 | `gateway/` | Rust, Actix-web | Agent-First API gateway — command interface, 2FA, Soul/Talent/Arena APIs |
 | `sdk/` | TypeScript | Developer SDK for DITO API integration |
+| `docs/` | HTML | API documentation and developer guides (forge.dito.guru) |
 
 ## Key Features
 

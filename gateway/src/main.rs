@@ -5,6 +5,7 @@ use std::time::Instant;
 
 mod database;
 mod handler;
+mod llm;
 mod middleware;
 mod model;
 
@@ -85,8 +86,13 @@ async fn main() -> std::io::Result<()> {
 
     let db = web::Data::new(MockDb::new());
     let start_time = web::Data::new(Instant::now());
+    let llm_provider = web::Data::new(llm::provider::LlmProvider::from_env());
 
     log::info!("🧪 Running in Mock Mode");
+    match llm_provider.get_ref() {
+        Some(p) => log::info!("🤖 LLM Provider: {}", p.name()),
+        None => log::info!("🤖 LLM Provider: none (mock mode)"),
+    }
     log::info!("🚀 DITO Gateway (Rust) starting on :{}", port);
 
     let cors_origins = std::env::var("CORS_ALLOWED_ORIGINS")
@@ -115,6 +121,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(db.clone())
             .app_data(start_time.clone())
+            .app_data(llm_provider.clone())
             .wrap(cors)
             .wrap(Logger::new("%a [%t] \"%r\" %s %Dms"))
             // Public routes
@@ -125,6 +132,7 @@ async fn main() -> std::io::Result<()> {
                 "/api/auth/signup-with-2fa",
                 web::post().to(handler::twofa::mandatory_setup_2fa),
             )
+            .route("/api/llm/status", web::get().to(handler::chat::llm_status))
             // Command API (JWT protected)
             .service(
                 web::resource("/command")
@@ -164,7 +172,10 @@ async fn main() -> std::io::Result<()> {
                     .route("/talents/discover", web::get().to(handler::talents::discover_talents))
                     .route("/talents/track", web::post().to(handler::talents::track_talent_progress))
                     .route("/talents/analytics", web::get().to(handler::talents::get_talent_analytics))
-                    .route("/talents/trending", web::get().to(handler::talents::get_trending_talents)),
+                    .route("/talents/trending", web::get().to(handler::talents::get_trending_talents))
+                    // Chat (LLM + SSE)
+                    .route("/chat", web::post().to(handler::chat::chat))
+                    .route("/chat/stream", web::post().to(handler::chat::chat_stream)),
             )
             .default_service(web::to(not_found))
     })
