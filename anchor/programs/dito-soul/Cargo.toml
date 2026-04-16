@@ -1,0 +1,22 @@
+[package]
+name = "dito-soul"
+version = "0.1.0"
+description = "DITO.guru Soulbound Token (SBT) talent discovery program"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "dito_soul"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+mainnet = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
+
+[dependencies]
+anchor-lang = { version = "0.31.1", features = ["init-if-needed"] }
+anchor-spl = { version = "0.31.1", features = ["token", "associated_token", "metadata"] }

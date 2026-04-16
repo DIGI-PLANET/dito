@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+.pnp.*
+
+# Build
+.next/
+target/
+out/
+dist/
+*.so
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Anchor
+.anchor/
+test-ledger/
+
+# Rust
+**/*.rs.bk
+
+# Misc
+*.log
+.vercel/

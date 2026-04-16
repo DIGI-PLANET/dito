@@ -1,0 +1,44 @@
+[package]
+name = "dito-gateway"
+version = "0.1.0"
+edition = "2021"
+description = "DITO.guru Agent-First API Gateway (Rust)"
+
+[dependencies]
+# Web framework
+actix-web = "4"
+actix-cors = "0.7"
+actix-rt = "2"
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Auth
+jsonwebtoken = "9"
+
+# 2FA/TOTP
+totp-rs = { version = "5", features = ["gen_secret", "otpauth"] }
+
+# HTTP client (Supabase)
+reqwest = { version = "0.12", features = ["json"] }
+
+# Time
+chrono = { version = "0.4", features = ["serde"] }
+
+# Crypto
+sha2 = "0.10"
+rand = "0.8"
+
+# Logging
+env_logger = "0.11"
+log = "0.4"
+
+# Env
+dotenvy = "0.15"
+
+# Misc
+lazy_static = "1"
+
+# Tokio runtime
+tokio = { version = "1", features = ["full"] }

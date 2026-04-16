@@ -1,0 +1,119 @@
+{
+  "name": "dito_command",
+  "description": "Execute DITO operations - manage 2FA security, view Soul status, handle Ember (talent seeds), discover talents, join Arena events. Roy's Agent-First API.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "action": {
+        "type": "string",
+        "enum": [
+          "2fa_status",
+          "2fa_setup", 
+          "2fa_verify",
+          "2fa_disable",
+          "2fa_email_recovery",
+          "2fa_email_verify",
+          "get_soul",
+          "update_soul", 
+          "delete_soul",
+          "list_souls",
+          "get_ember_balance",
+          "ember_transaction",
+          "get_talent",
+          "update_talent",
+          "list_talents", 
+          "add_talent_progress",
+          "get_talent_recommendations",
+          "create_arena_event",
+          "join_arena",
+          "list_arena_events",
+          "get_arena_event",
+          "get_analytics",
+          "signup_with_2fa"
+        ],
+        "description": "DITO command to execute"
+      },
+      "params": {
+        "type": "object",
+        "description": "Command parameters - see action-specific requirements below",
+        "properties": {
+          "soul_id": {
+            "type": "string",
+            "description": "Soul ID (required for: get_soul, update_soul, delete_soul)"
+          },
+          "code": {
+            "type": "string", 
+            "description": "2FA TOTP code (required for: 2fa_verify, 2fa_disable, delete_soul)"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address (required for: 2fa_email_recovery, signup_with_2fa)"
+          },
+          "email_code": {
+            "type": "string",
+            "description": "Email recovery code (required for: 2fa_email_verify)"
+          },
+          "talent_id": {
+            "type": "string",
+            "description": "Talent ID (required for: get_talent, update_talent, add_talent_progress)"
+          },
+          "event_id": {
+            "type": "string",
+            "description": "Arena event ID (required for: get_arena_event, join_arena)"
+          },
+          "password": {
+            "type": "string",
+            "description": "Password (required for: signup_with_2fa)"
+          },
+          "name": {
+            "type": "string", 
+            "description": "User name (required for: signup_with_2fa)"
+          },
+          "progress": {
+            "type": "number",
+            "description": "Progress percentage (for: update_talent, add_talent_progress)"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Progress notes (optional for: update_talent, add_talent_progress)"
+          },
+          "totp_code": {
+            "type": "string",
+            "description": "TOTP code for high-risk operations (for: delete_soul)"
+          }
+        }
+      }
+    },
+    "required": ["action"]
+  },
+  "examples": [
+    {
+      "description": "Check 2FA status",
+      "call": {"action": "2fa_status"}
+    },
+    {
+      "description": "Setup 2FA",
+      "call": {"action": "2fa_setup"}
+    },
+    {
+      "description": "Verify 2FA code",
+      "call": {"action": "2fa_verify", "params": {"code": "123456"}}
+    },
+    {
+      "description": "Get Soul information", 
+      "call": {"action": "get_soul", "params": {"soul_id": "roy-soul"}}
+    },
+    {
+      "description": "Check Ember balance",
+      "call": {"action": "get_ember_balance"}
+    },
+    {
+      "description": "Get talent recommendations",
+      "call": {"action": "get_talent_recommendations"}
+    },
+    {
+      "description": "Delete Soul (requires 2FA)",
+      "call": {"action": "delete_soul", "params": {"soul_id": "roy-soul", "totp_code": "123456"}}
+    }
+  ]
+}

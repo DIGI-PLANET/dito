@@ -1,0 +1,11 @@
+node_modules/
+.next/
+# Private keys — NEVER commit
+.env.keys
+.env.local
+.env.local.bak
+
+# Encrypted env files — safe to commit (public key only)
+# .env.development, .env.test, .env.production are encrypted by dotenvx
+*.log
+.vercel

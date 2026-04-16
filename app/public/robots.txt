@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://dito.guru/sitemap.xml
+
+# Block admin and private routes
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
