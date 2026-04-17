@@ -124,6 +124,13 @@ struct GroqRequest {
     temperature: f32,
     max_tokens: u32,
     stream: bool,
+    response_format: GroqResponseFormat,
+}
+
+#[derive(Debug, Serialize)]
+struct GroqResponseFormat {
+    #[serde(rename = "type")]
+    format_type: String,
 }
 
 #[derive(Debug, Serialize)]
@@ -293,6 +300,9 @@ async fn stream_groq(
         temperature: 0.9,
         max_tokens: 1024,
         stream: true,
+        response_format: GroqResponseFormat {
+            format_type: "json_object".into(),
+        },
     };
 
     let resp = client
