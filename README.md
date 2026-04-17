@@ -127,4 +127,4 @@ NEXT_PUBLIC_SOLANA_NETWORK=devnet
 
 ## License
 
-Apache License 2.0 — See [LICENSE](LICENSE)
+Business Source License 1.1 (BUSL-1.1) — See [LICENSE](LICENSE)

@@ -3,8 +3,8 @@
 > **Official API Documentation & Developer Resources for DITO Platform**
 
 [![Website](https://img.shields.io/badge/Website-forge.dito.guru-blue)](https://forge.dito.guru)
-[![DIGI-PLANET](https://img.shields.io/badge/Organization-DIGI--PLANET-purple)](https://github.com/DIGI-PLANET)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![DIGI PLANET](https://img.shields.io/badge/Organization-DIGI%20PLANET-purple)](https://github.com/DIGI-PLANET)
+[![License: BUSL-1.1](https://img.shields.io/badge/License-BUSL--1.1-yellow.svg)](LICENSE)
 
 This repository contains the complete API documentation, guides, and developer resources for the DITO platform - where human potential transforms into digital assets.
 
@@ -70,9 +70,9 @@ forge.dito.guru/
 
 ---
 
-## 🌍 **DIGI-PLANET Ecosystem**
+## 🌍 **DIGI PLANET Ecosystem**
 
-This documentation site serves the entire DIGI-PLANET ecosystem:
+This documentation site serves the entire DIGI PLANET ecosystem:
 
 | Project | Description | Repository |
 |---------|-------------|------------|
@@ -162,19 +162,19 @@ We welcome contributions to improve the documentation:
 
 ## 📄 **License**
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Business Source License 1.1 (BUSL-1.1) - see the [LICENSE](LICENSE) file for details.
 
 ---
 
 ## 🔗 **Links**
 
 - **🌐 Live Documentation**: [forge.dito.guru](https://forge.dito.guru)
-- **🏢 DIGI-PLANET Organization**: [github.com/DIGI-PLANET](https://github.com/DIGI-PLANET)
+- **🏢 DIGI PLANET Organization**: [github.com/DIGI-PLANET](https://github.com/DIGI-PLANET)
 - **💬 Discord Community**: [Join our Discord](https://discord.gg/dito)
 - **🐦 Twitter**: [@DIGIPLANET_IO](https://twitter.com/DIGIPLANET_IO)
 
 ---
 
-**🔥 Built with ❤️ by the [DIGI-PLANET](https://github.com/DIGI-PLANET) team**
+**🔥 Built with ❤️ by the [DIGI PLANET](https://github.com/DIGI-PLANET) team**
 
 *Forging the future of human talent on the blockchain.*

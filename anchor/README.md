@@ -5,10 +5,10 @@
 [![Rust](https://img.shields.io/badge/Rust-1.70+-orange.svg)](https://rustlang.org)
 [![Anchor](https://img.shields.io/badge/Anchor-0.29+-blue.svg)](https://anchor-lang.com)
 [![Solana](https://img.shields.io/badge/Solana-1.16+-green.svg)](https://solana.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![DIGI-PLANET](https://img.shields.io/badge/Organization-DIGI--PLANET-purple)](https://github.com/DIGI-PLANET)
+[![License: BUSL-1.1](https://img.shields.io/badge/License-BUSL--1.1-yellow.svg)](LICENSE)
+[![DIGI PLANET](https://img.shields.io/badge/Organization-DIGI%20PLANET-purple)](https://github.com/DIGI-PLANET)
 
-Part of the [DIGI-PLANET](https://github.com/DIGI-PLANET) ecosystem for transforming human potential into digital assets.
+Part of the [DIGI PLANET](https://github.com/DIGI-PLANET) ecosystem for transforming human potential into digital assets.
 
 ---
 
@@ -418,13 +418,13 @@ anchor verify <PROGRAM_ID>
 
 ## 📄 **License**
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Business Source License 1.1 (BUSL-1.1) - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🌍 **DIGI-PLANET Ecosystem**
+## 🌍 **DIGI PLANET Ecosystem**
 
-Part of the larger [DIGI-PLANET](https://github.com/DIGI-PLANET) ecosystem:
+Part of the larger [DIGI PLANET](https://github.com/DIGI-PLANET) ecosystem:
 
 - **[dito-gateway](https://github.com/DIGI-PLANET/dito-gateway)**: High-performance Go backend
 - **[dito-guru](https://github.com/DIGI-PLANET/dito-guru)**: Next.js frontend application
@@ -432,6 +432,6 @@ Part of the larger [DIGI-PLANET](https://github.com/DIGI-PLANET) ecosystem:
 
 ---
 
-**💎 Built with ❤️ by the [DIGI-PLANET](https://github.com/DIGI-PLANET) team**
+**💎 Built with ❤️ by the [DIGI PLANET](https://github.com/DIGI-PLANET) team**
 
 *Immortalizing talents on the blockchain, one Soul at a time.*
