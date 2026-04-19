@@ -34,8 +34,8 @@ export function TabBar() {
     }
   }, []);
 
-  // Hide on discovery, onboarding, and when no wallet
-  if (!hasWallet || pathname === '/discovery' || pathname === '/onboarding') return null;
+  // Hide on landing, discovery, onboarding, and when no wallet
+  if (pathname === '/' || !hasWallet || pathname === '/discovery' || pathname === '/onboarding') return null;
 
   return (
     <nav className="tab-bar">

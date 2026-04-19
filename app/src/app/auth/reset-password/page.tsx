@@ -2,21 +2,23 @@
 
 import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { useI18n } from '@/providers/i18n-provider';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import Link from 'next/link';
+import { ArrowLeft, KeyRound, Eye, EyeOff, Flame, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { useI18n } from '@/providers/i18n-provider';
 
 type Step = 'form' | 'success' | 'error';
 
 function ResetPasswordContent() {
   const { lang } = useI18n();
+  const isKo = lang === 'ko';
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
 
   const [step, setStep] = useState<Step>(token ? 'form' : 'error');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -26,16 +28,25 @@ function ResetPasswordContent() {
     number: /[0-9]/.test(password),
     special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
   };
-  const passwordValid = Object.values(passwordChecks).every(Boolean);
+  const strengthScore = Object.values(passwordChecks).filter(Boolean).length; // 0..4
+  const passwordValid = strengthScore === 4;
   const passwordsMatch = password === passwordConfirm && passwordConfirm.length > 0;
+
+  const strengthLabel = (() => {
+    if (password.length === 0) return '';
+    if (strengthScore <= 1) return isKo ? '매우 약함' : 'Very weak';
+    if (strengthScore === 2) return isKo ? '약함' : 'Weak';
+    if (strengthScore === 3) return isKo ? '보통' : 'Fair';
+    return isKo ? '강함' : 'Strong';
+  })();
 
   const handleSubmit = async () => {
     if (!passwordValid) {
-      setError(lang === 'ko' ? '비밀번호 조건을 확인해주세요.' : 'Please check password requirements.');
+      setError(isKo ? '비밀번호 조건을 확인해주세요.' : 'Please check password requirements.');
       return;
     }
     if (!passwordsMatch) {
-      setError(lang === 'ko' ? '비밀번호가 일치하지 않습니다.' : 'Passwords do not match.');
+      setError(isKo ? '비밀번호가 일치하지 않습니다.' : 'Passwords do not match.');
       return;
     }
 
@@ -61,161 +72,260 @@ function ResetPasswordContent() {
 
       setStep('success');
     } catch (err: any) {
-      setError(err.message || (lang === 'ko' ? '비밀번호 재설정에 실패했습니다.' : 'Failed to reset password.'));
+      setError(err.message || (isKo ? '비밀번호 재설정에 실패했습니다.' : 'Failed to reset password.'));
     } finally {
       setLoading(false);
     }
   };
 
-  if (step === 'success') {
-    return (
-      <div className="flex-1 flex flex-col items-center justify-center px-4 py-12 page-enter">
-        <div className="max-w-xs w-full flex flex-col items-center gap-6 text-center">
-          <span className="text-5xl">🔥</span>
-          <div>
-            <h1 className="text-lg font-bold mb-2">
-              {lang === 'ko' ? '비밀번호가 변경되었습니다' : 'Password Reset Complete'}
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              {lang === 'ko'
-                ? '새 비밀번호로 로그인해 주세요.'
-                : 'Please sign in with your new password.'}
-            </p>
-          </div>
-          <Link
-            href="/auth"
-            className="w-full inline-flex items-center justify-center rounded-md bg-[#ff6b35] hover:bg-[#e55a2b] text-white h-12 px-4 text-base font-semibold transition-colors"
-          >
-            {lang === 'ko' ? '포털 진입' : 'Enter Portal'}
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  if (step === 'error') {
-    return (
-      <div className="flex-1 flex flex-col items-center justify-center px-4 py-12 page-enter">
-        <div className="max-w-xs w-full flex flex-col items-center gap-6 text-center">
-          <span className="text-5xl">🔥</span>
-          <div>
-            <h1 className="text-lg font-bold mb-2">
-              {lang === 'ko' ? '링크가 만료되었습니다' : 'Link Expired'}
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              {lang === 'ko'
-                ? '비밀번호 재설정 링크가 만료되었거나 유효하지 않습니다. 다시 요청해주세요.'
-                : 'This password reset link has expired or is invalid. Please request a new one.'}
-            </p>
-          </div>
-          <Link
-            href="/auth/forgot-password"
-            className="w-full inline-flex items-center justify-center rounded-md bg-[#ff6b35] hover:bg-[#e55a2b] text-white h-12 px-4 text-base font-semibold transition-colors"
-          >
-            {lang === 'ko' ? '다시 요청하기' : 'Request New Link'}
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex-1 flex flex-col items-center justify-center px-4 py-12 page-enter">
-      <div className="max-w-xs w-full flex flex-col items-center gap-6">
-        <span className="text-5xl">🔥</span>
+    <div
+      data-landing-page
+      className="relative min-h-screen w-full bg-background text-foreground"
+    >
+      {/* Top bar with back arrow */}
+      <header className="relative z-10 flex items-center px-5 pt-6 pb-4 md:px-8 md:pt-8">
+        <Link
+          href="/auth"
+          aria-label={isKo ? '뒤로 가기' : 'Back'}
+          className="inline-flex h-10 w-10 items-center justify-center rounded-full text-foreground/90 transition hover:bg-foreground/5"
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </Link>
+      </header>
 
-        <div className="text-center">
-          <h1 className="text-lg font-bold mb-2">
-            {lang === 'ko' ? '새 비밀번호 설정' : 'Set New Password'}
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            {lang === 'ko'
-              ? '새로운 비밀번호를 입력해주세요'
-              : 'Enter your new password'}
-          </p>
-        </div>
+      {/* Divider */}
+      <div className="mx-5 border-t border-border md:mx-8" />
 
-        <div className="w-full space-y-4">
-          <div>
-            <label className="text-sm font-medium mb-1.5 block text-foreground">
-              {lang === 'ko' ? '비밀번호' : 'Password'}
-            </label>
-            <Input
-              type="password"
-              placeholder={lang === 'ko' ? '8자 이상, 대문자+숫자+특수기호' : '8+ chars, uppercase+number+symbol'}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={loading}
-            />
-            {password.length > 0 && (
-              <div className="mt-2 space-y-0.5">
-                <PasswordCheck passed={passwordChecks.length} label={lang === 'ko' ? '8자 이상' : '8+ characters'} />
-                <PasswordCheck passed={passwordChecks.uppercase} label={lang === 'ko' ? '대문자 포함' : 'Uppercase letter'} />
-                <PasswordCheck passed={passwordChecks.number} label={lang === 'ko' ? '숫자 포함' : 'Number'} />
-                <PasswordCheck passed={passwordChecks.special} label={lang === 'ko' ? '특수기호 포함' : 'Special character'} />
+      <main className="relative z-0 flex min-h-[calc(100vh-5rem)] items-center justify-center px-5 py-10 md:px-8">
+        <div className="w-full max-w-[420px]">
+          {step === 'success' ? (
+            <SuccessCard isKo={isKo} />
+          ) : step === 'error' ? (
+            <ErrorCard isKo={isKo} />
+          ) : (
+            <div className="relative overflow-hidden rounded-[14px] border border-border bg-card px-6 py-8 shadow-sm md:px-8 md:py-10">
+              {/* Flame watermark */}
+              <Flame
+                aria-hidden
+                className="pointer-events-none absolute -right-6 top-1/2 h-48 w-48 -translate-y-1/2 text-foreground/5"
+              />
+
+              <div className="relative flex flex-col items-center text-center">
+                <div className="flex h-12 w-12 items-center justify-center">
+                  <KeyRound className="h-8 w-8 text-[#faaf2e]" strokeWidth={2.25} />
+                </div>
+
+                <h1 className="mt-4 text-[22px] font-bold leading-tight text-foreground">
+                  Set a new password.
+                </h1>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  새 비밀번호 설정.
+                </p>
               </div>
-            )}
-          </div>
 
-          <div>
-            <label className="text-sm font-medium mb-1.5 block text-foreground">
-              {lang === 'ko' ? '비밀번호 확인' : 'Confirm Password'}
-            </label>
-            <Input
-              type="password"
-              placeholder={lang === 'ko' ? '비밀번호를 다시 입력해주세요' : 'Re-enter your password'}
-              value={passwordConfirm}
-              onChange={(e) => setPasswordConfirm(e.target.value)}
-              disabled={loading}
-            />
-            {passwordConfirm.length > 0 && (
-              <p className={`text-xs mt-1 ${passwordsMatch ? 'text-green-600' : 'text-red-500'}`}>
-                {passwordsMatch
-                  ? `✓ ${lang === 'ko' ? '비밀번호가 일치합니다.' : 'Passwords match.'}`
-                  : (lang === 'ko' ? '비밀번호가 일치하지 않습니다.' : 'Passwords do not match.')
-                }
-              </p>
-            )}
-          </div>
+              <div className="relative mt-7 space-y-5">
+                {/* New Password */}
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-foreground">
+                    New Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      disabled={loading}
+                      placeholder={isKo ? '최소 8자 이상 입력' : 'Enter at least 8 characters'}
+                      className="h-11 w-full rounded-[10px] border border-border bg-background/60 pl-4 pr-11 text-sm text-foreground placeholder:text-muted-foreground/70 focus:border-foreground/30 focus:outline-none focus:ring-1 focus:ring-foreground/20 disabled:opacity-60"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((s) => !s)}
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      className="absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground"
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
 
-          <Button
-            onClick={handleSubmit}
-            disabled={loading || !passwordValid || !passwordsMatch}
-            className="w-full mt-2 h-12 bg-[#ff6b35] hover:bg-[#e55a2b] text-white text-base font-semibold disabled:opacity-40"
-          >
-            {loading
-              ? (lang === 'ko' ? '변경 중...' : 'Resetting...')
-              : (lang === 'ko' ? '비밀번호 변경' : 'Reset Password')
-            }
-          </Button>
+                  {/* Strength bars */}
+                  <div className="mt-3 flex items-center gap-1.5">
+                    {[0, 1, 2, 3].map((i) => (
+                      <span
+                        key={i}
+                        className={`h-[3px] flex-1 rounded-full transition-colors ${
+                          i < strengthScore
+                            ? strengthScore >= 4
+                              ? 'bg-[#faaf2e]'
+                              : strengthScore === 3
+                              ? 'bg-[#faaf2e]/80'
+                              : strengthScore === 2
+                              ? 'bg-foreground/40'
+                              : 'bg-foreground/25'
+                            : 'bg-border'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <p className="mt-1.5 text-xs text-muted-foreground">
+                    {isKo ? '보안 강도' : 'Strength'}
+                    {strengthLabel && <span className="ml-1 text-foreground/80">· {strengthLabel}</span>}
+                  </p>
+
+                  {password.length > 0 && !passwordValid && (
+                    <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1">
+                      <PasswordCheck passed={passwordChecks.length} label={isKo ? '8자 이상' : '8+ chars'} />
+                      <PasswordCheck passed={passwordChecks.uppercase} label={isKo ? '대문자' : 'Uppercase'} />
+                      <PasswordCheck passed={passwordChecks.number} label={isKo ? '숫자' : 'Number'} />
+                      <PasswordCheck passed={passwordChecks.special} label={isKo ? '특수기호' : 'Symbol'} />
+                    </div>
+                  )}
+                </div>
+
+                {/* Confirm Password */}
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-foreground">
+                    Confirm Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPasswordConfirm ? 'text' : 'password'}
+                      value={passwordConfirm}
+                      onChange={(e) => setPasswordConfirm(e.target.value)}
+                      disabled={loading}
+                      placeholder={isKo ? '비밀번호 다시 입력' : 'Re-enter password'}
+                      className="h-11 w-full rounded-[10px] border border-border bg-background/60 pl-4 pr-11 text-sm text-foreground placeholder:text-muted-foreground/70 focus:border-foreground/30 focus:outline-none focus:ring-1 focus:ring-foreground/20 disabled:opacity-60"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPasswordConfirm((s) => !s)}
+                      aria-label={showPasswordConfirm ? 'Hide password' : 'Show password'}
+                      className="absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground"
+                    >
+                      {showPasswordConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                  {passwordConfirm.length > 0 && (
+                    <p className={`mt-1.5 text-xs ${passwordsMatch ? 'text-emerald-500' : 'text-red-500'}`}>
+                      {passwordsMatch
+                        ? isKo
+                          ? '비밀번호가 일치합니다.'
+                          : 'Passwords match.'
+                        : isKo
+                        ? '비밀번호가 일치하지 않습니다.'
+                        : 'Passwords do not match.'}
+                    </p>
+                  )}
+                </div>
+
+                {error && (
+                  <div className="rounded-[10px] border border-red-500/30 bg-red-500/10 px-3 py-2 text-center text-sm text-red-500">
+                    {error}
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={loading || !passwordValid || !passwordsMatch}
+                  className="mt-2 flex h-12 w-full items-center justify-center rounded-[10px] bg-[#faaf2e] text-[15px] font-semibold text-[#4b3002] transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {loading
+                    ? isKo
+                      ? '변경 중...'
+                      : 'Updating...'
+                    : 'Update password / 비밀번호 변경'}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
-
-        {error && (
-          <div className="w-full text-center text-sm text-red-500 bg-red-50 dark:bg-red-950/30 p-3 rounded-lg">
-            {error}
-          </div>
-        )}
-      </div>
+      </main>
     </div>
   );
 }
 
 function PasswordCheck({ passed, label }: { passed: boolean; label: string }) {
   return (
-    <p className={`text-xs flex items-center gap-1 ${passed ? 'text-green-600' : 'text-muted-foreground'}`}>
-      <span>{passed ? '✓' : '✗'}</span>
+    <span
+      className={`inline-flex items-center gap-1 text-[11px] ${
+        passed ? 'text-emerald-500' : 'text-muted-foreground'
+      }`}
+    >
+      <CheckCircle2 className={`h-3 w-3 ${passed ? 'opacity-100' : 'opacity-40'}`} />
       {label}
-    </p>
+    </span>
+  );
+}
+
+function SuccessCard({ isKo }: { isKo: boolean }) {
+  return (
+    <div className="relative overflow-hidden rounded-[14px] border border-border bg-card px-6 py-10 text-center shadow-sm md:px-8">
+      <Flame
+        aria-hidden
+        className="pointer-events-none absolute -right-6 top-1/2 h-48 w-48 -translate-y-1/2 text-foreground/5"
+      />
+      <div className="relative flex flex-col items-center">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#faaf2e]/15">
+          <CheckCircle2 className="h-7 w-7 text-[#faaf2e]" />
+        </div>
+        <h1 className="mt-4 text-[20px] font-bold text-foreground">
+          {isKo ? '비밀번호가 변경되었습니다' : 'Password reset complete'}
+        </h1>
+        <p className="mt-1.5 text-sm text-muted-foreground">
+          {isKo ? '새 비밀번호로 로그인해 주세요.' : 'Please sign in with your new password.'}
+        </p>
+        <Link
+          href="/auth"
+          className="mt-7 inline-flex h-12 w-full items-center justify-center rounded-[10px] bg-[#faaf2e] text-[15px] font-semibold text-[#4b3002] transition hover:brightness-105"
+        >
+          {isKo ? '포털 진입' : 'Enter portal'}
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+function ErrorCard({ isKo }: { isKo: boolean }) {
+  return (
+    <div className="relative overflow-hidden rounded-[14px] border border-border bg-card px-6 py-10 text-center shadow-sm md:px-8">
+      <Flame
+        aria-hidden
+        className="pointer-events-none absolute -right-6 top-1/2 h-48 w-48 -translate-y-1/2 text-foreground/5"
+      />
+      <div className="relative flex flex-col items-center">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-500/15">
+          <AlertTriangle className="h-7 w-7 text-red-500" />
+        </div>
+        <h1 className="mt-4 text-[20px] font-bold text-foreground">
+          {isKo ? '링크가 만료되었습니다' : 'Link expired'}
+        </h1>
+        <p className="mt-1.5 text-sm text-muted-foreground">
+          {isKo
+            ? '비밀번호 재설정 링크가 만료되었거나 유효하지 않습니다. 다시 요청해주세요.'
+            : 'This password reset link has expired or is invalid. Please request a new one.'}
+        </p>
+        <Link
+          href="/auth/forgot-password"
+          className="mt-7 inline-flex h-12 w-full items-center justify-center rounded-[10px] bg-[#faaf2e] text-[15px] font-semibold text-[#4b3002] transition hover:brightness-105"
+        >
+          {isKo ? '다시 요청하기' : 'Request new link'}
+        </Link>
+      </div>
+    </div>
   );
 }
 
 export default function ResetPasswordPage() {
   return (
-    <Suspense fallback={
-      <div className="flex-1 flex items-center justify-center">
-        <span className="text-muted-foreground">Loading...</span>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen w-full items-center justify-center bg-background text-muted-foreground">
+          Loading...
+        </div>
+      }
+    >
       <ResetPasswordContent />
     </Suspense>
   );

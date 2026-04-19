@@ -1,10 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { useI18n } from '@/providers/i18n-provider';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import Link from 'next/link';
+import { useI18n } from '@/providers/i18n-provider';
+import { ArrowLeft, Mail, Flame } from 'lucide-react';
 
 const EMAIL_DOMAINS: Record<string, string[]> = {
   ko: ['gmail.com', 'naver.com', 'daum.net', 'kakao.com'],
@@ -15,9 +14,10 @@ type Step = 'form' | 'sent';
 
 export default function ForgotPasswordPage() {
   const { lang } = useI18n();
+  const isKo = lang === 'ko';
   const [step, setStep] = useState<Step>('form');
 
-  // 이메일 조합
+  // Email composition (id + @ + domain)
   const [emailId, setEmailId] = useState('');
   const [emailDomain, setEmailDomain] = useState('gmail.com');
   const [customDomain, setCustomDomain] = useState('');
@@ -44,12 +44,12 @@ export default function ForgotPasswordPage() {
 
   const handleSubmit = async () => {
     if (!emailId) {
-      setError(lang === 'ko' ? '이메일 아이디를 입력해주세요.' : 'Please enter your email ID.');
+      setError(isKo ? '이메일 아이디를 입력해주세요.' : 'Please enter your email ID.');
       return;
     }
     const domain = isCustomDomain ? customDomain : emailDomain;
     if (!domain) {
-      setError(lang === 'ko' ? '이메일 도메인을 입력해주세요.' : 'Please enter the email domain.');
+      setError(isKo ? '이메일 도메인을 입력해주세요.' : 'Please enter the email domain.');
       return;
     }
 
@@ -67,7 +67,7 @@ export default function ForgotPasswordPage() {
 
       if (!res.ok) {
         if (res.status === 404) {
-          setError(lang === 'ko' ? '등록되지 않은 이메일입니다.' : 'This email is not registered.');
+          setError(isKo ? '등록되지 않은 이메일입니다.' : 'This email is not registered.');
           return;
         }
         throw new Error(data.error || 'Failed to send reset link');
@@ -75,132 +75,212 @@ export default function ForgotPasswordPage() {
 
       setStep('sent');
     } catch (err: any) {
-      setError(err.message || (lang === 'ko' ? '요청에 실패했습니다.' : 'Request failed.'));
+      setError(err.message || (isKo ? '요청에 실패했습니다.' : 'Request failed.'));
     } finally {
       setLoading(false);
     }
   };
 
-  if (step === 'sent') {
-    return (
-      <div className="flex-1 flex flex-col items-center justify-center px-4 py-12 page-enter">
-        <div className="max-w-xs w-full flex flex-col items-center gap-6 text-center">
-          <span className="text-5xl">📧</span>
-          <div>
-            <h1 className="text-lg font-bold mb-2">
-              {lang === 'ko' ? '비밀번호 변경 링크 전달 완료' : 'Password Reset Link Sent'}
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              {lang === 'ko'
-                ? '비밀번호 변경 링크는 발급일 기준으로 30분간 유효하며 메일이 오지 않았거나 링크가 만료되었다면 비밀번호 찾기를 다시 시도하세요.'
-                : 'The reset link is valid for 30 minutes. If you didn\'t receive the email or the link has expired, please try again.'}
-            </p>
-          </div>
+  return (
+    <div
+      data-landing-page
+      className="relative min-h-screen w-full bg-background text-foreground"
+    >
+      {/* Top bar with back arrow */}
+      <div className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur-md">
+        <div className="mx-auto flex h-14 w-full max-w-[420px] items-center gap-3 px-4">
           <Link
             href="/auth"
-            className="w-full inline-flex items-center justify-center rounded-md bg-[#ff6b35] hover:bg-[#e55a2b] text-white h-10 px-4 text-sm font-medium transition-colors"
+            aria-label="Back"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground/80 transition hover:bg-foreground/10"
           >
-            {lang === 'ko' ? '포털로 이동' : 'Go to Portal'}
+            <ArrowLeft className="h-5 w-5" />
           </Link>
         </div>
       </div>
-    );
-  }
 
-  return (
-    <div className="flex-1 flex flex-col items-center justify-center px-4 py-12 page-enter">
-      <div className="max-w-sm w-full flex flex-col items-center gap-6">
-        <span className="text-5xl">🔥</span>
+      <main className="mx-auto flex w-full max-w-[420px] flex-col items-center px-4 pt-10 pb-14 md:pt-16 md:pb-20">
+        {/* Card */}
+        <div className="relative w-full overflow-hidden rounded-[14px] border border-border bg-card px-5 py-7 md:px-7 md:py-9">
+          {/* Decorative flame watermark (very subtle) */}
+          <Flame
+            aria-hidden
+            className="pointer-events-none absolute right-4 top-4 h-20 w-20 text-foreground/5 md:h-24 md:w-24"
+          />
 
-        <div className="text-center">
-          <h1 className="text-lg font-bold mb-2">
-            {lang === 'ko' ? '비밀번호 찾기' : 'Forgot Password'}
-          </h1>
-          <p className="text-sm text-muted-foreground whitespace-pre-line">
-            {lang === 'ko'
-              ? '비밀번호를 찾을 계정의 이메일을 입력 후\n인증링크 보내기 버튼을 눌러주세요\n\n인증링크는 발급 후 30분까지 유효합니다.'
-              : 'Enter your account email and\nclick the Send Reset Link button.\n\nThe reset link is valid for 30 minutes.'}
-          </p>
-        </div>
+          {step === 'form' ? (
+            <>
+              {/* Mail icon */}
+              <div className="relative mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-[#faaf2e]/10 ring-1 ring-[#faaf2e]/30">
+                <Mail className="h-5 w-5 text-[#faaf2e]" />
+              </div>
 
-        <div className="w-full space-y-3">
-          {/* 이메일 입력 (아이디 + @ + 도메인) */}
-          <div>
-            <label className="text-sm font-medium mb-1.5 block text-foreground">
-              {lang === 'ko' ? '이메일 주소' : 'Email Address'}
-            </label>
-            <div className="flex items-center gap-1.5">
-              <Input
-                type="text"
-                placeholder={lang === 'ko' ? '아이디' : 'username'}
-                value={emailId}
-                onChange={(e) => setEmailId(e.target.value.replace(/[@\s]/g, ''))}
-                disabled={loading}
-                className="flex-1 min-w-0"
-              />
-              <span className="text-muted-foreground text-sm shrink-0">@</span>
-              {isCustomDomain ? (
-                <>
-                  <Input
+              {/* Titles */}
+              <h1 className="relative text-center text-[22px] font-bold tracking-tight md:text-[24px]">
+                {isKo ? '접속 복구.' : 'Rekindle access.'}
+              </h1>
+              <p className="relative mt-1 text-center text-[13px] text-muted-foreground">
+                {isKo ? 'Rekindle access.' : '접속 복구.'}
+              </p>
+
+              {/* Description */}
+              <p className="relative mt-5 text-center text-[14px] leading-normal text-foreground/90">
+                {isKo
+                  ? '이메일 입력. 재설정 링크 전송.'
+                  : "Enter your email. We'll send a reset link."}
+              </p>
+              <p className="relative mt-1 text-center text-[12px] text-muted-foreground">
+                {isKo
+                  ? "Enter your email. We'll send a reset link."
+                  : '이메일 입력. 재설정 링크 전송.'}
+              </p>
+
+              {/* Email input group */}
+              <div className="relative mt-6">
+                <div className="flex items-center gap-1.5 rounded-[10px] border border-border bg-background px-3 focus-within:border-[#faaf2e]/50 focus-within:ring-2 focus-within:ring-[#faaf2e]/20">
+                  <Mail className="pointer-events-none h-4 w-4 shrink-0 text-muted-foreground" />
+                  <input
                     type="text"
-                    placeholder="example.com"
-                    value={customDomain}
-                    onChange={(e) => setCustomDomain(e.target.value.replace(/[\s@]/g, ''))}
+                    placeholder={isKo ? '아이디' : 'name'}
+                    value={emailId}
+                    onChange={(e) =>
+                      setEmailId(e.target.value.replace(/[@\s]/g, ''))
+                    }
                     disabled={loading}
-                    className="flex-1 min-w-0"
+                    className="h-11 min-w-0 flex-1 bg-transparent text-[14px] outline-none placeholder:text-muted-foreground disabled:opacity-50"
                   />
-                  <button
-                    type="button"
-                    onClick={() => { setIsCustomDomain(false); setEmailDomain('gmail.com'); }}
-                    className="text-xs text-muted-foreground hover:text-foreground shrink-0 whitespace-nowrap"
-                  >
-                    {lang === 'ko' ? '변경' : 'Change'}
-                  </button>
-                </>
-              ) : (
-                <select
-                  value={emailDomain}
-                  onChange={(e) => handleDomainChange(e.target.value)}
-                  disabled={loading}
-                  className="flex-1 min-w-0 h-9 rounded-md border border-input bg-transparent px-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {domains.map((d) => (
-                    <option key={d} value={d}>{d}</option>
-                  ))}
-                  <option value="custom">
-                    {lang === 'ko' ? '기타(직접입력)' : 'Other(custom)'}
-                  </option>
-                </select>
+                  <span className="shrink-0 text-[14px] text-muted-foreground">@</span>
+                  {isCustomDomain ? (
+                    <>
+                      <input
+                        type="text"
+                        placeholder="example.com"
+                        value={customDomain}
+                        onChange={(e) =>
+                          setCustomDomain(e.target.value.replace(/[\s@]/g, ''))
+                        }
+                        disabled={loading}
+                        className="h-11 min-w-0 flex-1 bg-transparent text-[14px] outline-none placeholder:text-muted-foreground disabled:opacity-50"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsCustomDomain(false);
+                          setEmailDomain('gmail.com');
+                        }}
+                        className="shrink-0 whitespace-nowrap text-[12px] text-muted-foreground transition hover:text-foreground"
+                      >
+                        {isKo ? '변경' : 'Change'}
+                      </button>
+                    </>
+                  ) : (
+                    <select
+                      value={emailDomain}
+                      onChange={(e) => handleDomainChange(e.target.value)}
+                      disabled={loading}
+                      className="h-11 min-w-0 flex-1 bg-transparent text-[14px] outline-none disabled:opacity-50"
+                    >
+                      {domains.map((d) => (
+                        <option key={d} value={d} className="bg-background text-foreground">
+                          {d}
+                        </option>
+                      ))}
+                      <option value="custom" className="bg-background text-foreground">
+                        {isKo ? '기타(직접입력)' : 'Other (custom)'}
+                      </option>
+                    </select>
+                  )}
+                </div>
+                {fullEmail && (
+                  <p className="mt-1.5 truncate text-[11px] text-muted-foreground">
+                    {fullEmail}
+                  </p>
+                )}
+              </div>
+
+              {/* Submit button */}
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={loading || !emailId}
+                className="relative mt-5 flex h-12 w-full flex-col items-center justify-center rounded-full bg-[#faaf2e] text-[#4b3002] transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <span className="text-[15px] font-semibold leading-tight">
+                  {loading
+                    ? isKo
+                      ? '발송 중...'
+                      : 'Sending...'
+                    : isKo
+                      ? '재설정 링크 보내기'
+                      : 'Send reset link'}
+                </span>
+                {!loading && (
+                  <span className="text-[11px] font-medium leading-tight text-[#4b3002]/80">
+                    {isKo ? 'Send reset link' : '재설정 링크 보내기'}
+                  </span>
+                )}
+              </button>
+
+              {/* Error */}
+              {error && (
+                <div className="relative mt-4 rounded-[10px] border border-red-500/30 bg-red-500/10 p-3 text-center text-[13px] text-red-500">
+                  {error}
+                </div>
               )}
-            </div>
-          </div>
 
-          <Button
-            onClick={handleSubmit}
-            disabled={loading || !emailId}
-            className="w-full mt-2 h-12 bg-[#ff6b35] hover:bg-[#e55a2b] text-white text-base font-semibold disabled:opacity-40"
-          >
-            {loading
-              ? (lang === 'ko' ? '발송 중...' : 'Sending...')
-              : (lang === 'ko' ? '인증링크 보내기' : 'Send Reset Link')
-            }
-          </Button>
+              {/* Back to login */}
+              <div className="relative mt-6 text-center">
+                <Link
+                  href="/auth"
+                  className="inline-block text-[14px] font-medium text-foreground/90 transition hover:text-[#faaf2e]"
+                >
+                  {isKo ? '로그인으로' : 'Back to login'}
+                </Link>
+                <div className="mt-0.5 text-[12px] text-muted-foreground underline-offset-2">
+                  {isKo ? 'Back to login' : '로그인으로'}
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Sent confirmation */}
+              <div className="relative mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-[#faaf2e]/10 ring-1 ring-[#faaf2e]/30">
+                <Mail className="h-5 w-5 text-[#faaf2e]" />
+              </div>
+
+              <h1 className="relative text-center text-[22px] font-bold tracking-tight md:text-[24px]">
+                {isKo ? '링크 전송 완료.' : 'Link sent.'}
+              </h1>
+              <p className="relative mt-1 text-center text-[13px] text-muted-foreground">
+                {isKo ? 'Link sent.' : '링크 전송 완료.'}
+              </p>
+
+              <p className="relative mt-5 text-center text-[14px] leading-normal text-foreground/90">
+                {isKo
+                  ? '30분간 유효. 메일함을 확인하세요.'
+                  : "Valid for 30 minutes. Check your inbox."}
+              </p>
+              <p className="relative mt-1 text-center text-[12px] text-muted-foreground">
+                {isKo
+                  ? 'Valid for 30 minutes. Check your inbox.'
+                  : '30분간 유효. 메일함을 확인하세요.'}
+              </p>
+
+              <Link
+                href="/auth"
+                className="relative mt-6 flex h-12 w-full flex-col items-center justify-center rounded-full bg-[#faaf2e] text-[#4b3002] transition hover:brightness-95"
+              >
+                <span className="text-[15px] font-semibold leading-tight">
+                  {isKo ? '로그인으로' : 'Back to login'}
+                </span>
+                <span className="text-[11px] font-medium leading-tight text-[#4b3002]/80">
+                  {isKo ? 'Back to login' : '로그인으로'}
+                </span>
+              </Link>
+            </>
+          )}
         </div>
-
-        {error && (
-          <div className="w-full text-center text-sm text-red-500 bg-red-50 dark:bg-red-950/30 p-3 rounded-lg">
-            {error}
-          </div>
-        )}
-
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground">
-            <Link href="/auth" className="text-[#ff6b35] hover:underline">
-              {lang === 'ko' ? '로그인으로 돌아가기' : 'Back to Sign In'}
-            </Link>
-          </p>
-        </div>
-      </div>
+      </main>
     </div>
   );
 }

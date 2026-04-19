@@ -103,10 +103,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <div className="pc-side-panel">
                 <div className="pc-side-content">
                   <div className="pc-logo">
-                    <span className="text-[#ff6b35]">DITO</span>
+                    <span className="text-[#faaf2e]">DITO</span>
                     <span className="dark:text-white/80 text-black/60">.guru</span>
                   </div>
-                  <p className="pc-slogan"><span className="text-[#ff6b35]">D</span>on&apos;t <span className="text-[#ff6b35]">I</span>gnore <span className="text-[#ff6b35]">T</span>he <span className="text-[#ff6b35]">O</span>ne<br />you are</p>
+                  <p className="pc-slogan"><span className="text-[#faaf2e]">D</span>on&apos;t <span className="text-[#faaf2e]">I</span>gnore <span className="text-[#faaf2e]">T</span>he <span className="text-[#faaf2e]">O</span>ne<br />you are</p>
                   <p className="pc-tagline">Make your fantasy a reality.<br />Find your Ember 🔥</p>
 
                   <div className="pc-social">

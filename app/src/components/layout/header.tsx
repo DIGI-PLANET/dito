@@ -42,7 +42,7 @@ export function Header() {
   }, []);
 
   // Hide header on pages with custom headers
-  if (pathname === '/discovery' || pathname === '/onboarding') return null;
+  if (pathname === '/' || pathname === '/discovery' || pathname === '/onboarding') return null;
 
   const isHome = pathname === '/';
   const mainPages = ['/', '/chat', '/soul', '/guide'];

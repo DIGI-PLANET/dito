@@ -2,38 +2,57 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import Link from 'next/link';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import {
+  ChevronLeft,
+  Sparkles,
+  CircleCheck,
+  Lock,
+  Wallet,
+  Info,
+  TriangleAlert,
+  ShieldAlert,
+  PenLine,
+  Gem,
+  Check,
+  Copy,
+  ExternalLink,
+  Share2,
+  Twitter,
+  Flame,
+} from 'lucide-react';
 import { useI18n } from '@/providers/i18n-provider';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { store, getSignMessage } from '@/lib/store';
 import { useDiscoveryGate } from '@/hooks/useDiscoveryGate';
 import { getAuthParams } from '@/lib/wallet-auth';
 import { handleSignatureError } from '@/lib/session-logout';
 
-type MintPhase = 'idle' | 'stage1' | 'stage2' | 'stage3' | 'celebration';
+type Step = 'review' | 'confirm' | 'celebration';
+type MintPhase = 'idle' | 'stage1' | 'stage2' | 'stage3' | 'done';
+
+const CONFIDENCE = 92;
+const COMMIT_DAYS = 25;
 
 export default function MintPage() {
-  const { isChecking } = useDiscoveryGate(); // Requires wallet + current_talent
-  
-  // Show loading while checking discovery status
-  if (isChecking) {
-    return (
-      <div className="flex-1 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin w-8 h-8 border-2 border-[#ff6b35] border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-sm text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
-  }
+  const { isChecking } = useDiscoveryGate();
   const router = useRouter();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
+  const isKo = lang === 'ko';
   const { publicKey, connected } = useWallet();
+
+  const [step, setStep] = useState<Step>('review');
   const [phase, setPhase] = useState<MintPhase>('idle');
   const [current_talent, setCurrentTalent] = useState<string | undefined>();
+  const [talentName, setTalentName] = useState<string>('');
+  const [editingName, setEditingName] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [ack1, setAck1] = useState(false);
+  const [ack2, setAck2] = useState(false);
+  const [copied, setCopied] = useState<'tx' | 'link' | null>(null);
   const [mintResult, setMintResult] = useState<{
     signature: string;
     mint_address: string;
@@ -44,25 +63,27 @@ export default function MintPage() {
     setMounted(true);
     const profile = store.getProfile();
     setCurrentTalent(profile.current_talent);
-  }, []);
+    setTalentName(profile.current_talent || (isKo ? '끊임없는 혁신가' : 'Relentless Innovator'));
+  }, [isKo]);
+
+  const walletShort = publicKey
+    ? `${publicKey.toBase58().slice(0, 4)}...${publicKey.toBase58().slice(-4)}`
+    : '—';
 
   const handleMint = useCallback(async () => {
     if (!connected || !publicKey) {
-      setError('Please connect your wallet first');
+      setError(isKo ? '지갑을 먼저 연결해주세요' : 'Please connect your wallet first');
       return;
     }
 
     setError(null);
     setPhase('stage1');
-    await new Promise((r) => setTimeout(r, 1500));
-    setPhase('stage2');
 
     try {
       const profile = store.getProfile();
       const souls = await store.getSoulsAsync();
       const soul = souls[0] || null;
 
-      // Build auth fields
       const walletAddr = publicKey.toBase58();
       let authFields: Record<string, unknown> = { wallet_address: walletAddr };
       const signMessageFn = getSignMessage();
@@ -70,63 +91,48 @@ export default function MintPage() {
         try {
           const auth = await getAuthParams(walletAddr, signMessageFn);
           authFields = { wallet_address: walletAddr, ...auth };
-        } catch (error) { 
-          handleSignatureError(error, false); // Don't auto-logout, just detect
+        } catch (e) {
+          handleSignatureError(e, false);
         }
       }
 
-      // Step 1: Create draft soul via /api/soul
+      setPhase('stage2');
+
       const messages = store.getMessages?.() || [];
-      const history = messages.map((m: { role: string; content: string }) => ({ role: m.role, content: m.content }));
+      const history = messages.map((m: { role: string; content: string }) => ({
+        role: m.role,
+        content: m.content,
+      }));
       const soulRes = await fetch('/api/soul', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...authFields,
-          history,
-        }),
+        body: JSON.stringify({ ...authFields, history }),
       });
-
       const soulData = await soulRes.json();
-      if (!soulRes.ok) {
-        throw new Error(soulData.error || 'Soul creation failed');
-      }
-
+      if (!soulRes.ok) throw new Error(soulData.error || 'Soul creation failed');
       const soulId = soulData.soul_id;
-      if (!soulId) {
-        throw new Error('Soul creation did not return soul_id');
-      }
+      if (!soulId) throw new Error('Soul creation did not return soul_id');
 
-      // Step 2: Mint NFT referencing the draft soul
       const res = await fetch('/api/mint', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...authFields,
-          soul_id: soulId,
-        }),
+        body: JSON.stringify({ ...authFields, soul_id: soulId }),
       });
-
       const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || 'Mint failed');
-      }
+      if (!res.ok) throw new Error(data.error || 'Mint failed');
 
       setPhase('stage3');
-      await new Promise((r) => setTimeout(r, 1500));
 
       setMintResult({
         signature: data.signature,
         mint_address: data.mint_address,
       });
 
-      // Save locally too
       const newSoul = {
-        label: soul?.label || current_talent || 'Ember Soul',
+        label: soul?.label || talentName || 'Ember Soul',
         traits: soul?.traits || [],
         description: soul?.description || '',
-        talentLabel: current_talent || 'Unknown',
+        talentLabel: talentName || current_talent || 'Unknown',
         mintDate: new Date().toISOString().split('T')[0],
         stage: profile.ember_stage,
       };
@@ -134,176 +140,559 @@ export default function MintPage() {
       const wallet = publicKey.toBase58();
       await store.addSoulAsync(newSoul, wallet);
 
-      const updatedProfile = { ...profile, minted: true };
+      const updatedProfile = { ...profile, minted: true, current_talent: talentName };
       store.setProfile(updatedProfile);
       store.saveProfileAsync(updatedProfile);
 
-      setPhase('celebration');
-      await new Promise((r) => setTimeout(r, 3000));
-      router.push('/soul');
+      setPhase('done');
+      setStep('celebration');
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Mint failed';
       setError(message);
       setPhase('idle');
     }
-  }, [current_talent, router, connected, publicKey]);
+  }, [current_talent, talentName, connected, publicKey, isKo]);
 
-  const minting = phase !== 'idle' && phase !== 'celebration';
-  const celebrating = phase === 'celebration';
+  const handleBack = () => {
+    if (step === 'review') router.push('/chat');
+    else if (step === 'confirm') setStep('review');
+    else setStep('confirm');
+  };
 
-  const stageText = (() => {
-    switch (phase) {
-      case 'stage1': return t('mint.stage1' as never);
-      case 'stage2': return t('mint.stage2' as never);
-      case 'stage3': return t('mint.stage3' as never);
-      default: return '';
+  const stepNumber = step === 'review' ? 1 : step === 'confirm' ? 2 : 3;
+  const stepLabel = step === 'review'
+    ? (isKo ? '영혼 검토' : 'Review Soul')
+    : step === 'confirm'
+      ? (isKo ? '약속 확인' : 'Confirm Commitment')
+      : (isKo ? '축하합니다' : 'Celebration');
+
+  const minting = phase !== 'idle' && phase !== 'done';
+
+  const copy = async (val: string, which: 'tx' | 'link') => {
+    try {
+      await navigator.clipboard.writeText(val);
+      setCopied(which);
+      setTimeout(() => setCopied(null), 1600);
+    } catch {
+      /* noop */
     }
-  })();
+  };
 
-  const progress = (() => {
-    switch (phase) {
-      case 'stage1': return 25;
-      case 'stage2': return 55;
-      case 'stage3': return 85;
-      case 'celebration': return 100;
-      default: return 0;
-    }
-  })();
-
-  if (!mounted) return null;
+  if (!mounted || isChecking) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-background text-foreground">
+        <div className="text-center">
+          <div className="animate-spin w-8 h-8 border-2 border-[#faaf2e] border-t-transparent rounded-full mx-auto mb-4" />
+          <p className="text-sm text-muted-foreground">{isKo ? '불러오는 중...' : 'Loading...'}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center px-5 relative overflow-hidden">
-      {/* Confetti */}
-      {celebrating && (
-        <div className="fixed inset-0 pointer-events-none z-50">
-          {Array.from({ length: 30 }).map((_, i) => (
-            <span
-              key={i}
-              className="absolute animate-confetti"
-              style={{
-                left: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 0.5}s`,
-                animationDuration: `${1.5 + Math.random()}s`,
-                fontSize: `${10 + Math.random() * 14}px`,
-                color: ['#ff6b35', '#ffd700', '#ff4500', '#ff69b4', '#00ff88'][i % 5],
-              }}
-            >
-              {['✦', '●', '◆', '★', '🔥'][i % 5]}
-            </span>
-          ))}
-        </div>
-      )}
+    <div
+      data-landing-page
+      className="relative flex min-h-screen w-full flex-col bg-background text-foreground"
+    >
+      {/* Ambient amber glow */}
+      <div className="pointer-events-none absolute left-1/2 top-40 z-0 h-80 w-80 -translate-x-1/2 rounded-full bg-[#faaf2e]/15 blur-[120px]" />
 
-      <style jsx>{`
-        @keyframes confetti {
-          0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
-          100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
-        }
-        .animate-confetti {
-          animation: confetti 2s ease-in forwards;
-        }
-        @keyframes celebratePulse {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.4); }
-        }
-      `}</style>
-
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-[#ff6b35]/20 rounded-full blur-[100px]" />
-      <div className="relative z-10 text-center max-w-md">
-        {/* Orb */}
-        <div
-          className="relative mx-auto w-32 h-32 mb-8 transition-all duration-700"
-          style={celebrating ? { animation: 'celebratePulse 0.8s ease-in-out 3' } : minting ? { transform: `scale(${1 + progress * 0.005})` } : undefined}
+      {/* Sticky header */}
+      <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center justify-between border-b border-border/60 bg-background/80 px-4 backdrop-blur-md">
+        <button
+          onClick={handleBack}
+          disabled={minting}
+          className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition hover:bg-foreground/5 hover:text-foreground disabled:opacity-40"
+          aria-label={isKo ? '뒤로' : 'Back'}
         >
-          <div className="absolute inset-0 bg-[#ff6b35]/30 rounded-full animate-ping" />
-          <div className="absolute inset-4 bg-[#ff6b35]/50 rounded-full animate-pulse" />
-          <div className="absolute inset-8 bg-[#ff6b35] rounded-full flex items-center justify-center">
-            <span className="text-2xl">🔥</span>
-          </div>
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+
+        <div className="flex items-center gap-2">
+          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#faaf2e]/12 ring-1 ring-[#faaf2e]/30">
+            <Flame className="h-3.5 w-3.5 text-[#faaf2e]" />
+          </span>
+          <span className="text-[13px] font-semibold tracking-tight">{stepLabel}</span>
         </div>
 
-        {/* Celebration */}
-        {celebrating && (
-          <div className="mb-6 animate-bounce">
-            <p className="text-2xl font-bold text-[#ff6b35]">{t('mint.celebration' as never)}</p>
-            {mintResult && (
-              <div className="mt-4 space-y-2">
-                <p className="text-sm text-muted-foreground">
-                  Mint: <span className="font-mono text-xs">{mintResult.mint_address.slice(0, 8)}...</span>
+        <div className="flex items-center gap-1 rounded-full border border-border bg-card/80 px-2.5 py-1 text-[11px] font-medium text-muted-foreground backdrop-blur-sm">
+          <span className="text-foreground">{stepNumber}</span>
+          <span>/ 3</span>
+        </div>
+      </header>
+
+      <main className="relative z-10 flex-1 overflow-y-auto">
+        <div className="mx-auto w-full max-w-[560px] px-5 py-6 md:py-8 lg:py-10">
+          {/* ────────────── STEP 1 · REVIEW ────────────── */}
+          {step === 'review' && (
+            <div className="space-y-5">
+              {/* Identified trait card */}
+              <section className="rounded-[14px] border border-border bg-card p-5">
+                <p className="text-[13px] font-medium text-muted-foreground">
+                  {isKo ? '발견된 핵심 특성' : 'Identified Core Trait'}
                 </p>
-                <a
-                  href={`https://solscan.io/tx/${mintResult.signature}?cluster=devnet`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block text-sm text-[#ff6b35] underline hover:text-[#ff6b35]/80"
+                <div className="mt-3 flex items-center gap-2">
+                  {editingName ? (
+                    <Input
+                      autoFocus
+                      value={talentName}
+                      onChange={(e) => setTalentName(e.target.value)}
+                      onBlur={() => setEditingName(false)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') setEditingName(false);
+                      }}
+                      className="h-10 rounded-[10px] border-border bg-background text-[16px] font-semibold text-foreground"
+                    />
+                  ) : (
+                    <>
+                      <h2 className="flex-1 text-[18px] font-semibold leading-[22px] text-foreground">
+                        {talentName || (isKo ? '끊임없는 혁신가' : 'Relentless Innovator')}
+                      </h2>
+                      <button
+                        onClick={() => setEditingName(true)}
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition hover:bg-foreground/5 hover:text-foreground"
+                        aria-label={isKo ? '수정' : 'Edit'}
+                      >
+                        <PenLine className="h-3.5 w-3.5" />
+                      </button>
+                    </>
+                  )}
+                </div>
+                <p className="mt-3 text-[13px] leading-5 text-muted-foreground">
+                  {isKo
+                    ? '민팅 전에 이름을 다듬을 수 있어요. 민팅 후에는 체인에 영구적으로 기록됩니다.'
+                    : 'You can refine this before minting. It will be permanently etched on-chain.'}
+                </p>
+              </section>
+
+              {/* Ember confidence */}
+              <section className="rounded-[14px] border border-border bg-card p-5">
+                <div className="flex items-start gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#faaf2e]/12 ring-1 ring-[#faaf2e]/30">
+                    <Sparkles className="h-4.5 w-4.5 text-[#faaf2e]" />
+                  </span>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="text-[14px] font-semibold text-foreground">
+                        {isKo ? 'Ember의 확신' : "Ember's Confidence"}
+                      </p>
+                      <p className="text-[18px] font-bold text-[#faaf2e]">{CONFIDENCE}%</p>
+                    </div>
+                    <p className="mt-1 text-[12px] leading-[18px] text-muted-foreground">
+                      {isKo
+                        ? '5일간의 발견 여정 응답을 기반으로 한 높은 확신.'
+                        : 'High certainty based on your responses over the 5-day discovery journey.'}
+                    </p>
+                    <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-foreground/10">
+                      <div
+                        className="h-full rounded-full bg-[#faaf2e] transition-[width] duration-700"
+                        style={{ width: `${CONFIDENCE}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Why mint */}
+              <section className="space-y-3">
+                <p className="text-[13px] font-medium text-muted-foreground">
+                  {isKo ? '왜 이 영혼을 민팅하나요?' : 'Why mint this Soul?'}
+                </p>
+                <div className="space-y-3">
+                  <BulletRow
+                    icon={<CircleCheck className="h-4 w-4 text-[#4b3002]" />}
+                    title={isKo ? '영구 기록' : 'Permanent Record'}
+                    desc={
+                      isKo
+                        ? '발견된 특성이 솔라나 블록체인에 안전하게 저장됩니다.'
+                        : 'Your discovered trait securely stored on the Solana blockchain.'
+                    }
+                  />
+                  <BulletRow
+                    icon={<Lock className="h-4 w-4 text-[#4b3002]" />}
+                    title={isKo ? '양도 불가 (SBT)' : 'Non-Transferable (SBT)'}
+                    desc={
+                      isKo
+                        ? '오직 당신에게만 속하며 거래하거나 판매할 수 없습니다.'
+                        : 'It belongs uniquely to you and cannot be traded or sold.'
+                    }
+                  />
+                </div>
+              </section>
+
+              {/* Wallet row */}
+              <section className="rounded-[14px] border border-border bg-card p-4">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-background ring-1 ring-border">
+                    <Wallet className="h-4.5 w-4.5 text-foreground" />
+                  </span>
+                  <div className="flex-1">
+                    <p className="text-[12px] text-muted-foreground">
+                      {isKo ? '솔라나 지갑' : 'Solana Wallet'}
+                    </p>
+                    <p className="font-mono text-[14px] font-semibold text-foreground">
+                      {connected ? walletShort : isKo ? '연결되지 않음' : 'Not connected'}
+                    </p>
+                  </div>
+                  {!connected && (
+                    <div className="[&_.wallet-adapter-button]:h-9! [&_.wallet-adapter-button]:rounded-full! [&_.wallet-adapter-button]:bg-[#faaf2e]! [&_.wallet-adapter-button]:text-[#4b3002]! [&_.wallet-adapter-button]:px-3! [&_.wallet-adapter-button]:text-[12px]!">
+                      <WalletMultiButton />
+                    </div>
+                  )}
+                </div>
+              </section>
+
+              {/* Cost panel */}
+              <section className="rounded-[14px] border border-border bg-card p-4">
+                <div className="flex items-start gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-background ring-1 ring-border">
+                    <Info className="h-4.5 w-4.5 text-foreground" />
+                  </span>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="text-[14px] font-semibold text-foreground">
+                        {isKo ? '민팅 비용' : 'Minting Cost'}
+                      </p>
+                      <p className="text-[18px] font-bold text-[#faaf2e]">$1.00 USDC</p>
+                    </div>
+                    <p className="mt-0.5 text-[12px] text-muted-foreground">
+                      {isKo ? '일회성 비용. 숨겨진 수수료 없음.' : 'One-time. No hidden fees.'}
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              {/* Insufficient / error */}
+              {error && (
+                <section className="rounded-[14px] border border-red-500/30 bg-red-500/10 p-4">
+                  <div className="flex items-start gap-3">
+                    <TriangleAlert className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />
+                    <div className="flex-1">
+                      <p className="text-[14px] font-semibold text-red-500">
+                        {isKo ? '잔액 부족' : 'Insufficient Balance'}
+                      </p>
+                      <p className="mt-0.5 text-[12px] leading-[18px] text-red-500/90">{error}</p>
+                    </div>
+                  </div>
+                </section>
+              )}
+
+              {/* CTA */}
+              <div className="pt-2">
+                <Button
+                  onClick={() => {
+                    if (!connected) {
+                      setError(isKo ? '지갑을 먼저 연결해주세요' : 'Please connect your wallet first');
+                      return;
+                    }
+                    setError(null);
+                    setStep('confirm');
+                  }}
+                  disabled={!connected}
+                  className="h-12 w-full rounded-full bg-[#faaf2e] text-[15px] font-semibold text-[#4b3002] shadow-[0_6px_18px_-6px_rgba(250,175,46,0.55)] transition hover:bg-[#e8a129] disabled:opacity-50"
                 >
-                  View on Solscan ↗
-                </a>
+                  {isKo ? '약속으로 계속하기' : 'Continue to commit'}
+                </Button>
+                {!connected && (
+                  <p className="mt-3 text-center text-[12px] text-muted-foreground">
+                    {isKo ? '계속하려면 지갑을 연결하세요' : 'Connect wallet to continue'}
+                  </p>
+                )}
               </div>
-            )}
-          </div>
-        )}
-
-        {/* Minting progress */}
-        {minting && (
-          <div className="mb-6 space-y-3">
-            <p className="text-lg font-medium text-[#ff6b35] animate-pulse">{stageText}</p>
-            <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
-              <div
-                className="h-full bg-[#ff6b35] rounded-full transition-all duration-1000 ease-out"
-                style={{ width: `${progress}%` }}
-              />
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Error */}
-        {error && (
-          <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20">
-            <p className="text-sm text-red-500">{error}</p>
-          </div>
-        )}
+          {/* ────────────── STEP 2 · CONFIRM ────────────── */}
+          {step === 'confirm' && (
+            <div className="space-y-5">
+              <section className="rounded-[14px] border border-red-500/30 bg-red-500/8 p-5">
+                <div className="flex items-start gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-500/15 ring-1 ring-red-500/30">
+                    <ShieldAlert className="h-4.5 w-4.5 text-red-500" />
+                  </span>
+                  <p className="flex-1 text-[14px] font-medium leading-5 text-foreground">
+                    {isKo
+                      ? '영혼은 거래할 수 없습니다. 한 번 민팅되면 영원히 당신의 것입니다.'
+                      : "A Soul can't be traded. Once minted, it's yours — permanently."}
+                  </p>
+                </div>
+              </section>
 
-        {/* Idle content */}
-        {phase === 'idle' && (
-          <>
-            <h1 className="text-3xl font-bold mb-1">{t('mint.title3')}</h1>
-            {current_talent && (
-              <p className="text-[#ff6b35] text-lg font-semibold mb-2">🎯 {current_talent}</p>
-            )}
-            <p className="text-sm text-muted-foreground mb-2">{t('mint.desc2')}</p>
-            <p className="text-[#ff6b35] text-2xl font-bold mb-4">{t('mint.price')}</p>
+              <section className="space-y-3">
+                <CheckRow
+                  checked={ack1}
+                  onToggle={() => setAck1((v) => !v)}
+                  label={
+                    isKo
+                      ? '이것이 양도 불가능함을 이해합니다.'
+                      : 'I understand this is non-transferable.'
+                  }
+                />
+                <CheckRow
+                  checked={ack2}
+                  onToggle={() => setAck2((v) => !v)}
+                  label={
+                    isKo
+                      ? `${COMMIT_DAYS}일간의 탐색에 전념하겠습니다.`
+                      : `I commit to ${COMMIT_DAYS} days of exploration.`
+                  }
+                />
+              </section>
 
-            <p className="text-sm italic text-muted-foreground/80 mb-6 leading-relaxed">
-              {t('mint.emberMessage' as never)}
-            </p>
+              <section className="flex items-start gap-2 rounded-[14px] border border-border bg-card p-4">
+                <Info className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                <p className="text-[12px] leading-[18px] text-muted-foreground">
+                  {isKo
+                    ? '확인하면 지갑 앱이 열려 트랜잭션에 서명합니다.'
+                    : 'Confirming will open your wallet app to sign the transaction.'}
+                </p>
+              </section>
 
-            {/* Wallet connection */}
-            <div className="mb-4 flex justify-center">
-              <WalletMultiButton />
+              {error && (
+                <section className="rounded-[14px] border border-red-500/30 bg-red-500/10 p-4">
+                  <p className="text-[13px] text-red-500">{error}</p>
+                </section>
+              )}
+
+              <div className="pt-2">
+                <Button
+                  onClick={handleMint}
+                  disabled={!ack1 || !ack2 || minting || !connected}
+                  className="h-12 w-full rounded-full bg-[#faaf2e] text-[15px] font-semibold text-[#4b3002] shadow-[0_6px_18px_-6px_rgba(250,175,46,0.55)] transition hover:bg-[#e8a129] disabled:opacity-50"
+                >
+                  {minting ? (
+                    <span className="inline-flex items-center gap-2">
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#4b3002] border-t-transparent" />
+                      {phase === 'stage1'
+                        ? isKo ? '서명 준비 중...' : 'Preparing signature...'
+                        : phase === 'stage2'
+                          ? isKo ? '영혼 초안 작성 중...' : 'Drafting soul...'
+                          : isKo ? 'NFT 민팅 중...' : 'Minting NFT...'}
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-2">
+                      <Wallet className="h-4 w-4" />
+                      {isKo ? '지갑으로 서명' : 'Sign with wallet'}
+                    </span>
+                  )}
+                </Button>
+              </div>
             </div>
+          )}
 
-            {connected && publicKey && (
-              <p className="text-xs text-muted-foreground mb-4 font-mono">
-                {publicKey.toBase58().slice(0, 4)}...{publicKey.toBase58().slice(-4)}
-              </p>
-            )}
+          {/* ────────────── STEP 3 · CELEBRATION ────────────── */}
+          {step === 'celebration' && (
+            <div className="relative flex flex-col items-center pt-4 pb-2 text-center">
+              {/* Particle glow backdrop */}
+              <div className="pointer-events-none absolute left-1/2 top-4 h-64 w-64 -translate-x-1/2 rounded-full bg-[#faaf2e]/20 blur-[80px]" />
+              <div className="pointer-events-none absolute inset-x-0 top-0 flex justify-center">
+                {Array.from({ length: 14 }).map((_, i) => (
+                  <span
+                    key={i}
+                    className="absolute block h-1 w-1 rounded-full bg-[#faaf2e] animate-soul-particle"
+                    style={{
+                      left: `calc(50% + ${Math.cos((i / 14) * Math.PI * 2) * 90}px)`,
+                      top: `calc(60px + ${Math.sin((i / 14) * Math.PI * 2) * 90}px)`,
+                      animationDelay: `${i * 120}ms`,
+                      opacity: 0.8,
+                    }}
+                  />
+                ))}
+              </div>
 
-            <Button
-              onClick={handleMint}
-              disabled={!connected || minting}
-              size="lg"
-              className="w-full bg-[#ff6b35] hover:bg-[#ff6b35]/90 text-white font-medium rounded-xl mb-4 h-12 disabled:opacity-50"
-            >
-              {!connected ? 'Connect Wallet to Mint' : t('mint.button3')}
-            </Button>
-            <button onClick={() => router.push('/chat')} className="text-sm text-muted-foreground hover:text-[#ff6b35] transition-colors">
-              {t('mint.skip')}
-            </button>
-          </>
-        )}
+              <style jsx>{`
+                @keyframes soulMaterialize {
+                  0% {
+                    opacity: 0;
+                    transform: scale(0.4) rotate(-18deg);
+                    filter: blur(12px);
+                  }
+                  60% {
+                    opacity: 1;
+                    transform: scale(1.1) rotate(3deg);
+                    filter: blur(0);
+                  }
+                  100% {
+                    opacity: 1;
+                    transform: scale(1) rotate(0deg);
+                    filter: blur(0);
+                  }
+                }
+                @keyframes soulPulse {
+                  0%, 100% { box-shadow: 0 0 0 0 rgba(250, 175, 46, 0.55); }
+                  50% { box-shadow: 0 0 0 18px rgba(250, 175, 46, 0); }
+                }
+                @keyframes soulParticle {
+                  0% { opacity: 0; transform: scale(0.5) translateY(0); }
+                  40% { opacity: 0.9; }
+                  100% { opacity: 0; transform: scale(1.4) translateY(-24px); }
+                }
+                .animate-soul-materialize {
+                  animation: soulMaterialize 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+                }
+                .animate-soul-pulse {
+                  animation: soulPulse 2.2s ease-in-out infinite;
+                }
+                .animate-soul-particle {
+                  animation: soulParticle 2.4s ease-out infinite;
+                }
+              `}</style>
+
+              {/* Gem */}
+              <div className="relative animate-soul-materialize">
+                <div className="flex h-36 w-36 items-center justify-center rounded-full bg-linear-to-br from-[#faaf2e] via-[#f7c462] to-[#4b3002] animate-soul-pulse">
+                  <div className="flex h-28 w-28 items-center justify-center rounded-full bg-background/20 ring-1 ring-white/20 backdrop-blur-sm">
+                    <Gem className="h-12 w-12 text-white drop-shadow-[0_2px_12px_rgba(250,175,46,0.8)]" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Trait name */}
+              <h1 className="mt-7 text-[26px] font-bold tracking-tight text-foreground">
+                {talentName || (isKo ? '회복력 있는 탐험가' : 'Resilient Explorer')}
+              </h1>
+
+              {/* Pills */}
+              <div className="mt-3 flex flex-wrap justify-center gap-2">
+                <Pill>{isKo ? '민팅 완료' : 'Minted'}</Pill>
+                <Pill>{isKo ? '영구적' : 'Permanent'}</Pill>
+                <Pill>{isKo ? '당신의 것' : 'Yours'}</Pill>
+              </div>
+
+              {/* Transaction card */}
+              {mintResult && (
+                <section className="mt-6 w-full rounded-[14px] border border-border bg-card p-4 text-left">
+                  <p className="text-[12px] text-muted-foreground">
+                    {isKo ? '트랜잭션' : 'Transaction'}
+                  </p>
+                  <div className="mt-1.5 flex items-center justify-between gap-3">
+                    <p className="truncate font-mono text-[14px] font-semibold text-foreground">
+                      {mintResult.signature.slice(0, 4)}...{mintResult.signature.slice(-4)}
+                    </p>
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => copy(mintResult.signature, 'tx')}
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition hover:bg-foreground/5 hover:text-foreground"
+                        aria-label={isKo ? '복사' : 'Copy'}
+                      >
+                        {copied === 'tx' ? (
+                          <Check className="h-4 w-4 text-[#faaf2e]" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
+                      </button>
+                      <a
+                        href={`https://solscan.io/tx/${mintResult.signature}?cluster=devnet`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition hover:bg-foreground/5 hover:text-foreground"
+                        aria-label="Solscan"
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                      </a>
+                    </div>
+                  </div>
+                </section>
+              )}
+
+              {/* Actions */}
+              <div className="mt-6 w-full space-y-3">
+                <Link href="/soul" className="block">
+                  <Button className="h-12 w-full rounded-full bg-[#faaf2e] text-[15px] font-semibold text-[#4b3002] shadow-[0_6px_18px_-6px_rgba(250,175,46,0.55)] transition hover:bg-[#e8a129]">
+                    {isKo ? '영혼 갤러리에서 보기' : 'View in Soul Gallery'}
+                  </Button>
+                </Link>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => {
+                      const url = typeof window !== 'undefined' ? window.location.origin + '/soul' : '';
+                      const text = isKo
+                        ? `방금 나의 영혼을 민팅했어요: ${talentName}`
+                        : `I just minted my Soul: ${talentName}`;
+                      const href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+                      window.open(href, '_blank', 'noopener,noreferrer');
+                    }}
+                    className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-border bg-card text-[13px] font-medium text-foreground transition hover:bg-foreground/5"
+                  >
+                    <Twitter className="h-4 w-4" />
+                    {isKo ? '공유' : 'Share'}
+                  </button>
+                  <button
+                    onClick={() => {
+                      const url = typeof window !== 'undefined' ? window.location.origin + '/soul' : '';
+                      copy(url, 'link');
+                    }}
+                    className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-border bg-card text-[13px] font-medium text-foreground transition hover:bg-foreground/5"
+                  >
+                    {copied === 'link' ? (
+                      <Check className="h-4 w-4 text-[#faaf2e]" />
+                    ) : (
+                      <Share2 className="h-4 w-4" />
+                    )}
+                    {isKo ? '링크 복사' : 'Copy Link'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </main>
+    </div>
+  );
+}
+
+/* ─── Sub-components ─── */
+
+function BulletRow({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
+  return (
+    <div className="flex items-start gap-3 rounded-[14px] border border-border bg-card p-4">
+      <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#faaf2e]">
+        {icon}
+      </span>
+      <div className="flex-1">
+        <p className="text-[14px] font-semibold text-foreground">{title}</p>
+        <p className="mt-0.5 text-[12px] leading-[18px] text-muted-foreground">{desc}</p>
       </div>
     </div>
+  );
+}
+
+function CheckRow({
+  checked,
+  onToggle,
+  label,
+}: {
+  checked: boolean;
+  onToggle: () => void;
+  label: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      className={`flex w-full items-start gap-3 rounded-[14px] border p-4 text-left transition ${
+        checked
+          ? 'border-[#faaf2e]/60 bg-[#faaf2e]/10'
+          : 'border-border bg-card hover:bg-foreground/5'
+      }`}
+    >
+      <span
+        className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[6px] border transition ${
+          checked ? 'border-[#faaf2e] bg-[#faaf2e]' : 'border-border bg-background'
+        }`}
+      >
+        {checked && <Check className="h-3.5 w-3.5 text-[#4b3002]" strokeWidth={3} />}
+      </span>
+      <span className="flex-1 text-[14px] leading-5 text-foreground">{label}</span>
+    </button>
+  );
+}
+
+function Pill({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="rounded-full border border-[#faaf2e]/40 bg-[#faaf2e]/12 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-[#faaf2e]">
+      {children}
+    </span>
   );
 }

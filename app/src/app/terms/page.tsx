@@ -1,12 +1,20 @@
 'use client';
 
 import { useI18n } from '@/providers/i18n-provider';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import Link from 'next/link';
+import { ArrowLeft, ArrowUp, ChevronDown, ChevronUp } from 'lucide-react';
 
 const content = {
   en: {
-    title: 'Terms of Service',
-    lastUpdated: 'Last updated: February 16, 2026',
+    navTitle: 'Terms of Service',
+    heroTitle: 'Terms of\nService',
+    heroSubtitle: '서비스 약관',
+    lastUpdatedLabel: 'LAST UPDATED',
+    lastUpdatedValue: 'February 16, 2026',
+    tocLabel: 'Table of Contents',
+    backToTop: 'Back to top',
+    footer: 'DITO Soul  -  Terms of Service',
     sections: [
       {
         heading: '1. Service Provider',
@@ -87,8 +95,14 @@ const content = {
     ],
   },
   ko: {
-    title: '이용약관',
-    lastUpdated: '최종 수정일: 2026년 2월 16일',
+    navTitle: '이용약관',
+    heroTitle: '이용약관',
+    heroSubtitle: 'Terms of Service',
+    lastUpdatedLabel: '최종 수정일',
+    lastUpdatedValue: '2026년 2월 16일',
+    tocLabel: '목차',
+    backToTop: '맨 위로',
+    footer: 'DITO Soul  -  이용약관',
     sections: [
       {
         heading: '1. 서비스 제공자',
@@ -170,14 +184,28 @@ const content = {
   },
 };
 
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9가-힣\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-');
+}
+
 export default function TermsPage() {
   const { lang } = useI18n();
   const c = content[lang];
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [tocOpen, setTocOpen] = useState(false);
+
+  const sectionIds = useMemo(
+    () => c.sections.map((s, i) => `sec-${i}-${slugify(s.heading)}`),
+    [c.sections],
+  );
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowBackToTop(window.scrollY > 300);
+      setShowBackToTop(window.scrollY > 400);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -187,47 +215,142 @@ export default function TermsPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleClose = () => {
-    if (window.opener) {
-      window.close();
-    } else {
-      window.history.back();
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      const y = el.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top: y, behavior: 'smooth' });
     }
+    setTocOpen(false);
   };
 
   return (
-    <div className="flex-1 overflow-y-auto px-4 py-6 pb-24 page-enter">
-      <div className="flex items-center justify-between max-w-md mx-auto mb-4">
-        <h1 className="text-lg font-bold">{c.title}</h1>
-        <button
-          onClick={handleClose}
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          {lang === 'ko' ? '닫기 ✕' : 'Close ✕'}
-        </button>
-      </div>
-      <div className="flex flex-col gap-4 max-w-md mx-auto">
-        {c.sections.map((s, i) => (
-          <div key={i} className="bg-card/50 border border-border rounded-xl p-4">
-            <h2 className="text-sm font-semibold mb-2">{s.heading}</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{s.body}</p>
-          </div>
-        ))}
-        
-        {/* Last updated at bottom */}
-        <div className="mt-8 pt-4 border-t border-border">
-          <p className="text-xs text-muted-foreground text-center">{c.lastUpdated}</p>
+    <div
+      data-landing-page
+      className="relative min-h-screen w-full bg-background text-foreground antialiased overflow-x-hidden"
+      style={{ fontFamily: 'Pretendard, -apple-system, BlinkMacSystemFont, sans-serif' }}
+    >
+      {/* Sticky top bar */}
+      <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur-xl">
+        <div className="mx-auto flex h-14 max-w-[720px] items-center gap-3 px-4 md:px-8">
+          <Link
+            href="/"
+            aria-label="Back"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground/80 transition-colors hover:bg-card hover:text-foreground"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Link>
+          <h1 className="text-[15px] font-semibold tracking-tight text-foreground">
+            {c.navTitle}
+          </h1>
         </div>
-      </div>
-      
-      {/* Back to top button */}
+      </header>
+
+      <main className="mx-auto max-w-[720px] px-4 pb-20 pt-6 md:px-8 md:pt-10">
+        {/* Hero */}
+        <section className="mb-8 md:mb-10">
+          <h2 className="whitespace-pre-line text-[34px] font-extrabold leading-[1.1] tracking-tight text-foreground md:text-[48px]">
+            {c.heroTitle}
+          </h2>
+          <div className="mt-4 flex items-center gap-3">
+            <span className="block h-4 w-[3px] rounded-sm bg-[#faaf2e]" aria-hidden />
+            <span className="text-[15px] font-medium text-muted-foreground">
+              {c.heroSubtitle}
+            </span>
+          </div>
+          <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#faaf2e]" aria-hidden />
+            <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+              {c.lastUpdatedLabel}
+            </span>
+            <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-foreground/80">
+              {c.lastUpdatedValue}
+            </span>
+          </div>
+        </section>
+
+        {/* Table of contents */}
+        <section className="mb-8">
+          <button
+            type="button"
+            onClick={() => setTocOpen((v) => !v)}
+            aria-expanded={tocOpen}
+            className="flex w-full items-center justify-between rounded-2xl border border-border bg-card px-4 py-3.5 text-left transition-colors hover:border-[#faaf2e]/40 hover:bg-card/80"
+          >
+            <span className="text-[14px] font-semibold text-foreground">
+              {c.tocLabel}
+            </span>
+            {tocOpen ? (
+              <ChevronUp className="h-4 w-4 text-muted-foreground" />
+            ) : (
+              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+            )}
+          </button>
+          {tocOpen && (
+            <ol className="mt-2 divide-y divide-border rounded-2xl border border-border bg-card/60">
+              {c.sections.map((s, i) => (
+                <li key={sectionIds[i]}>
+                  <button
+                    type="button"
+                    onClick={() => scrollToSection(sectionIds[i])}
+                    className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left text-[13px] text-muted-foreground transition-colors hover:bg-background/60 hover:text-foreground"
+                  >
+                    <span className="line-clamp-1">{s.heading}</span>
+                    <span className="text-[11px] tabular-nums text-muted-foreground/70">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ol>
+          )}
+        </section>
+
+        {/* Sections */}
+        <article className="flex flex-col gap-8">
+          {c.sections.map((s, i) => (
+            <section
+              key={sectionIds[i]}
+              id={sectionIds[i]}
+              className="scroll-mt-20"
+            >
+              <h3 className="mb-3 text-[20px] font-bold leading-tight tracking-tight text-foreground md:text-[22px]">
+                {s.heading}
+              </h3>
+              <p className="whitespace-pre-line text-[15px] leading-[1.75] text-muted-foreground">
+                {s.body}
+              </p>
+            </section>
+          ))}
+        </article>
+
+        {/* Footer */}
+        <footer className="mt-16 border-t border-border pt-6">
+          <div className="flex flex-col items-center gap-3">
+            <button
+              type="button"
+              onClick={scrollToTop}
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-[13px] font-medium text-muted-foreground transition-colors hover:border-[#faaf2e]/40 hover:text-foreground"
+            >
+              <ArrowUp className="h-3.5 w-3.5" />
+              {c.backToTop}
+            </button>
+            <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground/70">
+              {c.footer}
+            </p>
+          </div>
+        </footer>
+      </main>
+
+      {/* Floating back-to-top (mobile) */}
       {showBackToTop && (
         <button
+          type="button"
           onClick={scrollToTop}
-          className="fixed bottom-20 right-4 w-12 h-12 bg-[#ff6b35] hover:bg-[#e55a2b] text-white rounded-full shadow-lg flex items-center justify-center transition-all z-50"
-          aria-label="Back to top"
+          aria-label={c.backToTop}
+          className="fixed bottom-6 right-4 z-50 flex h-11 w-11 items-center justify-center rounded-full bg-[#faaf2e] text-[#4b3002] shadow-lg shadow-black/20 transition-transform hover:scale-105 md:bottom-8 md:right-8"
         >
-          ↑
+          <ArrowUp className="h-5 w-5" />
         </button>
       )}
     </div>

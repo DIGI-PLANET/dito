@@ -1,12 +1,17 @@
 'use client';
 
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { ArrowLeft, ArrowUp } from 'lucide-react';
 import { useI18n } from '@/providers/i18n-provider';
-import { useState, useEffect } from 'react';
 
 const content = {
   en: {
     title: 'Privacy Policy',
+    subtitle: '개인정보 처리방침',
     lastUpdated: 'Last updated: February 16, 2026',
+    backToTop: 'Back to top',
+    back: 'Back',
     sections: [
       {
         heading: '1. Company',
@@ -72,7 +77,10 @@ const content = {
   },
   ko: {
     title: '개인정보 처리방침',
+    subtitle: 'Privacy Policy',
     lastUpdated: '최종 수정일: 2026년 2월 16일',
+    backToTop: '맨 위로',
+    back: '뒤로',
     sections: [
       {
         heading: '1. 회사',
@@ -145,7 +153,7 @@ export default function PrivacyPage() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowBackToTop(window.scrollY > 300);
+      setShowBackToTop(window.scrollY > 400);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -155,47 +163,79 @@ export default function PrivacyPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleClose = () => {
-    if (window.opener) {
-      window.close();
-    } else {
-      window.history.back();
-    }
-  };
-
   return (
-    <div className="flex-1 overflow-y-auto px-4 py-6 pb-24 page-enter">
-      <div className="flex items-center justify-between max-w-md mx-auto mb-4">
-        <h1 className="text-lg font-bold">{c.title}</h1>
-        <button
-          onClick={handleClose}
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          {lang === 'ko' ? '닫기 ✕' : 'Close ✕'}
-        </button>
-      </div>
-      <div className="flex flex-col gap-4 max-w-md mx-auto">
-        {c.sections.map((s, i) => (
-          <div key={i} className="bg-card/50 border border-border rounded-xl p-4">
-            <h2 className="text-sm font-semibold mb-2">{s.heading}</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{s.body}</p>
-          </div>
-        ))}
-        
-        {/* Last updated at bottom */}
-        <div className="mt-8 pt-4 border-t border-border">
-          <p className="text-xs text-muted-foreground text-center">{c.lastUpdated}</p>
+    <div
+      data-landing-page
+      className="relative min-h-screen w-full bg-background text-foreground"
+    >
+      {/* Sticky top bar */}
+      <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur supports-backdrop-filter:bg-background/60">
+        <div className="mx-auto flex h-14 max-w-[720px] items-center gap-3 px-4 md:px-8">
+          <Link
+            href="/"
+            aria-label={c.back}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-card hover:text-foreground"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Link>
+          <span className="text-sm font-semibold tracking-tight text-foreground">
+            {c.title}
+          </span>
         </div>
-      </div>
-      
-      {/* Back to top button */}
+      </header>
+
+      {/* Content */}
+      <main className="mx-auto w-full max-w-[720px] px-4 pb-24 pt-8 md:px-8 md:pt-12">
+        {/* Hero heading */}
+        <div className="mb-10 md:mb-14">
+          <h1 className="text-3xl font-bold leading-tight tracking-tight text-foreground md:text-4xl">
+            {c.title}
+          </h1>
+          <p className="mt-2 text-lg text-muted-foreground md:text-xl">
+            {c.subtitle}
+          </p>
+          <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#faaf2e]" />
+            {c.lastUpdated}
+          </div>
+        </div>
+
+        {/* Sections */}
+        <article className="prose prose-neutral max-w-none dark:prose-invert">
+          {c.sections.map((s, i) => (
+            <section key={i} className="mb-8 scroll-mt-24">
+              <h2 className="mb-3 mt-8 text-xl font-semibold tracking-tight text-foreground first:mt-0 md:text-2xl">
+                {s.heading}
+              </h2>
+              <p className="whitespace-pre-line text-[15px] leading-7 text-muted-foreground md:text-base md:leading-8">
+                {s.body}
+              </p>
+            </section>
+          ))}
+        </article>
+
+        {/* Footer */}
+        <div className="mt-16 flex flex-col items-center gap-3 border-t border-border pt-8">
+          <p className="text-xs text-muted-foreground">{c.lastUpdated}</p>
+          <button
+            type="button"
+            onClick={scrollToTop}
+            className="text-xs font-medium text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
+          >
+            {c.backToTop}
+          </button>
+        </div>
+      </main>
+
+      {/* Floating back to top */}
       {showBackToTop && (
         <button
+          type="button"
           onClick={scrollToTop}
-          className="fixed bottom-20 right-4 w-12 h-12 bg-[#ff6b35] hover:bg-[#e55a2b] text-white rounded-full shadow-lg flex items-center justify-center transition-all z-50"
-          aria-label="Back to top"
+          aria-label={c.backToTop}
+          className="fixed bottom-6 right-4 z-50 inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#faaf2e] text-[#4b3002] shadow-lg transition-all hover:brightness-110 md:bottom-10 md:right-10"
         >
-          ↑
+          <ArrowUp className="h-5 w-5" />
         </button>
       )}
     </div>

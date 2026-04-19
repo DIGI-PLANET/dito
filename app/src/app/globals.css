@@ -1,3 +1,6 @@
+/* Pretendard Variable — primary sans-serif (EN + KO + CJK fallback) */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css');
+
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -7,7 +10,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-inter), var(--font-noto-kr), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Pretendard Variable', Pretendard, var(--font-inter), var(--font-noto-kr), ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Pretendard Variable', Pretendard, var(--font-inter), system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -48,71 +53,92 @@
 
 :root {
   --radius: 0.625rem;
-  --background: #ffffff;
-  --foreground: #1a1a1a;
-  --card: #f8f8f8;
-  --card-foreground: #1a1a1a;
-  --popover: #ffffff;
-  --popover-foreground: #1a1a1a;
-  --primary: #ff6b35;
-  --primary-foreground: #ffffff;
-  --secondary: #f5f5f5;
-  --secondary-foreground: #1a1a1a;
-  --muted: #f5f5f5;
-  --muted-foreground: #737373;
-  --accent: #fff0e6;
-  --accent-foreground: #1a1a1a;
+  --background: #ece7dc;
+  --foreground: #1c1812;
+  --card: #f4efe4;
+  --card-foreground: #1c1812;
+  --popover: #f4efe4;
+  --popover-foreground: #1c1812;
+  --primary: #e59f1f;
+  --primary-foreground: #3a2401;
+  --secondary: #e3ddcf;
+  --secondary-foreground: #1c1812;
+  --muted: #e3ddcf;
+  --muted-foreground: #6b6456;
+  --accent: rgba(229, 159, 31, 0.14);
+  --accent-foreground: #6b4400;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: #e5e5e5;
-  --input: #e5e5e5;
-  --ring: #ff6b35;
+  --border: rgba(0, 0, 0, 0.08);
+  --input: rgba(0, 0, 0, 0.08);
+  --ring: #e59f1f;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: #fafafa;
-  --sidebar-foreground: #1a1a1a;
-  --sidebar-primary: #ff6b35;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f5f5f5;
-  --sidebar-accent-foreground: #1a1a1a;
-  --sidebar-border: #e5e5e5;
-  --sidebar-ring: #ff6b35;
+  --sidebar: #ece7dc;
+  --sidebar-foreground: #1c1812;
+  --sidebar-primary: #e59f1f;
+  --sidebar-primary-foreground: #3a2401;
+  --sidebar-accent: #e3ddcf;
+  --sidebar-accent-foreground: #1c1812;
+  --sidebar-border: rgba(0, 0, 0, 0.08);
+  --sidebar-ring: #e59f1f;
 }
 
 .dark {
-  --background: #0a0a0a;
-  --foreground: #e0e0e0;
-  --card: #141414;
-  --card-foreground: #e0e0e0;
-  --popover: #141414;
-  --popover-foreground: #e0e0e0;
-  --primary: #ff6b35;
-  --primary-foreground: #ffffff;
-  --secondary: #1a1a1a;
-  --secondary-foreground: #e0e0e0;
-  --muted: #1a1a1a;
-  --muted-foreground: #888888;
-  --accent: #1a1a1a;
-  --accent-foreground: #e0e0e0;
+  --background: #000000;
+  --foreground: #f9f9fb;
+  --card: #1b1b27;
+  --card-foreground: #f9f9fb;
+  --popover: #1b1b27;
+  --popover-foreground: #f9f9fb;
+  --primary: #faaf2e;
+  --primary-foreground: #4b3002;
+  --secondary: #191924;
+  --secondary-foreground: #f9f9fb;
+  --muted: #191924;
+  --muted-foreground: #9292aa;
+  --accent: rgba(250, 175, 46, 0.12);
+  --accent-foreground: #faaf2e;
   --destructive: oklch(0.704 0.191 22.216);
   --border: rgba(255, 255, 255, 0.1);
   --input: rgba(255, 255, 255, 0.15);
-  --ring: #ff6b35;
+  --ring: #faaf2e;
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: #141414;
-  --sidebar-foreground: #e0e0e0;
-  --sidebar-primary: #ff6b35;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #1a1a1a;
-  --sidebar-accent-foreground: #e0e0e0;
+  --sidebar: #0f0f18;
+  --sidebar-foreground: #f9f9fb;
+  --sidebar-primary: #faaf2e;
+  --sidebar-primary-foreground: #4b3002;
+  --sidebar-accent: #191924;
+  --sidebar-accent-foreground: #f9f9fb;
   --sidebar-border: rgba(255, 255, 255, 0.1);
-  --sidebar-ring: #ff6b35;
+  --sidebar-ring: #faaf2e;
+}
+
+/* ===== Landing page: escape app-frame constraints ===== */
+body:has([data-landing-page]) .pc-side-panel {
+  display: none !important;
+}
+body:has([data-landing-page]) .app-frame {
+  max-width: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  height: auto !important;
+  min-height: 100dvh;
+  background: var(--background);
+}
+body:has([data-landing-page]) .app-outer {
+  background: var(--background) !important;
+  display: block !important;
+}
+body:has([data-landing-page]) .app-content {
+  padding: 0 !important;
+  overflow: visible !important;
 }
 
 @layer base {
@@ -220,15 +246,15 @@
   }
 
   .pc-social-icon:hover {
-    background: rgba(255, 107, 53, 0.2);
-    color: #ff6b35;
+    background: rgba(250, 175, 46, 0.2);
+    color: #faaf2e;
   }
 
   .pc-download-btn {
     margin-top: 8px;
     padding: 12px 24px;
     border-radius: 12px;
-    background: #ff6b35;
+    background: #faaf2e;
     color: #fff;
     font-weight: 600;
     font-size: 0.9rem;
@@ -239,7 +265,7 @@
   }
 
   .pc-download-btn:hover {
-    background: #e85d2c;
+    background: #e19a1f;
     transform: translateY(-1px);
   }
 
@@ -266,7 +292,7 @@
 @media (min-width: 768px) {
   .app-frame {
     max-width: 430px;
-    box-shadow: 0 0 80px rgba(255, 107, 53, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.06);
+    box-shadow: 0 0 80px rgba(250, 175, 46, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.06);
     border-radius: 0;
     height: 100dvh;
   }
@@ -329,7 +355,7 @@
 
 .tab-bar a.active,
 .tab-bar button.active {
-  color: #ff6b35;
+  color: #faaf2e;
 }
 
 .tab-bar a .tab-icon,
@@ -482,7 +508,7 @@ button, a, [role="button"], .cursor-pointer {
 }
 
 .chat-user {
-  background: #ff6b35;
+  background: #faaf2e;
   color: white;
   border-bottom-right-radius: 4px;
 }
@@ -714,12 +740,12 @@ button, a, [role="button"], .cursor-pointer {
 
 .guide-toc-link:hover {
   opacity: 1;
-  background: rgba(255, 107, 53, 0.1);
+  background: rgba(250, 175, 46, 0.1);
 }
 
 .guide-toc-link.active {
   opacity: 1;
-  color: #ff6b35;
+  color: #faaf2e;
   font-weight: 600;
 }
 
@@ -741,9 +767,9 @@ button, a, [role="button"], .cursor-pointer {
   font-size: 18px;
   font-weight: 700;
   margin-bottom: 14px;
-  color: #ff6b35;
+  color: #faaf2e;
   padding-bottom: 10px;
-  border-bottom: 1px solid rgba(255, 107, 53, 0.15);
+  border-bottom: 1px solid rgba(250, 175, 46, 0.15);
 }
 
 .guide-text p {
@@ -761,7 +787,7 @@ button, a, [role="button"], .cursor-pointer {
 }
 
 .guide-text strong {
-  color: #ff6b35;
+  color: #faaf2e;
   font-weight: 600;
 }
 

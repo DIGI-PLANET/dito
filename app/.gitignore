@@ -9,3 +9,12 @@ node_modules/
 # .env.development, .env.test, .env.production are encrypted by dotenvx
 *.log
 .vercel
+
+# Figma design cache (re-fetchable via REST API)
+.figma-cache/
+
+# Redesign working state (local tracker)
+.redesign-state.json
+
+# TS build info (auto-generated)
+tsconfig.tsbuildinfo
