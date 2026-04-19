@@ -78,21 +78,6 @@ pub fn validate_portal_auth(req: &ServiceRequest) -> Result<(), HttpResponse> {
         )));
     }
 
-    // Check session headers
-    let session_type = req
-        .headers()
-        .get("x-openclaw-session-type")
-        .and_then(|v| v.to_str().ok())
-        .unwrap_or("");
-
-    if session_type != "private" {
-        return Err(HttpResponse::Forbidden().json(error_response(
-            "auth_permission_denied",
-            error_type::AUTH,
-            "Portal requires private session",
-        )));
-    }
-
     Ok(())
 }
 

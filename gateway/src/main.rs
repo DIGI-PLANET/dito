@@ -111,9 +111,6 @@ async fn main() -> std::io::Result<()> {
                 "Authorization",
                 "Content-Type",
                 "X-2FA-Code",
-                "X-OpenClaw-Session-Type",
-                "X-OpenClaw-Group-Chat",
-                "X-OpenClaw-User-ID",
             ])
             .supports_credentials()
             .max_age(3600);
