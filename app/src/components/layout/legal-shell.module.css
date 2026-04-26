@@ -1,0 +1,346 @@
+/* Shared shell for legal pages (Privacy, Terms) — mirrors design/legal.css */
+
+.root {
+  position: relative;
+  min-height: 100dvh;
+  background: var(--bg-0);
+  color: var(--fg);
+  font-family: var(--font-geist), 'Pretendard Variable', Pretendard, ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Top — mirrors landing's floating fixed pattern */
+.brand {
+  position: fixed;
+  top: 28px;
+  left: 40px;
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--fg);
+}
+.brand img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  display: block;
+}
+.brand span {
+  font-family: var(--font-unbounded), 'Pretendard Variable', Pretendard, system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 17px;
+  letter-spacing: -0.02em;
+}
+
+/* Top-right controls */
+.topRight {
+  position: fixed;
+  top: 28px;
+  right: 40px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ctrl {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--rule-strong);
+  color: var(--fg);
+  height: 30px;
+  min-height: 30px;
+  max-height: 30px;
+  padding: 0 14px;
+  margin: 0;
+  border-radius: 999px;
+  font-family: var(--font-jetbrains-mono), 'SF Mono', ui-monospace, Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  line-height: 1;
+  white-space: nowrap;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.ctrl:hover {
+  color: var(--fg);
+  border-color: var(--fg-dim);
+}
+.ctrlIcon {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--rule-strong);
+  color: var(--fg);
+  width: 30px;
+  min-width: 30px;
+  max-width: 30px;
+  height: 30px;
+  min-height: 30px;
+  max-height: 30px;
+  aspect-ratio: 1;
+  flex: 0 0 auto;
+  padding: 0;
+  margin: 0;
+  border-radius: 50%;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.ctrlIcon:hover {
+  color: var(--ember);
+  border-color: var(--ember);
+}
+.ctrlIcon svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+
+/* Main */
+.main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 80px 32px 120px;
+}
+.kicker {
+  font-family: var(--font-jetbrains-mono), 'SF Mono', ui-monospace, Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ember);
+  margin-bottom: 20px;
+}
+.main h1 {
+  font-family: var(--font-unbounded), 'Pretendard Variable', Pretendard, system-ui, sans-serif;
+  font-weight: 300;
+  font-size: clamp(36px, 5vw, 56px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin: 0 0 28px;
+  color: var(--fg);
+}
+.lede {
+  font-family: var(--font-unbounded), 'Pretendard Variable', Pretendard, system-ui, sans-serif;
+  font-weight: 300;
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--fg);
+  max-width: 60ch;
+  margin: 0 0 24px;
+  letter-spacing: -0.005em;
+}
+.meta {
+  font-family: var(--font-jetbrains-mono), 'SF Mono', ui-monospace, Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--fg-dimmer);
+  margin: 0 0 56px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.main section {
+  margin-bottom: 48px;
+}
+.main h2 {
+  font-family: var(--font-unbounded), 'Pretendard Variable', Pretendard, system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+  margin: 0 0 16px;
+  color: var(--fg);
+}
+.main p,
+.main li {
+  font-family: var(--font-geist), 'Pretendard Variable', Pretendard, ui-sans-serif, system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--fg-dim);
+  font-weight: 300;
+  text-wrap: pretty;
+}
+.main p {
+  margin: 0 0 14px;
+}
+.main p b,
+.main li b {
+  color: var(--fg);
+  font-weight: 500;
+}
+.main em {
+  font-style: normal;
+  color: var(--ember);
+}
+.main ul {
+  margin: 0 0 14px;
+  padding-left: 0;
+  list-style: none;
+}
+.main li {
+  position: relative;
+  padding-left: 24px;
+  margin-bottom: 8px;
+}
+.main li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.85em;
+  width: 12px;
+  height: 1px;
+  background: var(--ember);
+  opacity: 0.5;
+}
+.main a {
+  color: var(--fg);
+  border-bottom: 1px solid var(--rule);
+  text-decoration: none;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.main a:hover {
+  color: var(--ember);
+  border-color: var(--ember);
+}
+
+.back {
+  margin-top: 80px;
+  padding-top: 40px;
+  border-top: 1px solid var(--rule);
+}
+.back a {
+  font-family: var(--font-jetbrains-mono), 'SF Mono', ui-monospace, Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  border-bottom: none;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.back a:hover {
+  color: var(--ember);
+}
+
+/* Footer — mirrors landing's 3-column footer */
+.foot {
+  padding: 32px 40px 28px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 32px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--font-jetbrains-mono), 'SF Mono', ui-monospace, Menlo, monospace;
+  font-size: 10px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--fg-dimmer);
+}
+.fLeft {
+  justify-self: start;
+  font-family: var(--font-unbounded), 'Pretendard Variable', Pretendard, system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  color: var(--fg-dim);
+}
+.fMid {
+  justify-self: center;
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+.fMid a {
+  color: var(--fg-dim);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 32px;
+  min-width: 32px;
+  max-width: 32px;
+  height: 32px;
+  min-height: 32px;
+  max-height: 32px;
+  aspect-ratio: 1;
+  padding: 0;
+  margin: 0;
+  border: 1px solid var(--rule-strong);
+  border-radius: 50%;
+  box-sizing: border-box;
+  line-height: 1;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.fMid a:hover {
+  color: var(--ember);
+  border-color: var(--ember);
+}
+.fMid svg {
+  width: 13px;
+  height: 13px;
+  display: block;
+  flex: 0 0 auto;
+}
+.fRight {
+  justify-self: end;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.fRight a {
+  color: var(--fg-dim);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.fRight a:hover {
+  color: var(--ember);
+}
+.fRight .dot {
+  color: var(--fg-dimmer);
+  margin: 0 6px;
+}
+.fRight .copy {
+  color: var(--fg-dimmer);
+}
+
+@media (max-width: 760px) {
+  .brand { top: 18px; left: 16px; gap: 8px; }
+  .brand img { width: 26px; height: 26px; }
+  .brand span { font-size: 15px; }
+  .topRight { top: 18px; right: 16px; gap: 6px; }
+  .ctrl { padding: 0 11px; font-size: 10.5px; letter-spacing: 0.12em; }
+
+  .main { padding: 56px 22px 80px; }
+  .main h1 { font-size: clamp(30px, 8vw, 44px); }
+  .lede { font-size: 16px; }
+  .main h2 { font-size: 19px; }
+  .main p,
+  .main li { font-size: 14.5px; line-height: 1.7; }
+
+  .foot {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 28px 24px 24px;
+    text-align: center;
+  }
+  .fLeft, .fRight { justify-self: center; text-align: center; }
+  .fRight { align-items: center; }
+  .fMid { justify-self: center; }
+}
+
+@media (max-width: 420px) {
+  .brand img { width: 24px; height: 24px; }
+  .brand span { font-size: 13px; }
+}

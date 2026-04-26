@@ -9,8 +9,13 @@ import { NotificationBell } from './notification-bell';
 import { getWalletCookie } from '@/lib/wallet-cookie';
 
 const PAGE_TITLES: Record<string, { en: string; ko: string } | { connected: { en: string; ko: string }; disconnected: { en: string; ko: string } }> = {
-  '/chat': { en: 'Ember Diary', ko: 'Ember 일기' },
-  '/soul': { en: 'Ember Soul', ko: 'Ember Soul' },
+  '/chat': { en: 'Ember Chat', ko: 'Ember 대화' },
+  '/today': { en: 'Today', ko: '오늘' },
+  '/ember': { en: 'Ember', ko: 'Ember' },
+  '/memories': { en: 'Memories', ko: '추억' },
+  '/ashes': { en: 'Ashes', ko: '재' },
+  '/extinguish': { en: 'Extinguish', ko: '봉인' },
+  '/dashboard': { en: 'Home', ko: '홈' },
   '/guide': { en: 'Guide', ko: '가이드' },
   '/connect': { connected: { en: 'Settings', ko: '설정' }, disconnected: { en: 'Connect', ko: '연결' } },
   '/auth': { en: 'Portal Entry', ko: '포털 진입' },
@@ -42,10 +47,16 @@ export function Header() {
   }, []);
 
   // Hide header on pages with custom headers
-  if (pathname === '/' || pathname === '/discovery' || pathname === '/onboarding') return null;
+  if (
+    pathname === '/' ||
+    pathname === '/discovery' ||
+    pathname === '/onboarding' ||
+    pathname === '/privacy' ||
+    pathname === '/terms'
+  ) return null;
 
   const isHome = pathname === '/';
-  const mainPages = ['/', '/chat', '/soul', '/guide'];
+  const mainPages = ['/', '/dashboard', '/today', '/ember', '/memories'];
   const isMainPage = mainPages.includes(pathname);
   const closePages = ['/privacy', '/terms', '/connect'];
   const titleEntry = PAGE_TITLES[pathname];
@@ -90,7 +101,7 @@ export function Header() {
               const container = document.querySelector('.snap-container');
               if (container) container.scrollBy({ top: -container.clientHeight, behavior: 'smooth' });
             }}
-            className="flex flex-col items-center gap-0.5 text-[#ff6b35] hover:text-[#ff8c5a] transition-colors animate-bounce mt-6"
+            className="flex flex-col items-center gap-0.5 text-ember hover:text-ember-bright transition-colors animate-bounce mt-6"
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="18 15 12 9 6 15" />
@@ -100,7 +111,7 @@ export function Header() {
         ) : <div />
       ) : isHome ? (
         <Link href="/" className="text-lg font-bold">
-          <span className="text-[#ff6b35]">DITO</span>
+          <span className="text-ember">DITO</span>
           <span className="text-muted-foreground">.guru</span>
         </Link>
       ) : (

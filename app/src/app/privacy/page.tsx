@@ -1,243 +1,187 @@
 'use client';
 
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { ArrowLeft, ArrowUp } from 'lucide-react';
+import { LegalShell } from '@/components/layout/legal-shell';
 import { useI18n } from '@/providers/i18n-provider';
-
-const content = {
-  en: {
-    title: 'Privacy Policy',
-    subtitle: '개인정보 처리방침',
-    lastUpdated: 'Last updated: February 16, 2026',
-    backToTop: 'Back to top',
-    back: 'Back',
-    sections: [
-      {
-        heading: '1. Company',
-        body: 'This service ("DITO") is operated by DIGI PLANET This Privacy Policy explains how we collect, use, and protect your information when you use the DITO platform.',
-      },
-      {
-        heading: '2. Data We Collect',
-        body: '• Wallet address — Your Solana wallet address (Phantom, Solflare, or Trust Wallet) is collected upon connection and is required to use the service.\n• Chat data — Messages exchanged with Ember during talent discovery and daily coaching sessions.\n• Diary entries — Daily text entries, photos, and evidence files uploaded as part of your talent coaching journey.\n• Soul (SBT) data — Talent labels, trait analysis, growth stage, discovery/mint dates, proof hashes, entry counts, and streaks for each of your Ember Souls.\n• Usage data — Interaction patterns used to improve AI coaching quality and determine minting eligibility.',
-      },
-      {
-        heading: '3. How We Use Your Data',
-        body: '• AI Processing — Your chat messages and diary entries are processed by AI (Google Gemini API) to provide talent discovery, daily coaching, and minting readiness assessment. Recent conversation history (today + 3-day summary) is sent as context.\n• Soul Minting — Your talent data is compiled into a Soul (Soulbound Token) on the Solana blockchain when you and Ember agree you are ready.\n• Service Improvement — Anonymized usage patterns may be used to improve the coaching experience.',
-      },
-      {
-        heading: '4. Data Storage',
-        body: '• All personal data including conversations, diary entries, and profile information is stored securely on our servers (Supabase PostgreSQL with encryption at rest).\n• Cookies are used for session management and user preferences.\n• Clearing your browser cookies will reset your session. Your data remains safe on our servers.',
-      },
-      {
-        heading: '5. Photos & Evidence Uploads',
-        body: 'Photos and files uploaded as talent evidence are stored on our secure servers. They are not shared with third parties.',
-      },
-      {
-        heading: '6. Wallet Data',
-        body: 'We only store your public wallet address. We never request or access your private keys, seed phrases, or wallet funds beyond the $1 Soul minting transaction that you explicitly approve.',
-      },
-      {
-        heading: '7. On-Chain Data',
-        body: 'When you mint an Ember Soul ($1 per Soul), the following data is recorded on the Solana blockchain: talent label, trait summary, proof hash, and mint date. On-chain data is public by nature and cannot be modified or deleted. Each Soul is a Soulbound Token (SBT) permanently linked to your wallet.',
-      },
-      {
-        heading: '8. Growth Stages & Decay',
-        body: 'Each Soul progresses through independent growth stages (Sparked → Burning → Blazing → Radiant → Eternal). Stage data and decay status are tracked locally. From the Blazing stage onward, real name verification is required for identity purposes. Decay from inactivity may cause stage regression but does not delete your data.',
-      },
-      {
-        heading: '9. Identity Verification',
-        body: 'Real name verification is required starting at the Blazing stage. This information is used solely for trust and verification purposes within the DITO ecosystem and is not shared externally. In later phases, peer verification may also be used to validate talent claims.',
-      },
-      {
-        heading: '10. Third Parties',
-        body: 'We do not sell or share your personal data with third parties. Third-party services used:\n• Google Gemini API — for AI chat processing (conversation data is sent per their API terms)\n• Solana blockchain — for Soul minting (on-chain data is public)\n• Wallet providers (Phantom, Solflare, Trust Wallet) — for authentication only',
-      },
-      {
-        heading: '11. Seeker\u2019s Rights',
-        body: '• Access — You can view all your data through your account dashboard.\n• Deletion — You can request deletion of your account data by disconnecting your wallet. On-chain Soul data cannot be deleted.\n• Portability — You may export your diary and Soul data from your account.\n• Opt-out — You may stop using the service at any time. Disconnecting your wallet ends data collection.',
-      },
-      {
-        heading: '12. Data Security',
-        body: 'Data is stored securely on Supabase (PostgreSQL) with encryption at rest and in transit. Cookies are used with SameSite=Strict and Secure flags for session management.',
-      },
-      {
-        heading: '13. Children',
-        body: 'DITO is not intended for Seekers under 13 years of age. We do not knowingly collect data from children under 13.',
-      },
-      {
-        heading: '14. Changes to This Policy',
-        body: 'DIGI PLANET reserves the right to update this Privacy Policy at any time. Significant changes will be communicated through the service.',
-      },
-      {
-        heading: '15. Contact',
-        body: 'For privacy inquiries, contact us at: privacy@dito.guru',
-      },
-    ],
-  },
-  ko: {
-    title: '개인정보 처리방침',
-    subtitle: 'Privacy Policy',
-    lastUpdated: '최종 수정일: 2026년 2월 16일',
-    backToTop: '맨 위로',
-    back: '뒤로',
-    sections: [
-      {
-        heading: '1. 회사',
-        body: '이 서비스("DITO")는 DIGI PLANET에 의해 운영됩니다. 본 개인정보 처리방침은 DITO 플랫폼 이용 시 수집, 사용, 보호되는 정보에 대해 설명합니다.',
-      },
-      {
-        heading: '2. 수집하는 데이터',
-        body: '• 지갑 주소 — 서비스 이용에 필수인 Solana 지갑 주소(Phantom, Solflare, Trust Wallet)를 연결 시 수집합니다.\n• 채팅 데이터 — 재능 디스커버리 및 일일 코칭 중 Ember와 주고받은 메시지를 수집합니다.\n• 다이어리 항목 — 재능 코칭 과정의 일일 텍스트 기록, 사진, 증거 파일을 수집합니다.\n• Soul(SBT) 데이터 — 각 Ember Soul의 재능 라벨, 특성 분석, 성장 단계, 디스커버리/민팅 날짜, 증명 해시, 기록 수, 연속 기록을 수집합니다.\n• 이용 데이터 — AI 코칭 품질 향상 및 민팅 자격 판단을 위한 상호작용 패턴을 수집합니다.',
-      },
-      {
-        heading: '3. 데이터 사용 목적',
-        body: '• AI 처리 — 채팅 메시지와 다이어리 항목은 AI(Google Gemini API)를 통해 재능 발견, 일일 코칭, 민팅 준비도 평가에 활용됩니다. 최근 대화 기록(당일 + 3일 요약)이 컨텍스트로 전송됩니다.\n• Soul 민팅 — Seeker와 Ember가 준비되었다고 합의하면 재능 데이터가 Solana 블록체인의 Soul(Soulbound Token)로 컴파일됩니다.\n• 서비스 개선 — 익명화된 이용 패턴이 코칭 경험 개선에 사용될 수 있습니다.',
-      },
-      {
-        heading: '4. 데이터 저장',
-        body: '• MVP 단계(현재) — 대화, 다이어리, 사진, 프로필 등 모든 개인 데이터는 서버(Supabase PostgreSQL)에 암호화하여 안전하게 저장됩니다. 세션 관리와 설정에는 쿠키가 사용됩니다.\n• Phase 2(예정) — 크로스 디바이스 접근, 과거 기록 시맨틱 검색, 향상된 AI 코칭을 위해 Supabase(PostgreSQL + pgvector)로 암호화 마이그레이션됩니다.\n• 브라우저 쿠키를 삭제하면 세션 설정이 초기화됩니다. 데이터는 서버에 안전하게 보관됩니다.',
-      },
-      {
-        heading: '5. 사진 및 증거 업로드',
-        body: 'MVP 기간 동안 재능 증거로 업로드된 사진과 파일은 기기에 로컬 저장됩니다. 외부 서버로 전송되거나 제3자와 공유되지 않습니다. 향후 단계에서는 암호화된 보안 서버에 저장됩니다.',
-      },
-      {
-        heading: '6. 지갑 데이터',
-        body: '공개 지갑 주소만 저장합니다. 개인 키, 시드 구문, 또는 Seeker가 명시적으로 승인한 $1 Soul 민팅 거래 외의 지갑 자금에 접근하거나 요청하지 않습니다.',
-      },
-      {
-        heading: '7. 온체인 데이터',
-        body: 'Ember Soul 민팅(Soul당 $1) 시 재능 라벨, 특성 요약, 증명 해시, 민팅 날짜가 Solana 블록체인에 기록됩니다. 온체인 데이터는 본질적으로 공개되며 수정하거나 삭제할 수 없습니다. 각 Soul은 지갑에 영구적으로 연결되는 Soulbound Token(SBT)입니다.',
-      },
-      {
-        heading: '8. 성장 단계 및 디케이',
-        body: '각 Soul은 독립적인 성장 단계(Sparked → Burning → Blazing → Radiant → Eternal)를 거칩니다. 단계 데이터와 디케이 상태는 로컬에서 추적됩니다. Blazing 단계부터는 신원 확인을 위해 실명 인증이 필요합니다. 비활동으로 인한 디케이는 단계 퇴보를 유발할 수 있으나 데이터가 삭제되지는 않습니다.',
-      },
-      {
-        heading: '9. 신원 확인',
-        body: 'Blazing 단계부터 실명 인증이 필요합니다. 이 정보는 DITO 생태계 내 신뢰 및 검증 목적으로만 사용되며 외부에 공유되지 않습니다. 향후 단계에서는 피어 검증 시스템이 재능 주장을 검증하는 데 활용될 수 있습니다.',
-      },
-      {
-        heading: '10. 제3자 제공',
-        body: '개인 데이터를 제3자에게 판매하거나 공유하지 않습니다. 사용되는 제3자 서비스:\n• Google Gemini API — AI 채팅 처리(대화 데이터는 해당 API 약관에 따라 전송)\n• Solana 블록체인 — Soul 민팅(온체인 데이터는 공개)\n• 지갑 제공자(Phantom, Solflare, Trust Wallet) — 인증 목적만',
-      },
-      {
-        heading: '11. Seeker의 권리',
-        body: '• 열람권 — 계정 대시보드를 통해 모든 데이터를 열람할 수 있습니다.\n• 삭제권 — 계정 데이터 삭제를 요청할 수 있습니다. 지갑 연결 해제 또는 문의를 통해 가능합니다. 온체인 Soul 데이터는 삭제할 수 없습니다.\n• 이동권 — 다이어리 및 Soul 데이터를 계정에서 내보낼 수 있습니다.\n• 거부권 — 언제든지 서비스 이용을 중단할 수 있습니다. 지갑 연결 해제 시 데이터 수집이 종료됩니다.',
-      },
-      {
-        heading: '12. 데이터 보안',
-        body: '데이터는 Supabase(PostgreSQL)에 저장 시 및 전송 시 암호화되어 안전하게 보관됩니다. 쿠키는 SameSite=Strict 및 Secure 플래그와 함께 사용됩니다.',
-      },
-      {
-        heading: '13. 아동',
-        body: 'DITO는 13세 미만을 대상으로 하지 않습니다. 13세 미만 아동의 데이터를 의도적으로 수집하지 않습니다.',
-      },
-      {
-        heading: '14. 방침 변경',
-        body: 'DIGI PLANET는 언제든지 본 개인정보 처리방침을 수정할 권리를 보유합니다. 중요한 변경 사항은 서비스를 통해 안내됩니다.',
-      },
-      {
-        heading: '15. 연락처',
-        body: '개인정보 관련 문의: privacy@dito.guru',
-      },
-    ],
-  },
-};
 
 export default function PrivacyPage() {
   const { lang } = useI18n();
-  const c = content[lang];
-  const [showBackToTop, setShowBackToTop] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowBackToTop(window.scrollY > 400);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const isKo = lang === 'ko';
 
   return (
-    <div
-      data-landing-page
-      className="relative min-h-screen w-full bg-background text-foreground"
+    <LegalShell
+      kicker={isKo ? '개인정보 처리방침' : 'Privacy'}
+      title={isKo ? '당신의 불을 비공개로 지키는 방법.' : 'How we keep your fire private.'}
+      lede={
+        isKo
+          ? 'DITO Soul은 너 자신과 정직하게 연습할 수 있도록 존재해. 그건 네가 쓴 것이 너의 것이어야만 가능하지. 이 페이지는 우리가 무엇을, 왜 수집하는지 — 그리고 무엇을 수집하지 않는지를 솔직하게 설명해.'
+          : 'DITO Soul exists so you can practice with yourself, honestly. That only works if what you write is yours. This page explains, plainly, what we collect, why, and what we don’t.'
+      }
+      meta={
+        isKo
+          ? '최종 업데이트: 2026년 4월 26일 · 시행: 2026년 4월 26일'
+          : 'Last updated: April 26, 2026 · Effective: April 26, 2026'
+      }
+      backLabel={isKo ? '돌아가기' : 'Back'}
     >
-      {/* Sticky top bar */}
-      <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur supports-backdrop-filter:bg-background/60">
-        <div className="mx-auto flex h-14 max-w-[720px] items-center gap-3 px-4 md:px-8">
-          <Link
-            href="/"
-            aria-label={c.back}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-card hover:text-foreground"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </Link>
-          <span className="text-sm font-semibold tracking-tight text-foreground">
-            {c.title}
-          </span>
-        </div>
-      </header>
+      <section>
+        <h2>{isKo ? '1. 우리가 수집하는 것' : '1. What we collect'}</h2>
+        <p>
+          {isKo
+            ? '서비스를 운영하기 위해 필요한 최소한의 정보만 수집해:'
+            : 'We collect the smallest amount of information needed to run the service:'}
+        </p>
+        <ul>
+          <li>
+            <b>{isKo ? '계정' : 'Account'}</b>
+            {' — '}
+            {isKo
+              ? '이메일, 직접 정한 사용자명, 해시 처리된 비밀번호.'
+              : 'email, a username you choose, hashed password.'}
+          </li>
+          <li>
+            <b>{isKo ? '너의 불꽃들' : 'Your fires'}</b>
+            {' — '}
+            {isKo
+              ? '네가 켠 ember, 쓴 entry, 그것을 돌본 날들. 저장 시 암호화돼.'
+              : 'the embers you light, the entries you write, the days you tend them. Encrypted at rest.'}
+          </li>
+          <li>
+            <b>{isKo ? '세션' : 'Session'}</b>
+            {' — '}
+            {isKo
+              ? '로그인 상태를 유지하기 위한 세션 토큰.'
+              : 'a session token so you stay logged in.'}
+          </li>
+          <li>
+            <b>{isKo ? '선택 분석' : 'Optional analytics'}</b>
+            {' — '}
+            {isKo
+              ? '쿠키 배너에서 동의한 경우에만 수집되는 익명화된 사용 이벤트 (예: "entry가 저장됨").'
+              : 'anonymized usage events (e.g. "an entry was saved"), only if you opt in via the cookie banner.'}
+          </li>
+        </ul>
+      </section>
 
-      {/* Content */}
-      <main className="mx-auto w-full max-w-[720px] px-4 pb-24 pt-8 md:px-8 md:pt-12">
-        {/* Hero heading */}
-        <div className="mb-10 md:mb-14">
-          <h1 className="text-3xl font-bold leading-tight tracking-tight text-foreground md:text-4xl">
-            {c.title}
-          </h1>
-          <p className="mt-2 text-lg text-muted-foreground md:text-xl">
-            {c.subtitle}
-          </p>
-          <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#faaf2e]" />
-            {c.lastUpdated}
-          </div>
-        </div>
+      <section>
+        <h2>{isKo ? '2. 우리가 수집하지 않는 것' : '2. What we don’t collect'}</h2>
+        <ul>
+          <li>{isKo ? '제3자 광고 추적기 없음.' : 'No third-party advertising trackers.'}</li>
+          <li>
+            {isKo
+              ? '소셜 그래프 수집 없음. 팔로우도, 피드도 없어.'
+              : 'No social-graph harvesting. There is no follow, no feed.'}
+          </li>
+          <li>{isKo ? '정밀 위치 정보 없음.' : 'No precise location.'}</li>
+          <li>
+            {isKo ? '어떤 데이터도 판매하지 않아 — 절대로.' : 'No selling of any data, ever.'}
+          </li>
+        </ul>
+      </section>
 
-        {/* Sections */}
-        <article className="prose prose-neutral max-w-none dark:prose-invert">
-          {c.sections.map((s, i) => (
-            <section key={i} className="mb-8 scroll-mt-24">
-              <h2 className="mb-3 mt-8 text-xl font-semibold tracking-tight text-foreground first:mt-0 md:text-2xl">
-                {s.heading}
-              </h2>
-              <p className="whitespace-pre-line text-[15px] leading-7 text-muted-foreground md:text-base md:leading-8">
-                {s.body}
-              </p>
-            </section>
-          ))}
-        </article>
+      <section>
+        <h2>{isKo ? '3. 왜 수집하는가' : '3. Why we collect it'}</h2>
+        <p>
+          {isKo
+            ? '계정을 운영하고, 너의 entry를 저장하고 — 동의한 경우에 한해 — 어떤 부분이 사람들이 불꽃을 살리는 데 도움이 되는지 이해하기 위해. 그게 전부야.'
+            : 'To run your account, save your entries, and—if you opt in—understand which parts of the practice help people keep their fires alive. That’s it.'}
+        </p>
+      </section>
 
-        {/* Footer */}
-        <div className="mt-16 flex flex-col items-center gap-3 border-t border-border pt-8">
-          <p className="text-xs text-muted-foreground">{c.lastUpdated}</p>
-          <button
-            type="button"
-            onClick={scrollToTop}
-            className="text-xs font-medium text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
-          >
-            {c.backToTop}
-          </button>
-        </div>
-      </main>
+      <section>
+        <h2>{isKo ? '4. 누가 보는가' : '4. Who sees it'}</h2>
+        <p>
+          {isKo
+            ? '기본적으로는 너만. 너의 entry는 비공개이며 저장 시 암호화돼. 우리는 개별 entry를 절대 읽지 않아. 집계된 익명 지표는 제품 결정에 참고될 수 있어 (예: "이번 주 평균 돌본 일수").'
+            : 'Only you, by default. Your entries are private and encrypted at rest. We never read individual entries. Aggregated, anonymous metrics may inform product decisions (e.g. "average days tended this week").'}
+        </p>
+        <p>
+          {isKo
+            ? '플랫폼 운영을 위해 사용하는 서비스 제공자들(호스팅, 이메일, 에러 리포팅)은 다른 용도 사용을 금지하는 계약 하에 우리를 대신해 데이터를 처리해.'
+            : 'Service providers we use to run the platform (hosting, email, error reporting) handle data on our behalf under contracts that forbid other use.'}
+        </p>
+      </section>
 
-      {/* Floating back to top */}
-      {showBackToTop && (
-        <button
-          type="button"
-          onClick={scrollToTop}
-          aria-label={c.backToTop}
-          className="fixed bottom-6 right-4 z-50 inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#faaf2e] text-[#4b3002] shadow-lg transition-all hover:brightness-110 md:bottom-10 md:right-10"
-        >
-          <ArrowUp className="h-5 w-5" />
-        </button>
-      )}
-    </div>
+      <section>
+        <h2>{isKo ? '5. 너의 권리' : '5. Your rights'}</h2>
+        <ul>
+          <li>
+            <b>{isKo ? '내보내기' : 'Export'}</b>
+            {' — '}
+            {isKo
+              ? '언제든 너의 모든 불꽃을 하나의 아카이브로 다운로드할 수 있어.'
+              : 'download all your fires as a single archive at any time.'}
+          </li>
+          <li>
+            <b>{isKo ? '삭제' : 'Delete'}</b>
+            {' — '}
+            {isKo
+              ? '계정을 닫으면 30일 이내에 모든 것이 영구 삭제돼.'
+              : 'close your account; everything is purged within 30 days.'}
+          </li>
+          <li>
+            <b>{isKo ? '수정' : 'Correct'}</b>
+            {' — '}
+            {isKo
+              ? '설정에서 계정 정보를 수정할 수 있어.'
+              : 'edit account details from Settings.'}
+          </li>
+          <li>
+            <b>{isKo ? '동의 철회' : 'Withdraw consent'}</b>
+            {' — '}
+            {isKo
+              ? '쿠키 배너에서 선택 분석을 끌 수 있어.'
+              : 'turn off optional analytics from the cookie banner.'}
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>{isKo ? '6. 쿠키' : '6. Cookies'}</h2>
+        <p>
+          {isKo ? (
+            <>
+              로그인 유지를 위한 필수 쿠키 하나를 사용해. 선택 분석 쿠키는 <em>모두 동의</em>를 누른 경우에만 로드돼. 언제든 사이트 데이터를 지워서 마음을 바꿀 수 있어.
+            </>
+          ) : (
+            <>
+              We use one essential cookie to keep you signed in. Optional analytics cookies load only if you press <em>Accept all</em>. You can change your mind any time by clearing site data.
+            </>
+          )}
+        </p>
+      </section>
+
+      <section>
+        <h2>{isKo ? '7. 어린이' : '7. Children'}</h2>
+        <p>
+          {isKo
+            ? 'DITO Soul은 14세 이상을 대상으로 해. 14세 미만의 아동으로부터 의도적으로 데이터를 수집하지 않아.'
+            : 'DITO Soul is for ages 14 and up. We do not knowingly collect data from children under 14.'}
+        </p>
+      </section>
+
+      <section>
+        <h2>{isKo ? '8. 변경' : '8. Changes'}</h2>
+        <p>
+          {isKo
+            ? '이 정책이 변경되는 경우, 시행 전에 앱 내에서 변경 사항을 알리고 이 페이지 상단의 날짜를 업데이트할 거야.'
+            : 'If we change this policy, we’ll surface the change in the app before it takes effect, and update the date at the top of this page.'}
+        </p>
+      </section>
+
+      <section>
+        <h2>{isKo ? '9. 문의' : '9. Contact'}</h2>
+        <p>
+          {isKo ? (
+            <>
+              <a href="mailto:privacy@dito.guru">privacy@dito.guru</a>로 연락 가능. DIGI PLANET 운영.
+            </>
+          ) : (
+            <>
+              Reach us at <a href="mailto:privacy@dito.guru">privacy@dito.guru</a>. Operated by DIGI PLANET.
+            </>
+          )}
+        </p>
+      </section>
+    </LegalShell>
   );
 }
