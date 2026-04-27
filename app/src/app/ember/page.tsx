@@ -90,7 +90,7 @@ export default function SoulPage() {
         className="relative flex min-h-dvh w-full items-center justify-center bg-background text-foreground"
       >
         <div className="text-center">
-          <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-[#faaf2e] border-t-transparent" />
+          <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-[var(--ember)] border-t-transparent" />
           <p className="text-sm text-muted-foreground">{isKo ? '불러오는 중...' : 'Loading...'}</p>
         </div>
       </div>
@@ -106,7 +106,7 @@ export default function SoulPage() {
         data-landing-page
         className="relative flex min-h-dvh w-full flex-col items-center justify-center bg-background px-6 text-center text-foreground"
       >
-        <div className="pointer-events-none absolute left-1/2 top-1/2 h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#faaf2e]/10 blur-[90px]" />
+        <div className="pointer-events-none absolute left-1/2 top-1/2 h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--ember)]/10 blur-[90px]" />
         <div className="relative z-10 flex flex-col items-center">
           <span className="mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-white/10 bg-white/3 shadow-[0_0_40px_rgba(250,175,46,0.15)]">
             <Gem className="h-9 w-9 text-muted-foreground/60" strokeWidth={1.5} />
@@ -119,7 +119,7 @@ export default function SoulPage() {
           </p>
           <Button
             onClick={() => router.push('/discovery')}
-            className="h-12 w-full max-w-[280px] rounded-[10px] bg-[#faaf2e] text-[15px] font-semibold text-[#4b3002] shadow-[0_10px_24px_rgba(250,175,46,0.3)] hover:bg-[#e8a129]"
+            className="h-12 w-full max-w-[280px] rounded-[10px] bg-[var(--ember)] text-[15px] font-semibold text-[var(--fg-on-ember)] shadow-[0_10px_24px_rgba(250,175,46,0.3)] hover:bg-[#e8a129]"
           >
             <Flame className="mr-1.5 h-4 w-4" />
             {isKo ? '재능 찾으러 가기' : 'Find your spark'}
@@ -154,22 +154,22 @@ export default function SoulPage() {
       className="relative min-h-dvh w-full bg-background text-foreground"
     >
       {/* ambient glow */}
-      <div className="pointer-events-none absolute left-1/2 top-[-60px] h-[280px] w-[280px] -translate-x-1/2 rounded-full bg-[#faaf2e]/10 blur-[100px]" />
+      <div className="pointer-events-none absolute left-1/2 top-[-60px] h-[280px] w-[280px] -translate-x-1/2 rounded-full bg-[var(--ember)]/10 blur-[100px]" />
 
       <div className="relative z-10 mx-auto w-full max-w-[1120px] px-5 pb-24 pt-8 md:px-8 md:pt-10">
         {/* Header ─────────────────────────────────── */}
         <header className="mb-6 md:mb-8">
           <div className="mb-4 flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-[#faaf2e]" />
+            <Sparkles className="h-5 w-5 text-[var(--ember)]" />
             <h1 className="text-[22px] font-bold tracking-tight md:text-[28px]">
               {isKo ? '내 Soul.' : 'Your Souls.'}
             </h1>
           </div>
 
           <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2 rounded-full border border-[#faaf2e]/25 bg-[#faaf2e]/8 px-3 py-1.5">
-              <Gem className="h-3.5 w-3.5 text-[#faaf2e]" />
-              <span className="text-[12px] font-medium text-[#faaf2e]">{collectedLabel}</span>
+            <div className="flex items-center gap-2 rounded-full border border-[var(--ember)]/25 bg-[var(--ember)]/8 px-3 py-1.5">
+              <Gem className="h-3.5 w-3.5 text-[var(--ember)]" />
+              <span className="text-[12px] font-medium text-[var(--ember)]">{collectedLabel}</span>
             </div>
             <span className="rounded-full border border-white/10 bg-white/3 px-3 py-1.5 text-[11px] font-medium text-muted-foreground">
               {cycleLabel}
@@ -191,7 +191,7 @@ export default function SoulPage() {
                 onClick={() => setFilter(tab.key)}
                 className={`shrink-0 rounded-full px-4 py-2 text-[12.5px] font-semibold transition ${
                   active
-                    ? 'bg-[#faaf2e] text-[#4b3002] shadow-[0_6px_18px_rgba(250,175,46,0.35)]'
+                    ? 'bg-[var(--ember)] text-[var(--fg-on-ember)] shadow-[0_6px_18px_rgba(250,175,46,0.35)]'
                     : 'border border-white/10 bg-white/3 text-muted-foreground hover:border-white/20 hover:text-foreground'
                 }`}
               >
@@ -233,7 +233,7 @@ export default function SoulPage() {
               store.saveProfileAsync(updated).catch(() => {});
               router.push('/discovery');
             }}
-            className="h-12 w-full rounded-[10px] border-[#faaf2e]/30 bg-transparent text-[14px] font-semibold text-[#faaf2e] hover:bg-[#faaf2e]/10"
+            className="h-12 w-full rounded-[10px] border-[var(--ember)]/30 bg-transparent text-[14px] font-semibold text-[var(--ember)] hover:bg-[var(--ember)]/10"
           >
             <Flame className="mr-1.5 h-4 w-4" />
             {isKo ? '새로운 불씨 찾기' : 'Find a new spark'}
@@ -259,7 +259,7 @@ function SoulGalleryCard({
   const tier = STAGE_TIER[soul.stage];
   const stageLabel = isKo ? STAGE_LABEL_KO[soul.stage] : STAGE_LABEL_EN[soul.stage];
   const mintedLabel = isKo ? `민팅 · ${soul.mintDate}` : `Minted ${soul.mintDate}`;
-  const href = soul.soul_id ? `/soul/${soul.soul_id}` : '/soul';
+  const href = soul.soul_id ? `/ember/${soul.soul_id}` : '/ember';
   const solscanHref = soul.soul_id
     ? `https://solscan.io/token/${soul.soul_id}`
     : 'https://solscan.io';
@@ -276,7 +276,7 @@ function SoulGalleryCard({
   return (
     <Link
       href={href}
-      className="group relative block overflow-hidden rounded-2xl border border-white/10 bg-[#12131a] p-4 transition-all hover:-translate-y-0.5 hover:border-[#faaf2e]/40 hover:shadow-[0_14px_34px_rgba(250,175,46,0.18)]"
+      className="group relative block overflow-hidden rounded-2xl border border-white/10 bg-[#12131a] p-4 transition-all hover:-translate-y-0.5 hover:border-[var(--ember)]/40 hover:shadow-[0_14px_34px_rgba(250,175,46,0.18)]"
     >
       {/* ambient tint, stronger for higher stages */}
       <div
@@ -285,15 +285,15 @@ function SoulGalleryCard({
       />
       {showSparkles && (
         <>
-          <div className="pointer-events-none absolute right-4 top-4 h-1 w-1 rounded-full bg-[#faaf2e] opacity-70 animate-[pulse_2.4s_ease-in-out_infinite]" />
-          <div className="pointer-events-none absolute right-10 top-8 h-1.5 w-1.5 rounded-full bg-[#faaf2e]/60 opacity-60 animate-[pulse_3s_ease-in-out_infinite_200ms]" />
+          <div className="pointer-events-none absolute right-4 top-4 h-1 w-1 rounded-full bg-[var(--ember)] opacity-70 animate-[pulse_2.4s_ease-in-out_infinite]" />
+          <div className="pointer-events-none absolute right-10 top-8 h-1.5 w-1.5 rounded-full bg-[var(--ember)]/60 opacity-60 animate-[pulse_3s_ease-in-out_infinite_200ms]" />
         </>
       )}
 
       <div className="relative flex items-start gap-3">
         {/* Gem visual */}
         <div
-          className="relative flex h-[68px] w-[68px] shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[#faaf2e]/30 bg-linear-to-br from-[#1a1a2a] to-[#0a0a12]"
+          className="relative flex h-[68px] w-[68px] shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[var(--ember)]/30 bg-linear-to-br from-[#1a1a2a] to-[#0a0a12]"
           style={{
             boxShadow: `inset 0 0 22px rgba(250,175,46,${Math.min(0.45, glowIntensity + 0.1)})`,
           }}
@@ -307,7 +307,7 @@ function SoulGalleryCard({
             }}
           />
           <Gem
-            className="relative h-8 w-8 text-[#faaf2e] drop-shadow-[0_0_10px_rgba(250,175,46,0.55)]"
+            className="relative h-8 w-8 text-[var(--ember)] drop-shadow-[0_0_10px_rgba(250,175,46,0.55)]"
             strokeWidth={1.5}
           />
         </div>
@@ -315,7 +315,7 @@ function SoulGalleryCard({
         {/* Body */}
         <div className="min-w-0 flex-1">
           <div className="mb-1 flex items-center gap-2">
-            <span className="inline-flex items-center rounded-full border border-[#faaf2e]/30 bg-[#faaf2e]/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#faaf2e]">
+            <span className="inline-flex items-center rounded-full border border-[var(--ember)]/30 bg-[var(--ember)]/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--ember)]">
               {isKo ? `${tier}단계` : `Stage ${tier}`}
             </span>
             <span className="truncate text-[10.5px] text-muted-foreground">{stageLabel}</span>
@@ -334,7 +334,7 @@ function SoulGalleryCard({
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="inline-flex shrink-0 items-center gap-0.5 font-medium text-[#faaf2e] transition hover:text-[#e8a129]"
+              className="inline-flex shrink-0 items-center gap-0.5 font-medium text-[var(--ember)] transition hover:text-[#e8a129]"
             >
               Solscan
               <ExternalLink className="h-3 w-3" />
@@ -351,13 +351,13 @@ function SoulGalleryCard({
               cy="20"
               r={R}
               fill="none"
-              stroke="#faaf2e"
+              stroke="var(--ember)"
               strokeWidth="3"
               strokeLinecap="round"
               strokeDasharray={`${dash} ${CIRC}`}
             />
           </svg>
-          <span className="absolute inset-0 flex items-center justify-center text-[9.5px] font-bold text-[#faaf2e]">
+          <span className="absolute inset-0 flex items-center justify-center text-[9.5px] font-bold text-[var(--ember)]">
             {progress}%
           </span>
         </div>

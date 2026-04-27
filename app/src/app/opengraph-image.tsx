@@ -29,7 +29,7 @@ export default function Image() {
             marginBottom: 16,
           }}
         >
-          <span style={{ color: '#ff6b35' }}>DITO</span>
+          <span style={{ color: '#D9582C' }}>DITO</span>
           <span style={{ color: '#ffffff80' }}>.guru</span>
         </div>
         <div
@@ -44,7 +44,7 @@ export default function Image() {
         <div
           style={{
             fontSize: 22,
-            color: '#ff6b35',
+            color: '#D9582C',
           }}
         >
           Find your Ember 🔥

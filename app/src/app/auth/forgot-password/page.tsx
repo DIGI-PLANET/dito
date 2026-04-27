@@ -88,7 +88,7 @@ export default function ForgotPasswordPage() {
     >
       {/* Top bar with back arrow */}
       <div className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur-md">
-        <div className="mx-auto flex h-14 w-full max-w-[420px] items-center gap-3 px-4">
+        <div className="mx-auto flex h-14 w-full max-w-105 items-center gap-3 px-4">
           <Link
             href="/auth"
             aria-label="Back"
@@ -99,7 +99,7 @@ export default function ForgotPasswordPage() {
         </div>
       </div>
 
-      <main className="mx-auto flex w-full max-w-[420px] flex-col items-center px-4 pt-10 pb-14 md:pt-16 md:pb-20">
+      <main className="mx-auto flex w-full max-w-105 flex-col items-center px-4 pt-10 pb-14 md:pt-16 md:pb-20">
         {/* Card */}
         <div className="relative w-full overflow-hidden rounded-[14px] border border-border bg-card px-5 py-7 md:px-7 md:py-9">
           {/* Decorative flame watermark (very subtle) */}
@@ -111,8 +111,8 @@ export default function ForgotPasswordPage() {
           {step === 'form' ? (
             <>
               {/* Mail icon */}
-              <div className="relative mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-[#faaf2e]/10 ring-1 ring-[#faaf2e]/30">
-                <Mail className="h-5 w-5 text-[#faaf2e]" />
+              <div className="relative mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--ember)]/10 ring-1 ring-[var(--ember)]/30">
+                <Mail className="h-5 w-5 text-[var(--ember)]" />
               </div>
 
               {/* Titles */}
@@ -137,7 +137,7 @@ export default function ForgotPasswordPage() {
 
               {/* Email input group */}
               <div className="relative mt-6">
-                <div className="flex items-center gap-1.5 rounded-[10px] border border-border bg-background px-3 focus-within:border-[#faaf2e]/50 focus-within:ring-2 focus-within:ring-[#faaf2e]/20">
+                <div className="flex items-center gap-1.5 rounded-[10px] border border-border bg-background px-3 focus-within:border-[var(--ember)]/50 focus-within:ring-2 focus-within:ring-[var(--ember)]/20">
                   <Mail className="pointer-events-none h-4 w-4 shrink-0 text-muted-foreground" />
                   <input
                     type="text"
@@ -203,7 +203,7 @@ export default function ForgotPasswordPage() {
                 type="button"
                 onClick={handleSubmit}
                 disabled={loading || !emailId}
-                className="relative mt-5 flex h-12 w-full flex-col items-center justify-center rounded-full bg-[#faaf2e] text-[#4b3002] transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
+                className="relative mt-5 flex h-12 w-full flex-col items-center justify-center rounded-full bg-[var(--ember)] text-[var(--fg-on-ember)] transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <span className="text-[15px] font-semibold leading-tight">
                   {loading
@@ -215,7 +215,7 @@ export default function ForgotPasswordPage() {
                       : 'Send reset link'}
                 </span>
                 {!loading && (
-                  <span className="text-[11px] font-medium leading-tight text-[#4b3002]/80">
+                  <span className="text-[11px] font-medium leading-tight text-[var(--fg-on-ember)]/80">
                     {isKo ? 'Send reset link' : '재설정 링크 보내기'}
                   </span>
                 )}
@@ -232,7 +232,7 @@ export default function ForgotPasswordPage() {
               <div className="relative mt-6 text-center">
                 <Link
                   href="/auth"
-                  className="inline-block text-[14px] font-medium text-foreground/90 transition hover:text-[#faaf2e]"
+                  className="inline-block text-[14px] font-medium text-foreground/90 transition hover:text-[var(--ember)]"
                 >
                   {isKo ? '로그인으로' : 'Back to login'}
                 </Link>
@@ -244,8 +244,8 @@ export default function ForgotPasswordPage() {
           ) : (
             <>
               {/* Sent confirmation */}
-              <div className="relative mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-[#faaf2e]/10 ring-1 ring-[#faaf2e]/30">
-                <Mail className="h-5 w-5 text-[#faaf2e]" />
+              <div className="relative mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--ember)]/10 ring-1 ring-[var(--ember)]/30">
+                <Mail className="h-5 w-5 text-[var(--ember)]" />
               </div>
 
               <h1 className="relative text-center text-[22px] font-bold tracking-tight md:text-[24px]">
@@ -268,12 +268,12 @@ export default function ForgotPasswordPage() {
 
               <Link
                 href="/auth"
-                className="relative mt-6 flex h-12 w-full flex-col items-center justify-center rounded-full bg-[#faaf2e] text-[#4b3002] transition hover:brightness-95"
+                className="relative mt-6 flex h-12 w-full flex-col items-center justify-center rounded-full bg-[var(--ember)] text-[var(--fg-on-ember)] transition hover:brightness-95"
               >
                 <span className="text-[15px] font-semibold leading-tight">
                   {isKo ? '로그인으로' : 'Back to login'}
                 </span>
-                <span className="text-[11px] font-medium leading-tight text-[#4b3002]/80">
+                <span className="text-[11px] font-medium leading-tight text-[var(--fg-on-ember)]/80">
                   {isKo ? 'Back to login' : '로그인으로'}
                 </span>
               </Link>

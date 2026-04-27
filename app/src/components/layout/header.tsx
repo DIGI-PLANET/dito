@@ -18,9 +18,8 @@ const PAGE_TITLES: Record<string, { en: string; ko: string } | { connected: { en
   '/dashboard': { en: 'Home', ko: '홈' },
   '/guide': { en: 'Guide', ko: '가이드' },
   '/connect': { connected: { en: 'Settings', ko: '설정' }, disconnected: { en: 'Connect', ko: '연결' } },
-  '/auth': { en: 'Portal Entry', ko: '포털 진입' },
+  '/auth': { en: 'Enter the Portal', ko: '포털 진입' },
   '/auth/signup': { en: 'Sign Up', ko: '회원가입' },
-  '/auth/login': { en: 'Sign In', ko: '로그인' },
   '/mint': { en: 'Awaken', ko: '각성' },
   '/privacy': { en: 'Privacy Policy', ko: '개인정보 처리방침' },
   '/terms': { en: 'Terms of Service', ko: '이용약관' },
@@ -52,7 +51,11 @@ export function Header() {
     pathname === '/discovery' ||
     pathname === '/onboarding' ||
     pathname === '/privacy' ||
-    pathname === '/terms'
+    pathname === '/terms' ||
+    pathname === '/auth' ||
+    pathname === '/auth/signup' ||
+    pathname === '/auth/forgot-password' ||
+    pathname === '/auth/reset-password'
   ) return null;
 
   const isHome = pathname === '/';

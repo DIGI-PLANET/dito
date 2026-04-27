@@ -29,11 +29,11 @@ export default function Error({
         <div className="relative mb-10">
           <div
             aria-hidden
-            className="absolute inset-0 -z-10 rounded-full blur-3xl opacity-30 bg-[#faaf2e] ember-flicker-glow"
+            className="absolute inset-0 -z-10 rounded-full blur-3xl opacity-30 bg-[var(--ember)] ember-flicker-glow"
           />
-          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#faaf2e]/10 ring-1 ring-[#faaf2e]/25">
+          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[var(--ember)]/10 ring-1 ring-[var(--ember)]/25">
             <Flame
-              className="h-9 w-9 text-[#faaf2e] ember-flicker"
+              className="h-9 w-9 text-[var(--ember)] ember-flicker"
               strokeWidth={1.75}
               fill="currentColor"
               fillOpacity={0.08}
@@ -57,7 +57,7 @@ export default function Error({
         <button
           type="button"
           onClick={() => reset()}
-          className="mt-10 inline-flex w-full items-center justify-center rounded-xl bg-[#faaf2e] text-[#4b3002] font-semibold h-12 px-6 transition-all hover:brightness-110 active:scale-[0.98] shadow-[0_10px_30px_-10px_rgba(250,175,46,0.6)]"
+          className="mt-10 inline-flex w-full items-center justify-center rounded-xl bg-[var(--ember)] text-[var(--fg-on-ember)] font-semibold h-12 px-6 transition-all hover:brightness-110 active:scale-[0.98] shadow-[0_10px_30px_-10px_rgba(250,175,46,0.6)]"
         >
           {isKo ? '재시도' : 'Try again'}
         </button>

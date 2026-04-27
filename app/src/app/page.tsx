@@ -209,7 +209,7 @@ export default function LandingPage() {
       {/* Top-right controls: Portal · theme · language */}
       <div className={styles.topRight}>
         <Link
-          href="/onboarding"
+          href="/auth"
           className={`${styles.ctrl} ${styles.ctrlPortal}`}
           aria-label={isKo ? '포털 진입' : 'Enter Portal'}
         >
@@ -317,15 +317,15 @@ export default function LandingPage() {
               <>
                 틀에 박힌 적성 검사들은
                 <br />
-                진짜 너의 잠재력을 찾지 못해.
+                진짜 너를 찾을 수 있을까?
               </>
             )}
           </p>
           <div className={styles.scrollHint}>
             <span className={styles.scrollHintDot} />
-            {isKo ? '이유가 뭔지 아니?' : 'do you know why?'}
+            {isKo ? '우리 얘기를 들어봐' : 'listen to us.'}
           </div>
-          <Link href="/onboarding" className={styles.skipPortal}>
+          <Link href="/auth" className={styles.skipPortal}>
             <span className={styles.ctrlPortalDot} aria-hidden />
             <span>{isKo ? '건너뛰고 포털로 진입 →' : 'Skip to the portal →'}</span>
           </Link>
@@ -661,14 +661,14 @@ export default function LandingPage() {
                   Prove you <em>exist</em>.
                 </>,
                 <>
-                  <em>너의 Ember</em>를 소환해.
+                  <em>너의 Ember</em>를 소환하고
                   <br />
-                  너의 <em>존재</em>를 증명해 줘.
+                  너의 <em>존재</em>를 증명해봐.
                 </>
               )}
             </h2>
             <div className={styles.ctaRow}>
-              <Link href="/onboarding" className={styles.cta}>
+              <Link href="/auth" className={styles.cta}>
                 {isKo ? '포털 진입 →' : 'Enter the Portal →'}
               </Link>
             </div>

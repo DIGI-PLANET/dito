@@ -8,7 +8,6 @@ import {
   Sparkles,
   Flag,
   Calendar,
-  MessageCircle,
   ChevronRight,
   Trophy,
   Link as LinkIcon,
@@ -19,6 +18,7 @@ import { Button } from '@/components/ui/button';
 import { agentStore } from '@/lib/store-agent';
 import type { UserProfile, Talent } from '@/lib/store-agent';
 import { cn } from '@/lib/utils';
+import { FlameShape } from '@/components/ember/flame-shape';
 
 interface PulseEntry {
   id: string;
@@ -152,7 +152,7 @@ export default function DashboardPage() {
         style={{ fontFamily: 'Pretendard, Manrope, system-ui, sans-serif' }}
       >
         <div className="text-center">
-          <Flame className="mx-auto h-10 w-10 text-[#faaf2e] animate-pulse" />
+          <Flame className="mx-auto h-10 w-10 text-[var(--ember)] animate-pulse" />
           <p className="mt-4 text-base font-semibold">
             {isKo ? 'DITO 대시보드 로딩 중...' : 'Loading DITO Dashboard...'}
           </p>
@@ -172,7 +172,7 @@ export default function DashboardPage() {
         style={{ fontFamily: 'Pretendard, Manrope, system-ui, sans-serif' }}
       >
         <div className="max-w-md text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#faaf2e]/15 text-[#faaf2e]">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--ember)]/15 text-[var(--ember)]">
             <Activity className="h-7 w-7" />
           </div>
           <h1 className="text-xl font-bold mb-2">
@@ -185,7 +185,7 @@ export default function DashboardPage() {
           </p>
           <Button
             onClick={() => window.location.reload()}
-            className="bg-[#faaf2e] text-[#4b3002] hover:bg-[#faaf2e]/90"
+            className="bg-[var(--ember)] text-[var(--fg-on-ember)] hover:bg-[var(--ember)]/90"
           >
             {isKo ? '다시 시도' : 'Retry Connection'}
           </Button>
@@ -206,7 +206,7 @@ export default function DashboardPage() {
         {/* Top bar: greeting + ember pill */}
         <header className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#faaf2e]/20 text-lg">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--ember)]/20 text-lg">
               <span role="img" aria-label="wave">
                 👋
               </span>
@@ -222,11 +222,11 @@ export default function DashboardPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1.5 rounded-full border border-[#faaf2e]/30 bg-[#faaf2e]/10 px-3 py-1.5">
-              <Flame className="h-3.5 w-3.5 text-[#faaf2e]" />
+            <div className="flex items-center gap-1.5 rounded-full border border-[var(--ember)]/30 bg-[var(--ember)]/10 px-3 py-1.5">
+              <Flame className="h-3.5 w-3.5 text-[var(--ember)]" />
               <span className="text-sm font-semibold tracking-tight">
                 {totalEmber.toLocaleString()}{' '}
-                <span className="text-[#faaf2e]">Ɛ</span>
+                <span className="text-[var(--ember)]">Ɛ</span>
               </span>
             </div>
             <button
@@ -242,75 +242,83 @@ export default function DashboardPage() {
         {/* Quick stats */}
         <section className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
           <StatCard
-            icon={<Sparkles className="h-4 w-4 text-[#faaf2e]" />}
+            icon={<Sparkles className="h-4 w-4 text-[var(--ember)]" />}
             value={String(activeTalentCount)}
             label={isKo ? '활성 Soul' : 'Active Souls'}
           />
           <StatCard
-            icon={<Flame className="h-4 w-4 text-[#faaf2e]" />}
+            icon={<Flame className="h-4 w-4 text-[var(--ember)]" />}
             value={String(dayStreak)}
             label={isKo ? '연속 일수' : 'Day Streak'}
           />
           <StatCard
-            icon={<Flag className="h-4 w-4 text-[#faaf2e]" />}
+            icon={<Flag className="h-4 w-4 text-[var(--ember)]" />}
             value={formatCompact(totalEmber)}
             label={isKo ? '총 Ember' : 'Total Ember'}
           />
           <StatCard
-            icon={<Calendar className="h-4 w-4 text-[#faaf2e]" />}
+            icon={<Calendar className="h-4 w-4 text-[var(--ember)]" />}
             value={`${dailyProgress}%`}
             label={isKo ? '오늘의 주기' : "Today's Cycle"}
           />
         </section>
 
-        {/* Today's focus featured card */}
+        {/* Today ritual entry card */}
         <section className="mt-5">
-          <div className="relative overflow-hidden rounded-2xl border border-[#faaf2e]/40 bg-linear-to-br from-[#4b3002] via-[#2d1c01] to-[#1a1102] p-5 shadow-[0_0_40px_-10px_rgba(250,175,46,0.35)]">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <h2 className="text-lg font-bold text-[#faf6ed]">
-                  {isKo ? '오늘의 집중' : "Today's Focus"}
-                </h2>
-                <p className="text-xs text-[#faf6ed]/70 mt-0.5">
+          <Link
+            href="/today"
+            className="group relative block overflow-hidden rounded-2xl p-5 transition"
+            style={{
+              background:
+                'linear-gradient(135deg, var(--bg-2) 0%, var(--bg-1) 100%)',
+              border: '1px solid var(--ember-soft)',
+              boxShadow: '0 0 40px -10px var(--ember-glow)',
+            }}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0 flex-1">
+                <span
+                  className="font-mono text-[10px] uppercase"
+                  style={{ letterSpacing: '0.24em', color: 'var(--ember)' }}
+                >
+                  — {isKo ? '오늘의 불꽃' : "today's ember"}
+                </span>
+                <h2
+                  className="mt-2 font-display text-[22px]"
+                  style={{
+                    letterSpacing: '-0.025em',
+                    color: 'var(--fg)',
+                    lineHeight: 1.2,
+                  }}
+                >
                   {isKo
-                    ? '일상의 리듬을 유지하세요.'
-                    : 'Maintain your daily rhythm.'}
+                    ? `${displayName}아, 오늘은 어땠어.`
+                    : `${displayName}, how was today.`}
+                </h2>
+                <p
+                  className="mt-1.5 font-display text-[13.5px]"
+                  style={{ color: 'var(--fg-dim)' }}
+                >
+                  {isKo ? '한 줄이면 돼. 수정도, 삭제도 없이.' : 'One line. No edits. No deletes.'}
                 </p>
               </div>
-              <span className="shrink-0 rounded-full border border-[#faaf2e]/40 bg-[#faaf2e]/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-[#faaf2e]">
-                {isKo ? '필요 조치' : 'Action Required'}
-              </span>
+              <div className="shrink-0">
+                <FlameShape stage="burning" size={72} breathe />
+              </div>
             </div>
-
-            <div className="mt-5 flex justify-center">
-              <RingGauge percent={checkedInToday ? 100 : dailyProgress} />
-            </div>
-
-            <div className="mt-5 space-y-2">
-              <Button
-                onClick={() => setCheckedInToday(true)}
-                disabled={checkedInToday}
-                className="w-full h-12 rounded-xl bg-[#faaf2e] text-[#4b3002] font-semibold hover:bg-[#faaf2e]/90 disabled:opacity-60"
+            <div className="mt-5 flex items-center justify-between">
+              <span
+                className="font-mono text-[10px] uppercase"
+                style={{ letterSpacing: '0.22em', color: 'var(--fg-dimmer)' }}
               >
-                {checkedInToday
-                  ? isKo
-                    ? '완료됨'
-                    : 'Completed'
-                  : isKo
-                  ? '오늘 완료 표시'
-                  : 'Mark today as done'}
-              </Button>
-              <Link href="/chat" className="block">
-                <Button
-                  variant="outline"
-                  className="w-full h-11 rounded-xl border-[#faaf2e]/20 bg-transparent text-[#faf6ed] hover:bg-[#faaf2e]/10"
-                >
-                  <MessageCircle className="h-4 w-4 mr-2" />
-                  {isKo ? 'Ember와 대화' : 'Chat with Ember'}
-                </Button>
-              </Link>
+                {isKo ? '탭해서 시작' : 'tap to begin'}
+              </span>
+              <ChevronRight
+                className="h-5 w-5 transition-transform group-hover:translate-x-0.5"
+                style={{ color: 'var(--ember)' }}
+              />
             </div>
-          </div>
+          </Link>
         </section>
 
         {/* Active talents */}
@@ -320,8 +328,8 @@ export default function DashboardPage() {
               {isKo ? '활성 재능' : 'Active Talents'}
             </h3>
             <Link
-              href="/soul"
-              className="flex items-center gap-1 text-xs font-medium text-[#faaf2e] hover:text-[#faaf2e]/80"
+              href="/ember"
+              className="flex items-center gap-1 text-xs font-medium text-[var(--ember)] hover:text-[var(--ember)]/80"
             >
               {isKo ? '갤러리 보기' : 'View Gallery'}
               <ChevronRight className="h-3.5 w-3.5" />
@@ -354,7 +362,7 @@ export default function DashboardPage() {
                   key={id}
                   className="flex flex-col items-center justify-center gap-2 min-w-[92px] rounded-xl border border-border/50 bg-card/40 px-4 py-4"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#faaf2e]/15 text-[#faaf2e]">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--ember)]/15 text-[var(--ember)]">
                     <Icon className="h-5 w-5" />
                   </div>
                   <p className="text-[11px] font-medium text-center">
@@ -369,7 +377,7 @@ export default function DashboardPage() {
         {/* Community pulse */}
         <section className="mt-7">
           <div className="flex items-center gap-2 mb-3">
-            <Activity className="h-3.5 w-3.5 text-[#faaf2e]" />
+            <Activity className="h-3.5 w-3.5 text-[var(--ember)]" />
             <h3 className="text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground">
               {isKo ? '커뮤니티 맥박' : 'Community Pulse'}
             </h3>
@@ -380,7 +388,7 @@ export default function DashboardPage() {
                 key={entry.id}
                 className="flex items-start gap-3 px-4 py-3 text-xs"
               >
-                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[#faaf2e]" />
+                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--ember)]" />
                 <p className="flex-1 text-foreground/80 leading-relaxed">
                   {entry.message}
                 </p>
@@ -446,7 +454,7 @@ function RingGauge({ percent }: { percent: number }) {
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="#faaf2e"
+          stroke="var(--ember)"
           strokeWidth={strokeWidth}
           strokeLinecap="round"
           strokeDasharray={circ}
@@ -473,9 +481,9 @@ function TalentRow({
 }) {
   const tintBg =
     tint === 'amber'
-      ? 'bg-[#faaf2e]/15 text-[#faaf2e]'
+      ? 'bg-[var(--ember)]/15 text-[var(--ember)]'
       : 'bg-sky-500/15 text-sky-400';
-  const tintRing = tint === 'amber' ? '#faaf2e' : '#38bdf8';
+  const tintRing = tint === 'amber' ? 'var(--ember)' : '#38bdf8';
   const stageCopy = TALENT_STAGE_COPY[talent.stage] || {
     en: STAGE_LABEL[talent.stage] || talent.stage,
     ko: STAGE_LABEL[talent.stage] || talent.stage,
@@ -483,8 +491,8 @@ function TalentRow({
 
   return (
     <Link
-      href="/soul"
-      className="flex items-center gap-3 rounded-xl border border-border/50 bg-card/40 px-3 py-3 transition hover:border-[#faaf2e]/40 hover:bg-card/60"
+      href="/ember"
+      className="flex items-center gap-3 rounded-xl border border-border/50 bg-card/40 px-3 py-3 transition hover:border-[var(--ember)]/40 hover:bg-card/60"
     >
       <div
         className={cn(
@@ -500,7 +508,7 @@ function TalentRow({
           {isKo ? stageCopy.ko : stageCopy.en}
         </p>
       </div>
-      <span className="shrink-0 text-xs font-medium text-[#faaf2e]">
+      <span className="shrink-0 text-xs font-medium text-[var(--ember)]">
         {isKo ? '열기' : 'Open'}
       </span>
     </Link>

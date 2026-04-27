@@ -18,3 +18,4 @@ node_modules/
 
 # TS build info (auto-generated)
 tsconfig.tsbuildinfo
+.env*.local

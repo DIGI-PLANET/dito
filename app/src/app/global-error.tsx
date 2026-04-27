@@ -85,7 +85,7 @@ export default function GlobalError({
             width: 240px;
             height: 240px;
             border-radius: 9999px;
-            background: #faaf2e;
+            background: var(--ember);
             opacity: 0.08;
             filter: blur(80px);
             pointer-events: none;
@@ -156,8 +156,8 @@ export default function GlobalError({
             padding: 0 24px;
             border-radius: 12px;
             border: 1px solid rgba(250, 175, 46, 0.45);
-            background: #faaf2e;
-            color: #4b3002;
+            background: var(--ember);
+            color: var(--fg-on-ember);
             font-family: inherit;
             font-size: 14px;
             font-weight: 600;
@@ -169,7 +169,7 @@ export default function GlobalError({
           .ge-btn:hover { background: #f5a71a; transform: translateY(-1px); }
           .ge-btn:active { transform: translateY(0); }
           .ge-btn:focus-visible {
-            outline: 2px solid #faaf2e;
+            outline: 2px solid var(--ember);
             outline-offset: 2px;
           }
         `}</style>
@@ -184,7 +184,7 @@ export default function GlobalError({
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="#faaf2e"
+                stroke="var(--ember)"
                 strokeWidth="1.75"
                 strokeLinecap="round"
                 strokeLinejoin="round"

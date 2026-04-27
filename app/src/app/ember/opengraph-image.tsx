@@ -39,13 +39,13 @@ function defaultOG() {
       >
         <div style={{ fontSize: 80, marginBottom: 16 }}>🔥</div>
         <div style={{ fontSize: 72, fontWeight: 800, display: 'flex', marginBottom: 16 }}>
-          <span style={{ color: '#ff6b35' }}>DITO</span>
+          <span style={{ color: '#D9582C' }}>DITO</span>
           <span style={{ color: '#ffffff80' }}>.guru</span>
         </div>
         <div style={{ fontSize: 28, color: '#ffffffcc', marginBottom: 24 }}>
           Don&apos;t Ignore The One you are
         </div>
-        <div style={{ fontSize: 22, color: '#ff6b35' }}>Find your Ember 🔥</div>
+        <div style={{ fontSize: 22, color: '#D9582C' }}>Find your Ember 🔥</div>
       </div>
     ),
     { ...size }
@@ -69,7 +69,7 @@ export default async function Image({ searchParams }: { searchParams: Promise<{ 
 
     const soul = data as { talent_label: string; traits: string[]; description: string; status: string };
     const stage = soul.status === 'minted' ? 'burning' : 'sparked';
-    const stageColor = STAGE_COLORS[stage] || '#ff6b35';
+    const stageColor = STAGE_COLORS[stage] || '#D9582C';
     const stageLabel = STAGE_LABELS[stage] || '🕯️ Sparked';
 
     return new ImageResponse(
@@ -113,7 +113,7 @@ export default async function Image({ searchParams }: { searchParams: Promise<{ 
           <div style={{ fontSize: 18, color: '#ffffffaa', textAlign: 'center', maxWidth: 800, lineHeight: 1.5, marginBottom: 32 }}>
             {soul.description?.slice(0, 150)}
           </div>
-          <div style={{ fontSize: 16, color: '#ff6b35' }}>Discovered on DITO.guru 🔥</div>
+          <div style={{ fontSize: 16, color: '#D9582C' }}>Discovered on DITO.guru 🔥</div>
         </div>
       ),
       { ...size }

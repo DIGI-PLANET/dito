@@ -1,7 +1,9 @@
-pub mod souls;
-pub mod talents;
-pub mod arena;
-pub mod twofa;
-pub mod command;
-pub mod portal;
 pub mod chat;
+pub mod command;
+pub mod diary;
+pub mod ember;
+pub mod memories;
+pub mod portal;
+pub mod soul;
+pub mod timecapsule;
+pub mod twofa;

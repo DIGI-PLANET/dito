@@ -1,13 +1,8 @@
 use actix_web::{web, HttpResponse};
 
-use crate::database::MockDb;
-use crate::handler::souls;
 use crate::model::*;
 
-pub async fn handle_portal(
-    body: web::Json<CommandRequest>,
-    db: web::Data<MockDb>,
-) -> HttpResponse {
+pub async fn handle_portal(body: web::Json<CommandRequest>) -> HttpResponse {
     if body.action.is_empty() {
         return HttpResponse::BadRequest().json(error_response(
             "missing_action",
@@ -18,7 +13,11 @@ pub async fn handle_portal(
 
     match body.action.as_str() {
         "stats" => portal_stats(),
-        "users" | "souls" => souls::get_souls(db).await,
+        "users" | "souls" => HttpResponse::NotImplemented().json(error_response(
+            "not_implemented",
+            error_type::CLIENT,
+            "users/souls portal actions moved to REST endpoints in v3",
+        )),
         "audit" => portal_audit(&body.params),
         "deleted" => portal_deleted(&body.params),
         "restore" => portal_restore(&body.params),

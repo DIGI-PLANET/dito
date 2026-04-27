@@ -18,10 +18,10 @@ export default function NotFound() {
         <div className="relative mb-8">
           <div
             aria-hidden
-            className="absolute inset-0 -z-10 rounded-full blur-2xl opacity-30 bg-[#faaf2e]"
+            className="absolute inset-0 -z-10 rounded-full blur-2xl opacity-30 bg-[var(--ember)]"
           />
           <Flame
-            className="h-16 w-16 text-[#faaf2e] opacity-45"
+            className="h-16 w-16 text-[var(--ember)] opacity-45"
             strokeWidth={1.5}
           />
         </div>
@@ -42,7 +42,7 @@ export default function NotFound() {
         <div className="mt-8 flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
           <Link
             href="/"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#faaf2e] text-[#4b3002] font-semibold h-11 px-6 w-full sm:w-auto transition-all hover:brightness-110 active:scale-[0.98]"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--ember)] text-[var(--fg-on-ember)] font-semibold h-11 px-6 w-full sm:w-auto transition-all hover:brightness-110 active:scale-[0.98]"
           >
             {isKo ? '홈으로' : 'Go home'}
             <ArrowRight className="h-4 w-4" />

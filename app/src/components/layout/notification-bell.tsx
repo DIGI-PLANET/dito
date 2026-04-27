@@ -162,7 +162,7 @@ export function NotificationBell() {
       >
         🔔
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 bg-[#ff6b35] text-white text-[10px] font-bold rounded-full min-w-[16px] h-[16px] flex items-center justify-center leading-none">
+          <span className="absolute -top-1 -right-1 bg-[var(--ember)] text-white text-[10px] font-bold rounded-full min-w-[16px] h-[16px] flex items-center justify-center leading-none">
             {unreadCount}
           </span>
         )}
@@ -175,7 +175,7 @@ export function NotificationBell() {
             {unreadCount > 0 && (
               <button
                 onClick={markAllRead}
-                className="text-xs text-[#ff6b35] hover:underline"
+                className="text-xs text-[var(--ember)] hover:underline"
               >
                 {t(lang, 'notif.markAllRead')}
               </button>
@@ -192,13 +192,13 @@ export function NotificationBell() {
                 <div
                   key={n.id}
                   className={`px-4 py-3 flex items-start gap-3 border-b border-border last:border-b-0 transition-colors ${
-                    n.read ? 'opacity-60' : 'bg-[#ff6b35]/5'
+                    n.read ? 'opacity-60' : 'bg-[var(--ember)]/5'
                   }`}
                 >
                   <span className="text-lg flex-shrink-0">{getIcon(n.type)}</span>
                   <span className="text-sm leading-snug">{getText(n)}</span>
                   {!n.read && (
-                    <span className="ml-auto flex-shrink-0 w-2 h-2 rounded-full bg-[#ff6b35] mt-1.5" />
+                    <span className="ml-auto flex-shrink-0 w-2 h-2 rounded-full bg-[var(--ember)] mt-1.5" />
                   )}
                 </div>
               ))}

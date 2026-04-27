@@ -9,7 +9,7 @@ mod llm;
 mod middleware;
 mod model;
 
-use database::MockDb;
+use database::SupabaseClient;
 use model::{error_response, error_type, success_response};
 
 const API_VERSION: &str = "v1";
@@ -84,11 +84,14 @@ async fn main() -> std::io::Result<()> {
         .and_then(|p| p.parse().ok())
         .unwrap_or(8080);
 
-    let db = web::Data::new(MockDb::new());
+    let supabase = web::Data::new(SupabaseClient::from_env());
     let start_time = web::Data::new(Instant::now());
     let llm_provider = web::Data::new(llm::provider::LlmProvider::from_env());
 
-    log::info!("🧪 Running in Mock Mode");
+    match supabase.get_ref() {
+        Some(_) => log::info!("🗄  Supabase: connected (PostgREST)"),
+        None => log::warn!("🗄  Supabase: NOT configured — /api/{{diary,memories,timecapsule,ember,soul}} will 503"),
+    }
     match llm_provider.get_ref() {
         Some(p) => log::info!("🤖 LLM Provider: {}", p.name()),
         None => log::info!("🤖 LLM Provider: none (mock mode)"),
@@ -107,21 +110,17 @@ async fn main() -> std::io::Result<()> {
                     || origin_str.starts_with("http://localhost")
             })
             .allowed_methods(vec!["GET", "POST", "PUT", "DELETE", "OPTIONS"])
-            .allowed_headers(vec![
-                "Authorization",
-                "Content-Type",
-                "X-2FA-Code",
-            ])
+            .allowed_headers(vec!["Authorization", "Content-Type", "X-2FA-Code"])
             .supports_credentials()
             .max_age(3600);
 
         App::new()
-            .app_data(db.clone())
+            .app_data(supabase.clone())
             .app_data(start_time.clone())
             .app_data(llm_provider.clone())
             .wrap(cors)
             .wrap(Logger::new("%a [%t] \"%r\" %s %Dms"))
-            // Public routes
+            // ── Public ─────────────────────────────────────────────────
             .route("/", web::get().to(root_redirect))
             .route("/health", web::get().to(health))
             .route("/health", web::head().to(health))
@@ -130,19 +129,19 @@ async fn main() -> std::io::Result<()> {
                 web::post().to(handler::twofa::mandatory_setup_2fa),
             )
             .route("/api/llm/status", web::get().to(handler::chat::llm_status))
-            // Command API (JWT protected)
+            // ── Legacy command (kept for agent-api.ts compat) ──────────
             .service(
                 web::resource("/command")
                     .wrap(actix_web::middleware::from_fn(jwt_guard))
                     .route(web::post().to(handler::command::handle_command)),
             )
-            // Portal API (Admin protected)
+            // ── Admin portal ───────────────────────────────────────────
             .service(
                 web::resource("/portal")
                     .wrap(actix_web::middleware::from_fn(portal_guard))
                     .route(web::post().to(handler::portal::handle_portal)),
             )
-            // Protected API routes
+            // ── Protected API (JWT) ────────────────────────────────────
             .service(
                 web::scope("/api")
                     .wrap(actix_web::middleware::from_fn(jwt_guard))
@@ -153,23 +152,21 @@ async fn main() -> std::io::Result<()> {
                     .route("/auth/2fa/disable", web::post().to(handler::twofa::disable_2fa))
                     .route("/auth/2fa/email-recovery", web::post().to(handler::twofa::email_recovery))
                     .route("/auth/2fa/email-verify", web::post().to(handler::twofa::verify_email_code))
-                    // Souls
-                    .route("/souls", web::get().to(handler::souls::get_souls))
-                    .route("/souls/me", web::get().to(handler::souls::get_my_soul))
-                    .route("/souls/{id}", web::get().to(handler::souls::get_soul))
-                    .route("/souls", web::post().to(handler::souls::create_soul))
-                    .route("/souls/{id}", web::put().to(handler::souls::update_soul))
-                    .route("/souls/{id}", web::delete().to(handler::souls::delete_soul))
-                    // Arena
-                    .route("/arena/live", web::get().to(handler::arena::get_live_arena_events))
-                    .route("/arena/join", web::post().to(handler::arena::join_arena_event))
-                    .route("/arena/history", web::get().to(handler::arena::get_arena_history))
-                    .route("/arena/{id}/leaderboard", web::get().to(handler::arena::get_arena_leaderboard))
-                    // Talents
-                    .route("/talents/discover", web::get().to(handler::talents::discover_talents))
-                    .route("/talents/track", web::post().to(handler::talents::track_talent_progress))
-                    .route("/talents/analytics", web::get().to(handler::talents::get_talent_analytics))
-                    .route("/talents/trending", web::get().to(handler::talents::get_trending_talents))
+                    // Ember (SBT record)
+                    .route("/ember", web::get().to(handler::ember::get_ember))
+                    .route("/ember", web::post().to(handler::ember::create_ember))
+                    .route("/ember", web::put().to(handler::ember::update_ember))
+                    // Diary (journal entries — permanence-gated)
+                    .route("/diary", web::get().to(handler::diary::list_diary))
+                    .route("/diary", web::post().to(handler::diary::create_diary))
+                    // Memories (unified timeline, 6 tabs)
+                    .route("/memories", web::get().to(handler::memories::list_memories))
+                    // Timecapsule (forward schedule + backward surfacing)
+                    .route("/timecapsule", web::get().to(handler::timecapsule::list_capsule))
+                    .route("/timecapsule", web::post().to(handler::timecapsule::schedule_capsule))
+                    // Soul (SBT draft records)
+                    .route("/soul", web::get().to(handler::soul::list_souls))
+                    .route("/soul", web::post().to(handler::soul::create_soul))
                     // Chat (LLM + SSE)
                     .route("/chat", web::post().to(handler::chat::chat))
                     .route("/chat/stream", web::post().to(handler::chat::chat_stream)),

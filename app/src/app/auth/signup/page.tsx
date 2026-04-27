@@ -434,7 +434,7 @@ export default function SignupPage() {
             </button>
           ) : (
             <div className="flex items-center gap-2 text-sm font-semibold">
-              <Flame className="h-4 w-4 text-[#faaf2e]" />
+              <Flame className="h-4 w-4 text-[var(--ember)]" />
               DITO Soul
             </div>
           )}
@@ -542,9 +542,9 @@ function StepIndicator({ step, isKo }: { step: Step; isKo: boolean }) {
                 className={[
                   'flex h-7 w-7 items-center justify-center rounded-full border text-xs font-bold transition',
                   isActive
-                    ? 'border-[#faaf2e] text-[#faaf2e]'
+                    ? 'border-[var(--ember)] text-[var(--ember)]'
                     : isDone
-                      ? 'border-[#faaf2e] bg-[#faaf2e] text-[#4b3002]'
+                      ? 'border-[var(--ember)] bg-[var(--ember)] text-[var(--fg-on-ember)]'
                       : 'border-border text-muted-foreground',
                 ].join(' ')}
               >
@@ -554,7 +554,7 @@ function StepIndicator({ step, isKo }: { step: Step; isKo: boolean }) {
                 className={[
                   'text-[10px] font-semibold tracking-[0.12em]',
                   isActive
-                    ? 'text-[#faaf2e]'
+                    ? 'text-[var(--ember)]'
                     : isDone
                       ? 'text-foreground'
                       : 'text-muted-foreground',
@@ -636,7 +636,7 @@ function StepOne(p: StepOneProps) {
         />
 
         <div className="relative flex flex-col items-center gap-1 pb-5">
-          <Flame className="h-7 w-7 text-[#faaf2e]" strokeWidth={2.2} />
+          <Flame className="h-7 w-7 text-[var(--ember)]" strokeWidth={2.2} />
           <h1 className="text-xl font-bold tracking-tight">
             {p.isKo ? '첫 불꽃을 지피자.' : 'Light the first spark.'}
           </h1>
@@ -731,7 +731,7 @@ function StepOne(p: StepOneProps) {
                     value={p.emailDomain}
                     onChange={(e) => p.handleDomainChange(e.target.value)}
                     disabled={p.loading || p.emailVerified}
-                    className="h-11 w-full appearance-none rounded-[10px] border border-border bg-muted/40 px-3 pr-8 text-sm focus:outline-none focus:ring-1 focus:ring-[#faaf2e] disabled:cursor-not-allowed disabled:opacity-50"
+                    className="h-11 w-full appearance-none rounded-[10px] border border-border bg-muted/40 px-3 pr-8 text-sm focus:outline-none focus:ring-1 focus:ring-[var(--ember)] disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {p.domains.map((d) => (
                       <option key={d} value={d}>
@@ -785,7 +785,7 @@ function StepOne(p: StepOneProps) {
                     maxLength={6}
                   />
                   {p.otpTimer > 0 && (
-                    <span className="shrink-0 font-mono text-xs text-[#faaf2e]">
+                    <span className="shrink-0 font-mono text-xs text-[var(--ember)]">
                       {p.formatTimer(p.otpTimer)}
                     </span>
                   )}
@@ -793,7 +793,7 @@ function StepOne(p: StepOneProps) {
                     type="button"
                     onClick={p.handleVerifyOtp}
                     disabled={p.otpLoading || p.otp.length !== 6}
-                    className="h-11 shrink-0 rounded-[10px] bg-[#faaf2e] text-xs font-semibold text-[#4b3002] hover:bg-[#e89f28]"
+                    className="h-11 shrink-0 rounded-[10px] bg-[var(--ember)] text-xs font-semibold text-[var(--fg-on-ember)] hover:bg-[#e89f28]"
                   >
                     {p.otpLoading
                       ? p.isKo ? '확인 중...' : 'Verifying...'
@@ -911,7 +911,7 @@ function StepOne(p: StepOneProps) {
                 <button
                   type="button"
                   onClick={() => window.open('/terms', '_blank')}
-                  className="text-[#faaf2e] hover:underline"
+                  className="text-[var(--ember)] hover:underline"
                 >
                   회원약관
                 </button>
@@ -923,7 +923,7 @@ function StepOne(p: StepOneProps) {
                 <button
                   type="button"
                   onClick={() => window.open('/terms', '_blank')}
-                  className="text-[#faaf2e] hover:underline"
+                  className="text-[var(--ember)] hover:underline"
                 >
                   Terms
                 </button>
@@ -940,7 +940,7 @@ function StepOne(p: StepOneProps) {
                 <button
                   type="button"
                   onClick={() => window.open('/privacy', '_blank')}
-                  className="text-[#faaf2e] hover:underline"
+                  className="text-[var(--ember)] hover:underline"
                 >
                   서비스 이용약관
                 </button>
@@ -952,7 +952,7 @@ function StepOne(p: StepOneProps) {
                 <button
                   type="button"
                   onClick={() => window.open('/privacy', '_blank')}
-                  className="text-[#faaf2e] hover:underline"
+                  className="text-[var(--ember)] hover:underline"
                 >
                   Privacy Policy
                 </button>
@@ -964,7 +964,7 @@ function StepOne(p: StepOneProps) {
           <Button
             onClick={p.handleContinue}
             disabled={!p.canSubmit}
-            className="mt-2 h-12 w-full rounded-[10px] bg-[#faaf2e] text-sm font-semibold text-[#4b3002] hover:bg-[#e89f28] disabled:bg-muted/60 disabled:text-muted-foreground"
+            className="mt-2 h-12 w-full rounded-[10px] bg-[var(--ember)] text-sm font-semibold text-[var(--fg-on-ember)] hover:bg-[#e89f28] disabled:bg-muted/60 disabled:text-muted-foreground"
           >
             {p.loading
               ? p.isKo ? '가입 중...' : 'Creating...'
@@ -979,7 +979,7 @@ function StepOne(p: StepOneProps) {
 
           <p className="pt-1 text-center text-xs text-muted-foreground">
             {p.isKo ? '이미 계정이 있나요? ' : 'Already have an account? '}
-            <Link href="/auth/login" className="text-[#faaf2e] hover:underline">
+            <Link href="/auth" className="text-[var(--ember)] hover:underline">
               {p.isKo ? '로그인' : 'Sign in'}
             </Link>
           </p>
@@ -1019,7 +1019,7 @@ function StepTwo(p: StepTwoProps) {
         />
 
         <div className="relative flex flex-col items-center gap-1 pb-5">
-          <ShieldCheck className="h-7 w-7 text-[#faaf2e]" strokeWidth={2.2} />
+          <ShieldCheck className="h-7 w-7 text-[var(--ember)]" strokeWidth={2.2} />
           <h1 className="text-xl font-bold tracking-tight">
             {p.isKo ? 'Soul을 지키자.' : 'Protect your Soul.'}
           </h1>
@@ -1032,7 +1032,7 @@ function StepTwo(p: StepTwoProps) {
 
         {/* QR Code */}
         <div className="mb-5 flex justify-center">
-          <div className="rounded-[14px] border border-[#faaf2e]/70 bg-white p-3">
+          <div className="rounded-[14px] border border-[var(--ember)]/70 bg-white p-3">
             {p.twoFactorQr ? (
               <img src={p.twoFactorQr} alt="2FA QR" className="h-40 w-40" />
             ) : (
@@ -1079,7 +1079,7 @@ function StepTwo(p: StepTwoProps) {
               aria-label="Copy"
               className="inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition hover:bg-foreground/5 hover:text-foreground"
             >
-              {p.secretCopied ? <Check className="h-3.5 w-3.5 text-[#faaf2e]" /> : <Copy className="h-3.5 w-3.5" />}
+              {p.secretCopied ? <Check className="h-3.5 w-3.5 text-[var(--ember)]" /> : <Copy className="h-3.5 w-3.5" />}
             </button>
           </div>
         </div>
@@ -1137,8 +1137,8 @@ function StepTwo(p: StepTwoProps) {
                 onKeyDown={(e) => p.handleOtpKeyDown(idx, e)}
                 className={[
                   'h-12 w-10 rounded-[10px] border bg-muted/40 text-center font-mono text-lg font-semibold',
-                  'focus:border-[#faaf2e] focus:outline-none focus:ring-1 focus:ring-[#faaf2e]',
-                  digit ? 'border-[#faaf2e] text-[#faaf2e]' : 'border-border text-foreground',
+                  'focus:border-[var(--ember)] focus:outline-none focus:ring-1 focus:ring-[var(--ember)]',
+                  digit ? 'border-[var(--ember)] text-[var(--ember)]' : 'border-border text-foreground',
                 ].join(' ')}
               />
             ))}
@@ -1152,7 +1152,7 @@ function StepTwo(p: StepTwoProps) {
         <Button
           onClick={p.handleVerify}
           disabled={p.loading || p.twoFactorCode.join('').length !== 6}
-          className="mt-5 h-12 w-full rounded-[10px] bg-[#faaf2e] text-sm font-semibold text-[#4b3002] hover:bg-[#e89f28] disabled:bg-muted/60 disabled:text-muted-foreground"
+          className="mt-5 h-12 w-full rounded-[10px] bg-[var(--ember)] text-sm font-semibold text-[var(--fg-on-ember)] hover:bg-[#e89f28] disabled:bg-muted/60 disabled:text-muted-foreground"
         >
           {p.loading
             ? p.isKo ? '확인 중...' : 'Verifying...'
@@ -1170,15 +1170,15 @@ function StepThree({ isKo }: { isKo: boolean }) {
     <div className="relative w-full page-enter">
       <div className="relative overflow-hidden rounded-[14px] border border-border bg-card p-8 shadow-sm">
         {/* Decorative sparkles */}
-        <Sparkles className="absolute left-6 top-6 h-4 w-4 text-[#faaf2e]/70" />
-        <Sparkles className="absolute right-10 top-12 h-3 w-3 text-[#faaf2e]/40" />
-        <Sparkles className="absolute left-10 bottom-24 h-3 w-3 text-[#faaf2e]/50" />
-        <Sparkles className="absolute right-6 bottom-12 h-4 w-4 text-[#faaf2e]/60" />
+        <Sparkles className="absolute left-6 top-6 h-4 w-4 text-[var(--ember)]/70" />
+        <Sparkles className="absolute right-10 top-12 h-3 w-3 text-[var(--ember)]/40" />
+        <Sparkles className="absolute left-10 bottom-24 h-3 w-3 text-[var(--ember)]/50" />
+        <Sparkles className="absolute right-6 bottom-12 h-4 w-4 text-[var(--ember)]/60" />
 
         <div className="relative flex flex-col items-center gap-5">
           <div className="relative">
-            <div className="absolute inset-0 rounded-full bg-[#faaf2e]/20 blur-2xl" aria-hidden="true" />
-            <Flame className="relative h-20 w-20 text-[#faaf2e]" strokeWidth={2} />
+            <div className="absolute inset-0 rounded-full bg-[var(--ember)]/20 blur-2xl" aria-hidden="true" />
+            <Flame className="relative h-20 w-20 text-[var(--ember)]" strokeWidth={2} />
           </div>
 
           <div className="text-center">
@@ -1192,7 +1192,7 @@ function StepThree({ isKo }: { isKo: boolean }) {
 
           <Link
             href="/discovery"
-            className="mt-2 inline-flex h-12 w-full items-center justify-center rounded-[10px] bg-[#faaf2e] text-sm font-semibold text-[#4b3002] transition hover:bg-[#e89f28]"
+            className="mt-2 inline-flex h-12 w-full items-center justify-center rounded-[10px] bg-[var(--ember)] text-sm font-semibold text-[var(--fg-on-ember)] transition hover:bg-[#e89f28]"
           >
             {isKo ? 'Ember 만나기 / Meet Ember' : 'Meet Ember / Ember 만나기'}
           </Link>
@@ -1265,7 +1265,7 @@ function AgreeRow({
       <span
         className={[
           'flex h-4 w-4 shrink-0 items-center justify-center rounded border transition',
-          checked ? 'border-[#faaf2e] bg-[#faaf2e]' : 'border-border bg-transparent',
+          checked ? 'border-[var(--ember)] bg-[var(--ember)]' : 'border-border bg-transparent',
         ].join(' ')}
       >
         <input
@@ -1275,7 +1275,7 @@ function AgreeRow({
           disabled={disabled}
           className="sr-only"
         />
-        {checked && <Check className="h-3 w-3 text-[#4b3002]" strokeWidth={3} />}
+        {checked && <Check className="h-3 w-3 text-[var(--fg-on-ember)]" strokeWidth={3} />}
       </span>
       <span className="text-xs leading-relaxed text-muted-foreground">{children}</span>
     </label>

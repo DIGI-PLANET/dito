@@ -29,19 +29,19 @@ export function MobileGuide({ onClose }: MobileGuideProps) {
             
             <div className="space-y-2">
               <div className="flex gap-2">
-                <span className="bg-[#ff6b35] text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0">1</span>
+                <span className="bg-[var(--ember)] text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0">1</span>
                 <p className="text-xs">Phantom, Solflare 등 지갑 앱 실행</p>
               </div>
               <div className="flex gap-2">
-                <span className="bg-[#ff6b35] text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0">2</span>
+                <span className="bg-[var(--ember)] text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0">2</span>
                 <p className="text-xs">앱 하단의 <strong>&quot;브라우저&quot;</strong> 또는 <strong>&quot;Discover&quot;</strong> 탭 클릭</p>
               </div>
               <div className="flex gap-2">
-                <span className="bg-[#ff6b35] text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0">3</span>
+                <span className="bg-[var(--ember)] text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0">3</span>
                 <p className="text-xs"><strong>dito.guru</strong> 입력 후 접속</p>
               </div>
               <div className="flex gap-2">
-                <span className="bg-[#ff6b35] text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0">4</span>
+                <span className="bg-[var(--ember)] text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold flex-shrink-0">4</span>
                 <p className="text-xs">지갑 연결 시 바로 서명 가능! ✅</p>
               </div>
             </div>

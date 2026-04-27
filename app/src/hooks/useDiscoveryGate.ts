@@ -21,7 +21,7 @@ export function useDiscoveryGate() {
 
         if (!authenticated) {
           // 인증되지 않음 → 로그인 페이지로
-          router.replace('/auth/login');
+          router.replace('/auth');
           return;
         }
 
@@ -47,7 +47,7 @@ export function useDiscoveryGate() {
 
       } catch (error) {
         console.error('Discovery gate error:', error);
-        router.replace('/auth/login');
+        router.replace('/auth');
       } finally {
         setIsChecking(false);
       }

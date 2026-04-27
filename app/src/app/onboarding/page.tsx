@@ -1,148 +1,62 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import Image from 'next/image';
-import { useWallet } from '@solana/wallet-adapter-react';
-import {
-  Loader2,
-  Check,
-  Flame,
-  Wallet as WalletIcon,
-  ShieldCheck,
-  ChevronRight,
-  AlertCircle,
-} from 'lucide-react';
+import { useModal, usePhantom } from '@phantom/react-sdk';
+import { Loader2, ArrowLeft } from 'lucide-react';
 import { useI18n } from '@/providers/i18n-provider';
 import { store, getSignMessage } from '@/lib/store';
 import { getAuthParams } from '@/lib/wallet-auth';
 import { getWalletCookie } from '@/lib/wallet-cookie';
+import { FlameShape, EmberStage } from '@/components/ember/flame-shape';
+import { Wordmark } from '@/components/ember/wordmark';
+import { Eyebrow } from '@/components/ember/eyebrow';
+import { EmberLine } from '@/components/ember/ember-line';
 
-type Step = 'name' | 'wallet' | 'ready';
+type Step =
+  | 'hook'
+  | 'rule'
+  | 'wallet'
+  | 'name'
+  | 'timeLost'
+  | 'envy'
+  | 'talent'
+  | 'ignite';
 
-const STEPS: Step[] = ['name', 'wallet', 'ready'];
+const STEPS: Step[] = ['hook', 'rule', 'wallet', 'name', 'timeLost', 'envy', 'talent', 'ignite'];
 
-/* ── Step indicator (sticky top) ── */
-function StepIndicator({ current }: { current: Step }) {
+// Flame stage per step — grows dormant → eternal across the flow
+const STEP_STAGE: Record<Step, EmberStage> = {
+  hook: 'dormant',
+  rule: 'dormant',
+  wallet: 'sparked',
+  name: 'sparked',
+  timeLost: 'burning',
+  envy: 'burning',
+  talent: 'blazing',
+  ignite: 'radiant',
+};
+
+function StepBars({ current }: { current: Step }) {
   const idx = STEPS.indexOf(current);
   return (
-    <div className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur supports-backdrop-filter:bg-background/60">
-      <div className="mx-auto flex h-14 w-full max-w-[420px] items-center justify-center gap-2 px-4">
-        {STEPS.map((s, i) => {
-          const active = i === idx;
-          const done = i < idx;
-          return (
-            <div
-              key={s}
-              className={`h-1.5 rounded-full transition-all duration-500 ${
-                active
-                  ? 'w-8 bg-[#faaf2e] shadow-[0_0_8px_rgba(255,176,103,0.5)]'
-                  : done
-                  ? 'w-3 bg-[#faaf2e]/70'
-                  : 'w-3 bg-[#4b3002]/60'
-              }`}
-            />
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-/* ── Ember avatar that brightens across steps ── */
-function EmberAvatar({
-  intensity,
-  size = 108,
-}: {
-  intensity: number; // 0..1
-  size?: number;
-}) {
-  const glow = Math.max(0.15, intensity);
-  const px = `${size}px`;
-  return (
-    <div
-      className="relative flex items-center justify-center"
-      style={{ width: px, height: px }}
-    >
-      <div
-        aria-hidden
-        className="absolute inset-0 rounded-full blur-2xl transition-opacity duration-700"
-        style={{
-          background: `radial-gradient(circle, rgba(250,175,46,${glow}) 0%, rgba(75,48,2,${
-            glow * 0.6
-          }) 50%, transparent 70%)`,
-          opacity: glow,
-        }}
-      />
-      <div
-        className="relative flex h-full w-full items-center justify-center rounded-full border transition-all duration-700"
-        style={{
-          borderColor: `rgba(250,175,46,${0.2 + glow * 0.6})`,
-          background: `radial-gradient(circle at 50% 60%, rgba(250,175,46,${
-            glow * 0.18
-          }) 0%, rgba(17,17,22,0.9) 70%)`,
-        }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <Image
-          src="/ember-logo.png"
-          alt="Ember"
-          width={size}
-          height={size}
-          className="pointer-events-none select-none object-contain transition-[filter,opacity] duration-700"
-          style={{
-            opacity: 0.35 + glow * 0.65,
-            filter: `brightness(${0.65 + glow * 0.55}) saturate(${0.6 + glow * 0.9})`,
-          }}
-          priority
-        />
-      </div>
-    </div>
-  );
-}
-
-/* ── Soft CSS confetti on step 3 arrival ── */
-function Confetti() {
-  const pieces = useMemo(
-    () =>
-      Array.from({ length: 18 }).map((_, i) => ({
-        id: i,
-        left: Math.random() * 100,
-        delay: Math.random() * 0.6,
-        duration: 2 + Math.random() * 1.5,
-        size: 4 + Math.random() * 6,
-        rot: Math.random() * 360,
-        hue: i % 3 === 0 ? '#faaf2e' : i % 3 === 1 ? '#ffd27f' : '#ff9a3c',
-      })),
-    []
-  );
-  return (
-    <div
-      aria-hidden
-      className="pointer-events-none absolute inset-0 overflow-hidden"
-    >
-      {pieces.map((p) => (
-        <span
-          key={p.id}
-          className="absolute top-0 block rounded-[2px] opacity-80"
-          style={{
-            left: `${p.left}%`,
-            width: `${p.size}px`,
-            height: `${p.size * 1.6}px`,
-            background: p.hue,
-            transform: `rotate(${p.rot}deg)`,
-            animation: `ember-confetti-fall ${p.duration}s ease-in ${p.delay}s forwards`,
-          }}
-        />
-      ))}
-      <style>{`
-        @keyframes ember-confetti-fall {
-          0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
-          10% { opacity: 0.9; }
-          100% { transform: translateY(110vh) rotate(540deg); opacity: 0; }
-        }
-      `}</style>
+    <div className="flex items-center gap-1.5">
+      {STEPS.map((s, i) => {
+        const active = i === idx;
+        const past = i < idx;
+        return (
+          <span
+            key={s}
+            className="h-0.75 rounded-full transition-all duration-500"
+            style={{
+              width: active ? 28 : 10,
+              backgroundColor:
+                active || past ? 'var(--ember)' : 'var(--rule-strong)',
+              boxShadow: active ? '0 0 6px var(--ember-glow)' : 'none',
+            }}
+          />
+        );
+      })}
     </div>
   );
 }
@@ -152,71 +66,88 @@ export default function OnboardingPage() {
   const { lang } = useI18n();
   const isKo = lang === 'ko';
 
-  const { connected, publicKey, select, connect, wallets, disconnect } = useWallet();
+  const { open: openPhantomModal, isOpened: isPhantomOpened } = useModal();
+  const { isConnected: phantomConnected, isConnecting: phantomConnecting } = usePhantom();
 
-  const [step, setStep] = useState<Step>('name');
-  const [nickname, setNickname] = useState('');
-  const [saving, setSaving] = useState(false);
+  const [step, setStep] = useState<Step>('hook');
   const [mounted, setMounted] = useState(false);
   const [walletConnecting, setWalletConnecting] = useState<string | null>(null);
   const [walletError, setWalletError] = useState<string | null>(null);
 
-  /* ── Init: guard for wallet session, skip if already onboarded ── */
+  // Collected data
+  const [name, setName] = useState('');
+  const [timeLost, setTimeLost] = useState('');
+  const [envy, setEnvy] = useState('');
+  const [talent, setTalent] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const nameRef = useRef<HTMLInputElement>(null);
+
+  // Init — soft guard; don't force redirect if wallet cookie is missing,
+  // onboarding can still collect data and prompt wallet at the wallet step.
   useEffect(() => {
-    const init = () => {
-      setMounted(true);
-      const wallet = getWalletCookie();
-      if (!wallet) {
-        router.replace('/');
-        return;
-      }
-      const profile = store.getProfile();
-      if (profile.display_name) {
-        router.replace('/chat');
-      }
-    };
-    init();
+    setMounted(true);
+    const profile = store.getProfile();
+    if (profile.display_name && (profile as Record<string, unknown>).current_talent) {
+      router.replace('/today');
+    }
   }, [router]);
 
-  /* ── Real-time nickname validation / availability ── */
-  const trimmed = nickname.trim();
-  const nicknameCount = nickname.length;
-  const validation = useMemo(() => {
-    if (!trimmed) return { state: 'idle' as const, message: '' };
-    if (trimmed.length < 2) {
-      return {
-        state: 'invalid' as const,
-        message: isKo ? '두 글자 이상 입력해 주세요.' : 'At least 2 characters.',
-      };
-    }
-    if (nicknameCount > 20) {
-      return {
-        state: 'invalid' as const,
-        message: isKo ? '최대 20자까지 가능해요.' : 'Max 20 characters.',
-      };
-    }
-    if (!/^[\p{L}\p{N}_.\- ]+$/u.test(trimmed)) {
-      return {
-        state: 'invalid' as const,
-        message: isKo ? '특수문자는 사용할 수 없어요.' : 'No special characters.',
-      };
-    }
-    return {
-      state: 'available' as const,
-      message: isKo ? '사용할 수 있는 이름이에요' : 'Looks good',
-    };
-  }, [trimmed, nicknameCount, isKo]);
+  // Auto-focus name field when entering that step
+  useEffect(() => {
+    if (step === 'name') setTimeout(() => nameRef.current?.focus(), 50);
+  }, [step]);
 
-  /* ── Step 1 → Step 2: persist nickname, then move on ── */
-  const handleNameContinue = useCallback(async () => {
-    if (validation.state !== 'available' || saving) return;
-    setSaving(true);
+  const idx = STEPS.indexOf(step);
+  const prevStep = useCallback(() => {
+    if (idx > 0) setStep(STEPS[idx - 1]);
+  }, [idx]);
+  const nextStep = useCallback(() => {
+    if (idx < STEPS.length - 1) setStep(STEPS[idx + 1]);
+  }, [idx]);
+
+  // ── Wallet step ──
+  // Phantom SDK manages the modal + provider selection itself. We just open it.
+  const handleWalletConnect = useCallback(() => {
+    setWalletError(null);
+    setWalletConnecting('Phantom');
+    openPhantomModal();
+  }, [openPhantomModal]);
+
+  // Release the busy lock when modal closes without a connection
+  useEffect(() => {
+    if (
+      walletConnecting &&
+      !isPhantomOpened &&
+      !phantomConnecting &&
+      !phantomConnected
+    ) {
+      setWalletConnecting(null);
+    }
+  }, [walletConnecting, isPhantomOpened, phantomConnecting, phantomConnected]);
+
+  useEffect(() => {
+    if (step === 'wallet' && phantomConnected) {
+      const t = setTimeout(() => nextStep(), 400);
+      return () => clearTimeout(t);
+    }
+  }, [step, phantomConnected, nextStep]);
+
+  // ── Ignite: persist ember ──
+  const handleIgnite = useCallback(async () => {
+    if (submitting) return;
+    if (!talent.trim()) return;
+    setSubmitting(true);
     try {
       const wallet = getWalletCookie();
       const profile = store.getProfile();
-      const updated = { ...profile, display_name: trimmed };
+      const updated = {
+        ...profile,
+        display_name: name.trim() || profile.display_name || 'friend',
+        current_talent: talent.trim(),
+      } as typeof profile;
       store.setProfile(updated);
 
+      // Sync profile to server if wallet is present
       if (wallet) {
         try {
           const signMessageFn = getSignMessage();
@@ -227,362 +158,482 @@ export default function OnboardingPage() {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 wallet_address: wallet,
-                display_name: trimmed,
+                display_name: name.trim(),
+                current_talent: talent.trim(),
                 ...auth,
               }),
             });
           }
         } catch {
-          /* silent: local cache still holds name */
+          /* silent: local cache still holds profile */
         }
       }
 
-      setStep('wallet');
-    } finally {
-      setSaving(false);
-    }
-  }, [trimmed, validation.state, saving]);
-
-  /* ── Step 2: wallet connect or skip ── */
-  const phantom = useMemo(
-    () => wallets?.find((w) => w.adapter.name === 'Phantom'),
-    [wallets]
-  );
-  const solflare = useMemo(
-    () => wallets?.find((w) => w.adapter.name === 'Solflare'),
-    [wallets]
-  );
-
-  const handleWalletSelect = useCallback(
-    async (name: 'Phantom' | 'Solflare') => {
-      setWalletError(null);
-      const w = wallets?.find((x) => x.adapter.name === name);
-      if (!w) {
-        setWalletError(isKo ? '지갑을 찾을 수 없어요.' : 'Wallet not found.');
-        return;
-      }
-      if (w.readyState !== 'Installed') {
-        setWalletError(
-          isKo
-            ? `${name} 확장프로그램이 설치되어 있지 않아요.`
-            : `${name} extension is not installed.`
-        );
-        return;
-      }
+      // Create ember record (best-effort; local profile is source of truth until wallet-bound)
       try {
-        setWalletConnecting(name);
-        select(name as any);
-        await connect();
-        // Connection will trigger the useEffect below, which moves to 'ready'
-      } catch (err: any) {
-        const msg = err?.message || String(err);
-        if (/reject|denied|user/i.test(msg)) {
-          setWalletError(
-            isKo
-              ? '지갑 연결이 취소되었어요.'
-              : 'Wallet connection was cancelled.'
-          );
-        } else {
-          setWalletError(
-            isKo
-              ? '지갑 연결 중 문제가 발생했어요.'
-              : 'Something went wrong while connecting.'
-          );
-        }
-        try {
-          await disconnect();
-        } catch {
-          /* ignore */
-        }
-      } finally {
-        setWalletConnecting(null);
+        await fetch('/api/ember', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: (profile as Record<string, unknown>).email || `${wallet}@wallet.local`,
+            ember_name: name.trim() || 'Ember',
+            talent: talent.trim(),
+            talent_category: 'Hybrid',
+            discovery_conversation: [
+              { role: 'user', key: 'timeLost', content: timeLost.trim() },
+              { role: 'user', key: 'envy', content: envy.trim() },
+              { role: 'user', key: 'talent', content: talent.trim() },
+            ],
+            lang: isKo ? 'ko' : 'en',
+          }),
+        });
+      } catch {
+        /* silent */
       }
-    },
-    [wallets, select, connect, disconnect, isKo]
-  );
 
-  // Once a wallet is connected during onboarding, advance to step 3
-  useEffect(() => {
-    if (step === 'wallet' && connected && publicKey) {
-      const t = setTimeout(() => setStep('ready'), 300);
-      return () => clearTimeout(t);
+      router.replace('/today');
+    } finally {
+      setSubmitting(false);
     }
-  }, [step, connected, publicKey]);
-
-  const handleWalletSkip = useCallback(() => {
-    setWalletError(null);
-    setStep('ready');
-  }, []);
-
-  /* ── Step 3 actions ── */
-  const handleStartConversation = useCallback(() => {
-    router.push('/discovery');
-  }, [router]);
+  }, [submitting, talent, name, timeLost, envy, isKo, router]);
 
   if (!mounted) return null;
 
-  const intensity = step === 'name' ? 0.25 + Math.min(trimmed.length, 6) / 20 : step === 'wallet' ? 0.65 : 1;
+  const flameSize = step === 'ignite' ? 200 : step === 'hook' || step === 'rule' ? 120 : 88;
+  const breathe = STEP_STAGE[step] !== 'dormant';
+
+  // Per-step CTA label (handoff copy, Ember voice)
+  const ctaLabel = {
+    hook: isKo ? '좋아, 계속' : 'I’m listening',
+    rule: isKo ? '받아들일게' : 'I accept this',
+    wallet: isKo ? '건너뛰기' : 'Skip for now',
+    name: isKo ? '다음' : 'Continue',
+    timeLost: isKo ? '다음' : 'Next',
+    envy: isKo ? '다음' : 'Next',
+    talent: isKo ? '그거야' : "That’s it",
+    ignite: isKo ? '불을 붙이자' : 'Light the ember',
+  }[step];
+
+  const ctaDisabled =
+    (step === 'name' && name.trim().length < 2) ||
+    (step === 'timeLost' && timeLost.trim().length < 2) ||
+    (step === 'envy' && envy.trim().length < 2) ||
+    (step === 'talent' && talent.trim().length < 2) ||
+    (step === 'ignite' && submitting);
+
+  const onCTA = step === 'ignite' ? handleIgnite : step === 'wallet' ? nextStep : nextStep;
 
   return (
     <div
       data-landing-page
-      className="relative flex min-h-screen w-full flex-col bg-background text-foreground"
+      className="relative flex min-h-dvh w-full flex-col overflow-hidden"
+      style={{ backgroundColor: 'var(--bg-0)', color: 'var(--fg)' }}
     >
-      <StepIndicator current={step} />
-
-      {/* Ambient amber glow */}
+      {/* Ambient halo */}
       <div
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-[22%] h-64 w-64 -translate-x-1/2 rounded-full bg-[#faaf2e]/10 blur-[90px] transition-opacity duration-700"
-        style={{ opacity: 0.3 + intensity * 0.6 }}
+        className="pointer-events-none absolute left-1/2 top-[38%] h-130 w-130 -translate-x-1/2 -translate-y-1/2 opacity-60"
+        style={{
+          background:
+            'radial-gradient(circle, var(--ember-glow) 0%, transparent 60%)',
+        }}
       />
 
-      <main className="relative flex flex-1 items-start justify-center px-4 pb-10 pt-6 md:pt-10">
-        <div className="relative w-full max-w-[420px]">
-          {/* ────────── STEP 1: NAME ────────── */}
-          {step === 'name' && (
-            <section className="flex flex-col items-center text-center page-enter">
-              <div className="mt-6 mb-8">
-                <EmberAvatar intensity={intensity} size={108} />
-              </div>
+      {/* Header */}
+      <header className="relative z-10 flex items-center justify-between px-5 py-5">
+        <button
+          onClick={idx > 0 ? prevStep : () => router.back()}
+          className="flex h-9 w-9 items-center justify-center rounded-full transition"
+          style={{ color: 'var(--fg-dim)' }}
+          aria-label="Back"
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </button>
+        <Wordmark size="sm" accent={false} />
+        <div className="w-9" />
+      </header>
 
-              <h1 className="text-[24px] font-bold leading-8 tracking-[-0.6px] text-foreground">
-                {isKo ? 'Ember이 뭐라고 부를까?' : 'What should Ember call you?'}
-              </h1>
-              <p className="mt-2 text-[13px] font-medium leading-5 text-muted-foreground">
-                {isKo ? 'What should Ember call you?' : 'Ember이 뭐라고 부를까?'}
-              </p>
+      {/* Step indicator */}
+      <div className="relative z-10 flex justify-center pt-1 pb-6">
+        <StepBars current={step} />
+      </div>
 
-              {/* Nickname input */}
-              <div className="mt-8 w-full">
-                <div
-                  className={`relative flex h-14 w-full items-center rounded-[14px] border bg-card/60 px-4 transition-colors ${
-                    validation.state === 'invalid'
-                      ? 'border-red-400/50'
-                      : validation.state === 'available'
-                      ? 'border-[#faaf2e]/60'
-                      : 'border-border/70 focus-within:border-[#faaf2e]/60'
-                  }`}
-                >
-                  <input
-                    value={nickname}
-                    onChange={(e) => setNickname(e.target.value.slice(0, 20))}
-                    placeholder={isKo ? '닉네임을 입력해 주세요' : 'Your nickname'}
-                    maxLength={20}
-                    autoFocus
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') handleNameContinue();
-                    }}
-                    className="h-full flex-1 bg-transparent text-[15px] text-foreground outline-none placeholder:text-muted-foreground/60"
-                  />
-                  {validation.state === 'available' && (
-                    <Check className="h-4 w-4 text-[#faaf2e]" strokeWidth={2.5} />
-                  )}
-                </div>
+      {/* Scene */}
+      <main className="relative z-10 flex flex-1 flex-col items-center justify-start px-6 pb-8">
+        <div className="mb-8 mt-2">
+          <FlameShape
+            stage={STEP_STAGE[step]}
+            size={flameSize}
+            breathe={breathe}
+            rare={step === 'ignite'}
+          />
+        </div>
 
-                <div className="mt-2 flex items-center justify-between px-1 text-[12px]">
-                  <span
-                    className={`transition-colors ${
-                      validation.state === 'invalid'
-                        ? 'text-red-400'
-                        : validation.state === 'available'
-                        ? 'text-[#faaf2e]'
-                        : 'text-muted-foreground/60'
-                    }`}
-                  >
-                    {validation.message || '\u00A0'}
-                  </span>
-                  <span className="font-medium text-muted-foreground/70">
-                    {nicknameCount}/20
-                  </span>
-                </div>
-              </div>
-
-              {/* Continue CTA (bottom area) */}
-              <div className="mt-auto w-full pt-16">
-                <button
-                  type="button"
-                  onClick={handleNameContinue}
-                  disabled={validation.state !== 'available' || saving}
-                  className={`flex h-14 w-full items-center justify-center rounded-[14px] text-[15px] font-semibold tracking-tight transition-all ${
-                    validation.state === 'available' && !saving
-                      ? 'bg-[#faaf2e] text-[#4b3002] shadow-[0_0_24px_rgba(250,175,46,0.28)] hover:brightness-110'
-                      : 'bg-card/60 text-muted-foreground/60'
-                  }`}
-                >
-                  {saving ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      {isKo ? '저장 중…' : 'Saving…'}
-                    </>
-                  ) : (
-                    <>{isKo ? '계속하기' : 'Continue'}</>
-                  )}
-                </button>
-              </div>
-            </section>
+        <div className="w-full max-w-105">
+          {step === 'hook' && (
+            <SceneText
+              eyebrow={isKo ? '시작' : 'the hook'}
+              headline={isKo ? '너 안엔 이미 작은 불꽃 하나가 있어.' : "There’s already one small flame in you."}
+              emphasis={isKo ? '같이 찾아보자.' : "Let’s find it."}
+            />
           )}
 
-          {/* ────────── STEP 2: WALLET ────────── */}
+          {step === 'rule' && (
+            <>
+              <SceneText
+                eyebrow={isKo ? '규칙' : 'the rule'}
+                headline={isKo ? '세 가지만 약속해.' : 'Only three rules.'}
+              />
+              <ul className="mt-6 space-y-3">
+                {[
+                  [isKo ? '하나의 ember.' : 'One ember.', isKo ? '한 번에 한 재능만 돌본다.' : 'One talent at a time.'],
+                  [isKo ? '매일 한 줄.' : 'One line a day.', isKo ? '많이도, 길게도 아니게.' : 'Not more. Not longer.'],
+                  [isKo ? '쓰면 그대로.' : 'What you write stays.', isKo ? '수정도, 삭제도 없어.' : 'No edits. No deletes.'],
+                ].map(([a, b], i) => (
+                  <li
+                    key={i}
+                    className="rounded-md px-4 py-3"
+                    style={{
+                      backgroundColor: 'var(--bg-1)',
+                      border: '1px solid var(--rule)',
+                    }}
+                  >
+                    <p className="font-display text-[15px]" style={{ color: 'var(--fg)' }}>
+                      {a}
+                    </p>
+                    <p className="mt-0.5 text-[12.5px]" style={{ color: 'var(--fg-dim)' }}>
+                      {b}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+
           {step === 'wallet' && (
-            <section className="flex flex-col items-center text-center page-enter">
-              <div className="mt-6 mb-8">
-                <EmberAvatar intensity={intensity} size={108} />
+            <>
+              <SceneText
+                eyebrow={isKo ? '지갑 연결' : 'connect your wallet'}
+                headline={isKo ? '너의 불꽃은 온체인에 박힐 거야.' : 'Your ember will live on-chain.'}
+                body={
+                  isKo
+                    ? '나중에 연결해도 돼. 지금은 건너뛸 수 있어.'
+                    : 'You can connect later — skip if you prefer.'
+                }
+              />
+              <div className="mt-7 flex flex-col gap-2.5">
+                <WalletButton
+                  name="Phantom"
+                  loading={walletConnecting === 'Phantom' || phantomConnecting}
+                  onClick={handleWalletConnect}
+                />
               </div>
-
-              <h1 className="text-[24px] font-bold leading-8 tracking-[-0.6px] text-foreground">
-                {isKo ? 'Solana 지갑 연결.' : 'Connect your Solana wallet.'}
-              </h1>
-              <p className="mt-2 text-[13px] font-medium leading-5 text-muted-foreground">
-                {isKo ? 'Connect your Solana wallet.' : 'Solana 지갑 연결.'}
-              </p>
-              <p className="mt-3 max-w-[300px] text-[13px] leading-[21px] text-muted-foreground">
-                {isKo
-                  ? '지금은 선택이에요. Soul을 민팅하기 전에 필요해요.'
-                  : 'Optional now. Required before minting a Soul.'}
-              </p>
-
               {walletError && (
-                <div className="mt-5 flex w-full items-start gap-2 rounded-[10px] border border-[#faaf2e]/40 bg-[#4b3002]/40 p-3 text-left">
-                  <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-[#faaf2e]" />
-                  <p className="text-[12px] leading-snug text-foreground/90">
-                    {walletError}
-                  </p>
+                <p className="mt-3 text-[12.5px]" style={{ color: 'var(--destructive)' }}>
+                  {walletError}
+                </p>
+              )}
+              <p className="mt-4 font-mono text-[10px] uppercase" style={{ letterSpacing: '0.24em', color: 'var(--fg-dimmer)' }}>
+                {isKo ? '마케팅은 없어. 영원히.' : 'no marketing. ever.'}
+              </p>
+            </>
+          )}
+
+          {step === 'name' && (
+            <>
+              <SceneText
+                eyebrow={isKo ? '이름' : 'your name'}
+                headline={isKo ? '널 뭐라고 부르면 좋을까?' : 'What should I call you?'}
+              />
+              <input
+                ref={nameRef}
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder={isKo ? '이름' : 'your name'}
+                className="mt-6 w-full rounded-md border px-4 py-3.5 font-display text-[17px] outline-none"
+                style={{
+                  backgroundColor: 'var(--bg-1)',
+                  borderColor: 'var(--rule-strong)',
+                  color: 'var(--fg)',
+                }}
+              />
+            </>
+          )}
+
+          {step === 'timeLost' && (
+            <>
+              <SceneText
+                eyebrow={isKo ? '시간이 사라지는 것' : 'where time disappears'}
+                headline={
+                  isKo
+                    ? `${name || '너'}아, 언제 시간이 사라져?`
+                    : `${name || 'you'}, when does time disappear for you?`
+                }
+              />
+              <div className="mt-6">
+                <EmberLine
+                  quote={'시간이 사라지는 데에는 이유가 있어.'}
+                  translation={'Time disappears for a reason.'}
+                  small
+                  accent="teal"
+                />
+              </div>
+              <textarea
+                value={timeLost}
+                onChange={(e) => setTimeLost(e.target.value)}
+                placeholder={
+                  isKo ? '언제 시간이 빠르게 흐르는지 몇 줄로…' : 'a few lines on when time flies…'
+                }
+                rows={3}
+                className="mt-5 w-full resize-none rounded-md border px-4 py-3 font-display text-[15.5px] outline-none"
+                style={{
+                  backgroundColor: 'var(--bg-1)',
+                  borderColor: 'var(--rule-strong)',
+                  color: 'var(--fg)',
+                }}
+              />
+            </>
+          )}
+
+          {step === 'envy' && (
+            <>
+              <SceneText
+                eyebrow={isKo ? '부러움' : 'quiet envy'}
+                headline={
+                  isKo
+                    ? '누구의 일이 너를 살짝 질투하게 해?'
+                    : 'Whose work makes you a little jealous?'
+                }
+                body={
+                  isKo
+                    ? '존경하는 사람 말고. 조용히 부러운 사람.'
+                    : 'not who you admire. who you quietly envy.'
+                }
+              />
+              <div className="mt-6">
+                <EmberLine
+                  quote={'부러움은 방향이야. 손가락 같은 거.'}
+                  translation={'Envy is a direction. Like a finger pointing.'}
+                  small
+                  accent="teal"
+                />
+              </div>
+              <textarea
+                value={envy}
+                onChange={(e) => setEnvy(e.target.value)}
+                placeholder={isKo ? '누가, 어떤 일이…' : 'who, and what work…'}
+                rows={3}
+                className="mt-5 w-full resize-none rounded-md border px-4 py-3 font-display text-[15.5px] outline-none"
+                style={{
+                  backgroundColor: 'var(--bg-1)',
+                  borderColor: 'var(--rule-strong)',
+                  color: 'var(--fg)',
+                }}
+              />
+            </>
+          )}
+
+          {step === 'talent' && (
+            <>
+              <SceneText
+                eyebrow={isKo ? '하나만' : 'one thing'}
+                headline={isKo ? '그럼. 돌보고 싶은 그 하나는?' : 'So. What’s the one thing you want to tend?'}
+              />
+              {(timeLost || envy) && (
+                <div className="mt-5 space-y-2">
+                  {timeLost && (
+                    <blockquote
+                      className="rounded-md px-3 py-2 text-[12.5px]"
+                      style={{
+                        backgroundColor: 'var(--bg-1)',
+                        color: 'var(--fg-dim)',
+                        borderLeft: '2px solid var(--teal)',
+                      }}
+                    >
+                      <span className="font-mono uppercase" style={{ letterSpacing: '0.2em', fontSize: 9.5, color: 'var(--fg-dimmer)' }}>
+                        {isKo ? '시간이 사라질 때' : 'where time disappears'}
+                      </span>
+                      <br />
+                      {timeLost}
+                    </blockquote>
+                  )}
+                  {envy && (
+                    <blockquote
+                      className="rounded-md px-3 py-2 text-[12.5px]"
+                      style={{
+                        backgroundColor: 'var(--bg-1)',
+                        color: 'var(--fg-dim)',
+                        borderLeft: '2px solid var(--teal)',
+                      }}
+                    >
+                      <span className="font-mono uppercase" style={{ letterSpacing: '0.2em', fontSize: 9.5, color: 'var(--fg-dimmer)' }}>
+                        {isKo ? '부러움' : 'envy'}
+                      </span>
+                      <br />
+                      {envy}
+                    </blockquote>
+                  )}
                 </div>
               )}
-
-              {/* Wallet options */}
-              <div className="mt-8 flex w-full flex-col gap-3">
-                <button
-                  type="button"
-                  onClick={() => handleWalletSelect('Phantom')}
-                  disabled={
-                    !phantom ||
-                    phantom.readyState !== 'Installed' ||
-                    walletConnecting !== null
-                  }
-                  className="group flex h-[72px] w-full items-center gap-4 rounded-[14px] border border-border bg-card/60 px-4 text-left transition-all hover:border-[#faaf2e]/60 hover:bg-card/80 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-[10px] bg-background/60">
-                    {phantom?.adapter.icon ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={phantom.adapter.icon}
-                        alt="Phantom"
-                        className="h-8 w-8 rounded-xl"
-                      />
-                    ) : (
-                      <WalletIcon className="h-5 w-5 text-[#faaf2e]" />
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-[16px] font-semibold tracking-tight text-foreground">
-                      Phantom
-                    </div>
-                    <div className="mt-0.5 text-[11px] font-bold uppercase tracking-[1.5px] text-[#faaf2e]">
-                      {isKo ? '추천' : 'Recommended'}
-                    </div>
-                  </div>
-                  {walletConnecting === 'Phantom' ? (
-                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-                  ) : (
-                    <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-foreground" />
-                  )}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => handleWalletSelect('Solflare')}
-                  disabled={
-                    !solflare ||
-                    solflare.readyState !== 'Installed' ||
-                    walletConnecting !== null
-                  }
-                  className="group flex h-[72px] w-full items-center gap-4 rounded-[14px] border border-border bg-card/60 px-4 text-left transition-all hover:border-[#faaf2e]/60 hover:bg-card/80 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-[10px] bg-background/60">
-                    {solflare?.adapter.icon ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={solflare.adapter.icon}
-                        alt="Solflare"
-                        className="h-8 w-8 rounded-xl"
-                      />
-                    ) : (
-                      <ShieldCheck className="h-5 w-5 text-[#faaf2e]" />
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-[16px] font-semibold tracking-tight text-foreground">
-                      Solflare
-                    </div>
-                  </div>
-                  {walletConnecting === 'Solflare' ? (
-                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-                  ) : (
-                    <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-foreground" />
-                  )}
-                </button>
-              </div>
-
-              {/* Skip */}
-              <div className="mt-10 w-full">
-                <button
-                  type="button"
-                  onClick={handleWalletSkip}
-                  disabled={walletConnecting !== null}
-                  className="mx-auto block text-[14px] font-medium text-muted-foreground transition-colors hover:text-foreground disabled:opacity-40"
-                >
-                  {isKo ? '나중에 할게요' : "I'll do this later"}
-                </button>
-              </div>
-            </section>
+              <input
+                type="text"
+                value={talent}
+                onChange={(e) => setTalent(e.target.value)}
+                placeholder={isKo ? '돌볼 재능 (한 단어나 한 구)' : 'the talent (a word or short phrase)'}
+                className="mt-5 w-full rounded-md border px-4 py-3.5 font-display text-[17px] outline-none"
+                style={{
+                  backgroundColor: 'var(--bg-1)',
+                  borderColor: 'var(--rule-strong)',
+                  color: 'var(--fg)',
+                }}
+              />
+            </>
           )}
 
-          {/* ────────── STEP 3: READY ────────── */}
-          {step === 'ready' && (
-            <section className="relative flex flex-col items-center text-center page-enter">
-              <Confetti />
-
-              <div className="mt-6 mb-8">
-                <EmberAvatar intensity={1} size={160} />
-              </div>
-
-              <h1 className="text-[28px] font-bold leading-9 tracking-[-0.7px] text-foreground">
-                {isKo ? 'Ember 만날 준비?' : 'Ready for Ember?'}
+          {step === 'ignite' && (
+            <div className="flex flex-col items-center text-center">
+              <Eyebrow spacing="wide" tone="ember">
+                — {isKo ? '이게 너의 불꽃' : 'this is your flame'}
+              </Eyebrow>
+              <h1
+                className="mt-4 font-display"
+                style={{
+                  fontSize: 'clamp(26px, 6vw, 32px)',
+                  lineHeight: 1.2,
+                  letterSpacing: '-0.025em',
+                  color: 'var(--fg)',
+                }}
+              >
+                {talent || (isKo ? '너의 재능' : 'your talent')}
               </h1>
-              <p className="mt-2 text-[14px] font-medium leading-5 text-muted-foreground">
-                {isKo ? 'Ready for Ember?' : 'Ember 만날 준비?'}
-              </p>
-
-              <div className="mt-auto w-full pt-20">
-                <button
-                  type="button"
-                  onClick={handleStartConversation}
-                  className="flex h-16 w-full flex-col items-center justify-center rounded-[14px] bg-[#faaf2e] px-4 font-semibold tracking-tight text-[#4b3002] shadow-[0_0_32px_rgba(250,175,46,0.45)] transition-all hover:brightness-110"
-                >
-                  <span className="flex items-center gap-2 text-[16px] leading-5">
-                    <Flame className="h-4 w-4" strokeWidth={2.5} />
-                    {isKo ? '첫 대화 시작' : 'Start the first conversation'}
-                  </span>
-                  <span className="mt-0.5 text-[12px] font-medium opacity-80">
-                    {isKo ? 'Start the first conversation' : '첫 대화 시작'}
-                  </span>
-                </button>
-
-                <div className="mt-5 flex justify-center">
-                  <Link
-                    href="/dashboard"
-                    className="text-[14px] font-medium text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
-                  >
-                    {isKo ? '대시보드로 이동' : 'Go to dashboard'}
-                  </Link>
-                </div>
+              <div className="mt-6 max-w-90">
+                <EmberLine
+                  quote={
+                    isKo
+                      ? `${name || '친구'}아, 기회는 준비된 자에게 와. 매일 한 줄씩.`
+                      : `${name || 'friend'} — opportunity comes to the ready. One line a day.`
+                  }
+                  translation={
+                    isKo
+                      ? 'opportunity comes to the ready.'
+                      : '기회는 준비된 자에게 와.'
+                  }
+                  small
+                  accent="ember"
+                />
               </div>
-            </section>
+            </div>
           )}
         </div>
       </main>
+
+      {/* CTA footer */}
+      <footer className="relative z-10 px-6 pb-10 pt-4">
+        <button
+          onClick={onCTA}
+          disabled={ctaDisabled}
+          className="relative flex h-14 w-full items-center justify-center gap-2 rounded-full font-mono text-[12px] uppercase transition disabled:opacity-40"
+          style={{
+            letterSpacing: '0.24em',
+            backgroundColor: step === 'ignite' ? 'var(--ember)' : 'var(--bg-2)',
+            color: step === 'ignite' ? 'var(--fg-on-ember)' : 'var(--fg)',
+            border: step === 'ignite' ? 'none' : '1px solid var(--rule-strong)',
+            boxShadow: step === 'ignite' ? '0 6px 18px rgba(201,80,45,0.3)' : 'none',
+          }}
+        >
+          {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
+          <span>{ctaLabel}</span>
+        </button>
+        {step === 'wallet' && (
+          <p
+            className="mt-3 text-center font-mono text-[10px] uppercase"
+            style={{ letterSpacing: '0.22em', color: 'var(--fg-dimmer)' }}
+          >
+            {isKo ? '스킵하면 나중에 연결하면 돼' : 'skip now, connect later'}
+          </p>
+        )}
+      </footer>
     </div>
+  );
+}
+
+function SceneText({
+  eyebrow,
+  headline,
+  emphasis,
+  body,
+}: {
+  eyebrow?: string;
+  headline: string;
+  emphasis?: string;
+  body?: string;
+}) {
+  return (
+    <div>
+      {eyebrow && (
+        <div className="mb-4">
+          <Eyebrow spacing="wide">— {eyebrow}</Eyebrow>
+        </div>
+      )}
+      <h1
+        className="font-display"
+        style={{
+          fontSize: 'clamp(24px, 5.6vw, 32px)',
+          lineHeight: 1.2,
+          letterSpacing: '-0.025em',
+          color: 'var(--fg)',
+        }}
+      >
+        {headline}
+        {emphasis && (
+          <>
+            {' '}
+            <em style={{ color: 'var(--ember)', fontStyle: 'normal' }}>{emphasis}</em>
+          </>
+        )}
+      </h1>
+      {body && (
+        <p
+          className="mt-3 font-display"
+          style={{
+            fontSize: '15.5px',
+            lineHeight: 1.55,
+            color: 'var(--fg-dim)',
+            letterSpacing: '-0.005em',
+          }}
+        >
+          {body}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function WalletButton({
+  name,
+  loading,
+  onClick,
+}: {
+  name: string;
+  loading: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={loading}
+      className="flex items-center justify-between rounded-md px-4 py-3.5 transition disabled:opacity-50"
+      style={{
+        backgroundColor: 'var(--bg-1)',
+        border: '1px solid var(--rule-strong)',
+        color: 'var(--fg)',
+      }}
+    >
+      <span className="font-display text-[15px]">{name}</span>
+      <span className="font-mono text-[10px] uppercase" style={{ letterSpacing: '0.2em', color: 'var(--fg-dim)' }}>
+        {loading ? 'connecting…' : 'connect →'}
+      </span>
+    </button>
   );
 }

@@ -1,10 +1,9 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { useModal, usePhantom } from '@phantom/react-sdk';
 import {
   ChevronLeft,
   Sparkles,
@@ -42,7 +41,10 @@ export default function MintPage() {
   const router = useRouter();
   const { t, lang } = useI18n();
   const isKo = lang === 'ko';
-  const { publicKey, connected } = useWallet();
+  const { open: openPhantomModal } = useModal();
+  const { isConnected: connected, addresses } = usePhantom();
+  // addresses[0] is always Solana — Provider was configured with `addressTypes: [AddressType.solana]`
+  const publicKey = useMemo(() => addresses?.[0]?.address || null, [addresses]);
 
   const [step, setStep] = useState<Step>('review');
   const [phase, setPhase] = useState<MintPhase>('idle');
@@ -67,7 +69,7 @@ export default function MintPage() {
   }, [isKo]);
 
   const walletShort = publicKey
-    ? `${publicKey.toBase58().slice(0, 4)}...${publicKey.toBase58().slice(-4)}`
+    ? `${publicKey.slice(0, 4)}...${publicKey.slice(-4)}`
     : '—';
 
   const handleMint = useCallback(async () => {
@@ -84,7 +86,7 @@ export default function MintPage() {
       const souls = await store.getSoulsAsync();
       const soul = souls[0] || null;
 
-      const walletAddr = publicKey.toBase58();
+      const walletAddr = publicKey;
       let authFields: Record<string, unknown> = { wallet_address: walletAddr };
       const signMessageFn = getSignMessage();
       if (signMessageFn) {
@@ -137,7 +139,7 @@ export default function MintPage() {
         stage: profile.ember_stage,
       };
 
-      const wallet = publicKey.toBase58();
+      const wallet = publicKey;
       await store.addSoulAsync(newSoul, wallet);
 
       const updatedProfile = { ...profile, minted: true, current_talent: talentName };
@@ -182,7 +184,7 @@ export default function MintPage() {
     return (
       <div className="flex-1 flex items-center justify-center bg-background text-foreground">
         <div className="text-center">
-          <div className="animate-spin w-8 h-8 border-2 border-[#faaf2e] border-t-transparent rounded-full mx-auto mb-4" />
+          <div className="animate-spin w-8 h-8 border-2 border-[var(--ember)] border-t-transparent rounded-full mx-auto mb-4" />
           <p className="text-sm text-muted-foreground">{isKo ? '불러오는 중...' : 'Loading...'}</p>
         </div>
       </div>
@@ -195,7 +197,7 @@ export default function MintPage() {
       className="relative flex min-h-screen w-full flex-col bg-background text-foreground"
     >
       {/* Ambient amber glow */}
-      <div className="pointer-events-none absolute left-1/2 top-40 z-0 h-80 w-80 -translate-x-1/2 rounded-full bg-[#faaf2e]/15 blur-[120px]" />
+      <div className="pointer-events-none absolute left-1/2 top-40 z-0 h-80 w-80 -translate-x-1/2 rounded-full bg-[var(--ember)]/15 blur-[120px]" />
 
       {/* Sticky header */}
       <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center justify-between border-b border-border/60 bg-background/80 px-4 backdrop-blur-md">
@@ -209,8 +211,8 @@ export default function MintPage() {
         </button>
 
         <div className="flex items-center gap-2">
-          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#faaf2e]/12 ring-1 ring-[#faaf2e]/30">
-            <Flame className="h-3.5 w-3.5 text-[#faaf2e]" />
+          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--ember)]/12 ring-1 ring-[var(--ember)]/30">
+            <Flame className="h-3.5 w-3.5 text-[var(--ember)]" />
           </span>
           <span className="text-[13px] font-semibold tracking-tight">{stepLabel}</span>
         </div>
@@ -222,7 +224,7 @@ export default function MintPage() {
       </header>
 
       <main className="relative z-10 flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-[560px] px-5 py-6 md:py-8 lg:py-10">
+        <div className="mx-auto w-full max-w-140 px-5 py-6 md:py-8 lg:py-10">
           {/* ────────────── STEP 1 · REVIEW ────────────── */}
           {step === 'review' && (
             <div className="space-y-5">
@@ -268,15 +270,15 @@ export default function MintPage() {
               {/* Ember confidence */}
               <section className="rounded-[14px] border border-border bg-card p-5">
                 <div className="flex items-start gap-3">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#faaf2e]/12 ring-1 ring-[#faaf2e]/30">
-                    <Sparkles className="h-4.5 w-4.5 text-[#faaf2e]" />
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--ember)]/12 ring-1 ring-[var(--ember)]/30">
+                    <Sparkles className="h-4.5 w-4.5 text-[var(--ember)]" />
                   </span>
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <p className="text-[14px] font-semibold text-foreground">
                         {isKo ? 'Ember의 확신' : "Ember's Confidence"}
                       </p>
-                      <p className="text-[18px] font-bold text-[#faaf2e]">{CONFIDENCE}%</p>
+                      <p className="text-[18px] font-bold text-[var(--ember)]">{CONFIDENCE}%</p>
                     </div>
                     <p className="mt-1 text-[12px] leading-[18px] text-muted-foreground">
                       {isKo
@@ -285,7 +287,7 @@ export default function MintPage() {
                     </p>
                     <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-foreground/10">
                       <div
-                        className="h-full rounded-full bg-[#faaf2e] transition-[width] duration-700"
+                        className="h-full rounded-full bg-[var(--ember)] transition-[width] duration-700"
                         style={{ width: `${CONFIDENCE}%` }}
                       />
                     </div>
@@ -300,7 +302,7 @@ export default function MintPage() {
                 </p>
                 <div className="space-y-3">
                   <BulletRow
-                    icon={<CircleCheck className="h-4 w-4 text-[#4b3002]" />}
+                    icon={<CircleCheck className="h-4 w-4 text-[var(--fg-on-ember)]" />}
                     title={isKo ? '영구 기록' : 'Permanent Record'}
                     desc={
                       isKo
@@ -309,7 +311,7 @@ export default function MintPage() {
                     }
                   />
                   <BulletRow
-                    icon={<Lock className="h-4 w-4 text-[#4b3002]" />}
+                    icon={<Lock className="h-4 w-4 text-[var(--fg-on-ember)]" />}
                     title={isKo ? '양도 불가 (SBT)' : 'Non-Transferable (SBT)'}
                     desc={
                       isKo
@@ -335,9 +337,17 @@ export default function MintPage() {
                     </p>
                   </div>
                   {!connected && (
-                    <div className="[&_.wallet-adapter-button]:h-9! [&_.wallet-adapter-button]:rounded-full! [&_.wallet-adapter-button]:bg-[#faaf2e]! [&_.wallet-adapter-button]:text-[#4b3002]! [&_.wallet-adapter-button]:px-3! [&_.wallet-adapter-button]:text-[12px]!">
-                      <WalletMultiButton />
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() => openPhantomModal()}
+                      className="h-9 rounded-full px-3 text-[12px] font-medium"
+                      style={{
+                        backgroundColor: 'var(--ember)',
+                        color: 'var(--fg-on-ember)',
+                      }}
+                    >
+                      {isKo ? '연결' : 'Connect'}
+                    </button>
                   )}
                 </div>
               </section>
@@ -353,7 +363,7 @@ export default function MintPage() {
                       <p className="text-[14px] font-semibold text-foreground">
                         {isKo ? '민팅 비용' : 'Minting Cost'}
                       </p>
-                      <p className="text-[18px] font-bold text-[#faaf2e]">$1.00 USDC</p>
+                      <p className="text-[18px] font-bold text-[var(--ember)]">$1.00 USDC</p>
                     </div>
                     <p className="mt-0.5 text-[12px] text-muted-foreground">
                       {isKo ? '일회성 비용. 숨겨진 수수료 없음.' : 'One-time. No hidden fees.'}
@@ -389,7 +399,7 @@ export default function MintPage() {
                     setStep('confirm');
                   }}
                   disabled={!connected}
-                  className="h-12 w-full rounded-full bg-[#faaf2e] text-[15px] font-semibold text-[#4b3002] shadow-[0_6px_18px_-6px_rgba(250,175,46,0.55)] transition hover:bg-[#e8a129] disabled:opacity-50"
+                  className="h-12 w-full rounded-full bg-[var(--ember)] text-[15px] font-semibold text-[var(--fg-on-ember)] shadow-[0_6px_18px_-6px_rgba(250,175,46,0.55)] transition hover:bg-[#e8a129] disabled:opacity-50"
                 >
                   {isKo ? '약속으로 계속하기' : 'Continue to commit'}
                 </Button>
@@ -458,11 +468,11 @@ export default function MintPage() {
                 <Button
                   onClick={handleMint}
                   disabled={!ack1 || !ack2 || minting || !connected}
-                  className="h-12 w-full rounded-full bg-[#faaf2e] text-[15px] font-semibold text-[#4b3002] shadow-[0_6px_18px_-6px_rgba(250,175,46,0.55)] transition hover:bg-[#e8a129] disabled:opacity-50"
+                  className="h-12 w-full rounded-full bg-[var(--ember)] text-[15px] font-semibold text-[var(--fg-on-ember)] shadow-[0_6px_18px_-6px_rgba(250,175,46,0.55)] transition hover:bg-[#e8a129] disabled:opacity-50"
                 >
                   {minting ? (
                     <span className="inline-flex items-center gap-2">
-                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#4b3002] border-t-transparent" />
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-[var(--fg-on-ember)] border-t-transparent" />
                       {phase === 'stage1'
                         ? isKo ? '서명 준비 중...' : 'Preparing signature...'
                         : phase === 'stage2'
@@ -484,12 +494,12 @@ export default function MintPage() {
           {step === 'celebration' && (
             <div className="relative flex flex-col items-center pt-4 pb-2 text-center">
               {/* Particle glow backdrop */}
-              <div className="pointer-events-none absolute left-1/2 top-4 h-64 w-64 -translate-x-1/2 rounded-full bg-[#faaf2e]/20 blur-[80px]" />
+              <div className="pointer-events-none absolute left-1/2 top-4 h-64 w-64 -translate-x-1/2 rounded-full bg-[var(--ember)]/20 blur-[80px]" />
               <div className="pointer-events-none absolute inset-x-0 top-0 flex justify-center">
                 {Array.from({ length: 14 }).map((_, i) => (
                   <span
                     key={i}
-                    className="absolute block h-1 w-1 rounded-full bg-[#faaf2e] animate-soul-particle"
+                    className="absolute block h-1 w-1 rounded-full bg-[var(--ember)] animate-soul-particle"
                     style={{
                       left: `calc(50% + ${Math.cos((i / 14) * Math.PI * 2) * 90}px)`,
                       top: `calc(60px + ${Math.sin((i / 14) * Math.PI * 2) * 90}px)`,
@@ -540,7 +550,7 @@ export default function MintPage() {
 
               {/* Gem */}
               <div className="relative animate-soul-materialize">
-                <div className="flex h-36 w-36 items-center justify-center rounded-full bg-linear-to-br from-[#faaf2e] via-[#f7c462] to-[#4b3002] animate-soul-pulse">
+                <div className="flex h-36 w-36 items-center justify-center rounded-full bg-linear-to-br from-[var(--ember)] via-[#f7c462] to-[var(--fg-on-ember)] animate-soul-pulse">
                   <div className="flex h-28 w-28 items-center justify-center rounded-full bg-background/20 ring-1 ring-white/20 backdrop-blur-sm">
                     <Gem className="h-12 w-12 text-white drop-shadow-[0_2px_12px_rgba(250,175,46,0.8)]" />
                   </div>
@@ -576,7 +586,7 @@ export default function MintPage() {
                         aria-label={isKo ? '복사' : 'Copy'}
                       >
                         {copied === 'tx' ? (
-                          <Check className="h-4 w-4 text-[#faaf2e]" />
+                          <Check className="h-4 w-4 text-[var(--ember)]" />
                         ) : (
                           <Copy className="h-4 w-4" />
                         )}
@@ -597,8 +607,8 @@ export default function MintPage() {
 
               {/* Actions */}
               <div className="mt-6 w-full space-y-3">
-                <Link href="/soul" className="block">
-                  <Button className="h-12 w-full rounded-full bg-[#faaf2e] text-[15px] font-semibold text-[#4b3002] shadow-[0_6px_18px_-6px_rgba(250,175,46,0.55)] transition hover:bg-[#e8a129]">
+                <Link href="/ember" className="block">
+                  <Button className="h-12 w-full rounded-full bg-[var(--ember)] text-[15px] font-semibold text-[var(--fg-on-ember)] shadow-[0_6px_18px_-6px_rgba(250,175,46,0.55)] transition hover:bg-[#e8a129]">
                     {isKo ? '영혼 갤러리에서 보기' : 'View in Soul Gallery'}
                   </Button>
                 </Link>
@@ -606,7 +616,7 @@ export default function MintPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={() => {
-                      const url = typeof window !== 'undefined' ? window.location.origin + '/soul' : '';
+                      const url = typeof window !== 'undefined' ? window.location.origin + '/ember' : '';
                       const text = isKo
                         ? `방금 나의 영혼을 민팅했어요: ${talentName}`
                         : `I just minted my Soul: ${talentName}`;
@@ -620,13 +630,13 @@ export default function MintPage() {
                   </button>
                   <button
                     onClick={() => {
-                      const url = typeof window !== 'undefined' ? window.location.origin + '/soul' : '';
+                      const url = typeof window !== 'undefined' ? window.location.origin + '/ember' : '';
                       copy(url, 'link');
                     }}
                     className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-border bg-card text-[13px] font-medium text-foreground transition hover:bg-foreground/5"
                   >
                     {copied === 'link' ? (
-                      <Check className="h-4 w-4 text-[#faaf2e]" />
+                      <Check className="h-4 w-4 text-[var(--ember)]" />
                     ) : (
                       <Share2 className="h-4 w-4" />
                     )}
@@ -647,7 +657,7 @@ export default function MintPage() {
 function BulletRow({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
   return (
     <div className="flex items-start gap-3 rounded-[14px] border border-border bg-card p-4">
-      <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#faaf2e]">
+      <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--ember)]">
         {icon}
       </span>
       <div className="flex-1">
@@ -673,16 +683,16 @@ function CheckRow({
       onClick={onToggle}
       className={`flex w-full items-start gap-3 rounded-[14px] border p-4 text-left transition ${
         checked
-          ? 'border-[#faaf2e]/60 bg-[#faaf2e]/10'
+          ? 'border-[var(--ember)]/60 bg-[var(--ember)]/10'
           : 'border-border bg-card hover:bg-foreground/5'
       }`}
     >
       <span
         className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[6px] border transition ${
-          checked ? 'border-[#faaf2e] bg-[#faaf2e]' : 'border-border bg-background'
+          checked ? 'border-[var(--ember)] bg-[var(--ember)]' : 'border-border bg-background'
         }`}
       >
-        {checked && <Check className="h-3.5 w-3.5 text-[#4b3002]" strokeWidth={3} />}
+        {checked && <Check className="h-3.5 w-3.5 text-[var(--fg-on-ember)]" strokeWidth={3} />}
       </span>
       <span className="flex-1 text-[14px] leading-5 text-foreground">{label}</span>
     </button>
@@ -691,7 +701,7 @@ function CheckRow({
 
 function Pill({ children }: { children: React.ReactNode }) {
   return (
-    <span className="rounded-full border border-[#faaf2e]/40 bg-[#faaf2e]/12 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-[#faaf2e]">
+    <span className="rounded-full border border-[var(--ember)]/40 bg-[var(--ember)]/12 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-[var(--ember)]">
       {children}
     </span>
   );

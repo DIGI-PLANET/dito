@@ -2,18 +2,34 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { Home, Flame, Gem, Archive, Settings, Lock } from 'lucide-react';
 import { useI18n } from '@/providers/i18n-provider';
 import { getWalletCookie } from '@/lib/wallet-cookie';
 import { store } from '@/lib/store';
 
 const tabs = [
-  { href: '/', icon: '🏠', labelKey: 'tab.home' as const },
-  { href: '/chat', icon: '💬', labelKey: 'tab.chat' as const, requiresDiscovery: true },
-  { href: '/soul', icon: 'ember-logo', labelKey: 'tab.soul' as const, gated: true, requiresDiscovery: true },
-  { href: '/guide', icon: '📖', labelKey: 'tab.guide' as const },
-  { href: '/auth', icon: '⚙️', labelKey: 'tab.settings' as const, altLabelKey: 'tab.connect' as const, altIcon: '🔗' },
+  { href: '/dashboard', Icon: Home, labelKey: 'tab.home' as const },
+  {
+    href: '/today',
+    Icon: Flame,
+    labelKey: 'tab.today' as const,
+    requiresDiscovery: true,
+  },
+  {
+    href: '/ember',
+    Icon: Gem,
+    labelKey: 'tab.ember' as const,
+    gated: true,
+    requiresDiscovery: true,
+  },
+  {
+    href: '/memories',
+    Icon: Archive,
+    labelKey: 'tab.memories' as const,
+    requiresDiscovery: true,
+  },
+  { href: '/auth', Icon: Settings, labelKey: 'tab.settings' as const },
 ];
 
 export function TabBar() {
@@ -25,7 +41,7 @@ export function TabBar() {
   useEffect(() => {
     const wallet = getWalletCookie();
     setHasWallet(!!wallet);
-    
+
     if (wallet) {
       const profile = store.getProfile();
       setHasCompletedDiscovery(!!profile.current_talent);
@@ -34,47 +50,59 @@ export function TabBar() {
     }
   }, []);
 
-  // Hide on landing, discovery, onboarding, and when no wallet
-  if (pathname === '/' || !hasWallet || pathname === '/discovery' || pathname === '/onboarding') return null;
+  // Hide on landing, discovery, onboarding — and always when no wallet
+  if (
+    pathname === '/' ||
+    !hasWallet ||
+    pathname === '/discovery' ||
+    pathname === '/onboarding'
+  ) {
+    return null;
+  }
 
   return (
     <nav className="tab-bar">
       {tabs.map((tab) => {
         const walletLocked = tab.gated && !hasWallet;
-        const discoveryLocked = tab.requiresDiscovery && (!hasWallet || !hasCompletedDiscovery);
+        const discoveryLocked =
+          tab.requiresDiscovery && (!hasWallet || !hasCompletedDiscovery);
         const locked = walletLocked || discoveryLocked;
-        
-        const icon = (!hasWallet && 'altIcon' in tab) ? tab.altIcon as string : tab.icon;
-        const labelKey = (!hasWallet && 'altLabelKey' in tab) ? tab.altLabelKey as Parameters<typeof t>[0] : tab.labelKey;
-        
+        const active = pathname === tab.href || pathname.startsWith(tab.href + '/');
+        const Icon = tab.Icon;
+
         const TabContent = (
           <>
-            <span className="tab-icon">
-              {icon === 'ember-logo' ? '🔥' : icon}
-              {locked && <span className="tab-lock">🔒</span>}
+            <span className="tab-icon relative">
+              <Icon className="h-4.5 w-4.5" strokeWidth={1.75} />
+              {locked && (
+                <Lock
+                  className="absolute -right-2 -top-1 h-3 w-3"
+                  strokeWidth={2}
+                  style={{ color: 'var(--fg-dimmer)' }}
+                />
+              )}
             </span>
-            <span>{t(labelKey)}</span>
+            <span>{t(tab.labelKey)}</span>
           </>
         );
-        
-        // If locked, render as button that does nothing
+
         if (locked) {
           return (
             <button
               key={tab.href}
-              className={`${pathname === tab.href ? 'active' : ''} tab-locked cursor-not-allowed`}
+              className={`${active ? 'active' : ''} tab-locked cursor-not-allowed`}
               onClick={(e) => e.preventDefault()}
             >
               {TabContent}
             </button>
           );
         }
-        
+
         return (
           <Link
             key={tab.href}
             href={tab.href}
-            className={`${pathname === tab.href ? 'active' : ''}`}
+            className={`${active ? 'active' : ''}`}
           >
             {TabContent}
           </Link>

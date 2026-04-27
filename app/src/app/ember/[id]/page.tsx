@@ -245,7 +245,7 @@ export default function SoulDetailPage() {
         data-landing-page
         className="relative flex min-h-[100dvh] flex-col items-center justify-center bg-background px-6 text-center text-foreground"
       >
-        <Gem className="mb-4 h-10 w-10 text-[#faaf2e]" />
+        <Gem className="mb-4 h-10 w-10 text-[var(--ember)]" />
         <h1 className="mb-2 text-lg font-semibold">
           {isKo ? 'Soul을 찾을 수 없어요' : 'Soul not found'}
         </h1>
@@ -255,7 +255,7 @@ export default function SoulDetailPage() {
             : 'There is no Soul at this address, or you cannot access it.'}
         </p>
         <Link
-          href="/soul"
+          href="/ember"
           className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium transition hover:bg-foreground/5"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -268,8 +268,8 @@ export default function SoulDetailPage() {
   // ---------- share handlers ----------
   const shareUrl =
     typeof window !== 'undefined'
-      ? `${window.location.origin}/soul/${id}`
-      : `https://dito.guru/soul/${id}`;
+      ? `${window.location.origin}/ember/${id}`
+      : `https://dito.guru/ember/${id}`;
   const shareText = isKo
     ? `${derived.talent}과(와) 함께하는 여정을 공유합니다.`
     : `Sharing my journey with ${derived.talent}.`;
@@ -340,15 +340,15 @@ export default function SoulDetailPage() {
       <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/85 backdrop-blur-md">
         <div className="mx-auto flex h-[56px] w-full max-w-[640px] items-center gap-3 px-4">
           <Link
-            href="/soul"
+            href="/ember"
             aria-label={isKo ? 'Soul 목록으로' : 'Back to Souls'}
             className="inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground/80 transition hover:bg-foreground/10"
           >
             <ArrowLeft className="h-5 w-5" />
           </Link>
           <div className="flex min-w-0 flex-1 items-center gap-2">
-            <div className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#faaf2e]/15 ring-1 ring-[#faaf2e]/30">
-              <Flame className="h-3.5 w-3.5 text-[#faaf2e]" />
+            <div className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[var(--ember)]/15 ring-1 ring-[var(--ember)]/30">
+              <Flame className="h-3.5 w-3.5 text-[var(--ember)]" />
             </div>
             <div className="flex min-w-0 flex-col leading-tight">
               <span className="truncate text-[14px] font-semibold">
@@ -383,7 +383,7 @@ export default function SoulDetailPage() {
                   className="flex w-full items-center gap-2 px-4 py-3 text-left text-sm hover:bg-foreground/5"
                 >
                   {copied ? (
-                    <Check className="h-4 w-4 text-[#faaf2e]" />
+                    <Check className="h-4 w-4 text-[var(--ember)]" />
                   ) : (
                     <Copy className="h-4 w-4" />
                   )}
@@ -416,17 +416,17 @@ export default function SoulDetailPage() {
         {/* ============ Hero ============ */}
         <section className="relative flex flex-col items-center pt-4 pb-8 text-center">
           {/* soft amber glow */}
-          <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 mx-auto h-48 w-48 rounded-full bg-[#faaf2e]/20 blur-[72px]" />
+          <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 mx-auto h-48 w-48 rounded-full bg-[var(--ember)]/20 blur-[72px]" />
 
           {/* Gem — gentle rotate */}
           <div className="relative">
             <div
-              className="flex h-[140px] w-[140px] items-center justify-center rounded-full bg-gradient-to-br from-[#1a1a2e] to-[#0a0a0a] ring-1 ring-[#faaf2e]/40 shadow-[0_12px_40px_rgba(250,175,46,0.25)]"
+              className="flex h-[140px] w-[140px] items-center justify-center rounded-full bg-gradient-to-br from-[#1a1a2e] to-[#0a0a0a] ring-1 ring-[var(--ember)]/40 shadow-[0_12px_40px_rgba(250,175,46,0.25)]"
               style={{
                 animation: 'souldetail-spin 18s linear infinite',
               }}
             >
-              <Gem className="h-14 w-14 text-[#faaf2e] drop-shadow-[0_0_24px_rgba(250,175,46,0.6)]" />
+              <Gem className="h-14 w-14 text-[var(--ember)] drop-shadow-[0_0_24px_rgba(250,175,46,0.6)]" />
             </div>
 
             {/* Ring gauge, bottom-right anchored */}
@@ -446,7 +446,7 @@ export default function SoulDetailPage() {
                   cx={ringSize / 2}
                   cy={ringSize / 2}
                   r={ringR}
-                  stroke="#faaf2e"
+                  stroke="var(--ember)"
                   strokeWidth={ringStroke}
                   strokeLinecap="round"
                   strokeDasharray={ringC}
@@ -455,7 +455,7 @@ export default function SoulDetailPage() {
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-[13px] font-semibold text-[#faaf2e]">
+                <span className="text-[13px] font-semibold text-[var(--ember)]">
                   {derived.cyclePct}%
                 </span>
               </div>
@@ -468,7 +468,7 @@ export default function SoulDetailPage() {
           </h1>
 
           {/* Stage badge */}
-          <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-[#faaf2e]/15 px-3 py-1 text-[12px] font-semibold text-[#4b3002] ring-1 ring-[#faaf2e]/40 dark:text-[#faaf2e]">
+          <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-[var(--ember)]/15 px-3 py-1 text-[12px] font-semibold text-[var(--fg-on-ember)] ring-1 ring-[var(--ember)]/40 dark:text-[var(--ember)]">
             <Sparkles className="h-3 w-3" />
             {isKo ? derived.meta.labelKo : derived.meta.labelEn}
           </div>
@@ -484,7 +484,7 @@ export default function SoulDetailPage() {
           <div className="mt-6 flex w-full flex-col items-stretch gap-3 sm:flex-row sm:justify-center">
             <Link
               href={`/chat?talent=${encodeURIComponent(id)}`}
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[#faaf2e] px-6 text-[15px] font-semibold text-[#4b3002] shadow-[0_8px_24px_rgba(250,175,46,0.35)] transition hover:brightness-105 active:scale-[0.99] sm:min-w-[260px]"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[var(--ember)] px-6 text-[15px] font-semibold text-[var(--fg-on-ember)] shadow-[0_8px_24px_rgba(250,175,46,0.35)] transition hover:brightness-105 active:scale-[0.99] sm:min-w-[260px]"
             >
               <Flame className="h-4 w-4" />
               {isKo ? 'Ember와 계속하기' : 'Continue with Ember'}
@@ -502,18 +502,18 @@ export default function SoulDetailPage() {
         {/* ============ Stats strip ============ */}
         <section className="mt-2 grid grid-cols-3 overflow-hidden rounded-2xl border border-border bg-card">
           <StatCell
-            icon={<Calendar className="h-4 w-4 text-[#faaf2e]" />}
+            icon={<Calendar className="h-4 w-4 text-[var(--ember)]" />}
             label={isKo ? '발행' : 'Minted'}
             value={derived.mintDate}
           />
           <StatCell
-            icon={<Clock className="h-4 w-4 text-[#faaf2e]" />}
+            icon={<Clock className="h-4 w-4 text-[var(--ember)]" />}
             label={isKo ? '활동 기간' : 'Active Duration'}
             value={isKo ? `${derived.daysActive}일` : `${derived.daysActive} days`}
             border
           />
           <StatCell
-            icon={<TrendingUp className="h-4 w-4 text-[#faaf2e]" />}
+            icon={<TrendingUp className="h-4 w-4 text-[var(--ember)]" />}
             label={isKo ? '현재 사이클' : 'Current Cycle'}
             value={`${derived.cycle.current} / ${derived.cycle.total}`}
           />
@@ -557,8 +557,8 @@ export default function SoulDetailPage() {
               >
                 <defs>
                   <linearGradient id="ember-line" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#faaf2e" stopOpacity="0.35" />
-                    <stop offset="100%" stopColor="#faaf2e" stopOpacity="0" />
+                    <stop offset="0%" stopColor="var(--ember)" stopOpacity="0.35" />
+                    <stop offset="100%" stopColor="var(--ember)" stopOpacity="0" />
                   </linearGradient>
                 </defs>
                 {/* fill under line */}
@@ -570,7 +570,7 @@ export default function SoulDetailPage() {
                 <path
                   d={pathD}
                   fill="none"
-                  stroke="#faaf2e"
+                  stroke="var(--ember)"
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -586,7 +586,7 @@ export default function SoulDetailPage() {
                       cx={x}
                       cy={y}
                       r={isLast ? 4 : 2.5}
-                      fill={isLast ? '#faaf2e' : '#faaf2e'}
+                      fill={isLast ? 'var(--ember)' : 'var(--ember)'}
                       stroke={isLast ? 'var(--background, #fff)' : 'none'}
                       strokeWidth={isLast ? 2 : 0}
                     />
@@ -616,7 +616,7 @@ export default function SoulDetailPage() {
                     cx={54}
                     cy={54}
                     r={48}
-                    stroke="#faaf2e"
+                    stroke="var(--ember)"
                     strokeWidth={8}
                     strokeLinecap="round"
                     strokeDasharray={2 * Math.PI * 48}
@@ -664,7 +664,7 @@ export default function SoulDetailPage() {
                 </div>
                 <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-foreground/10">
                   <div
-                    className="h-full rounded-full bg-[#faaf2e]"
+                    className="h-full rounded-full bg-[var(--ember)]"
                     style={{ width: `${c.value}%` }}
                   />
                 </div>
@@ -682,7 +682,7 @@ export default function SoulDetailPage() {
             {/* Amber thread */}
             <div
               aria-hidden
-              className="pointer-events-none absolute bottom-8 left-[26px] top-6 w-px bg-gradient-to-b from-[#faaf2e]/80 via-[#faaf2e]/40 to-transparent"
+              className="pointer-events-none absolute bottom-8 left-[26px] top-6 w-px bg-gradient-to-b from-[var(--ember)]/80 via-[var(--ember)]/40 to-transparent"
             />
             <ul className="flex flex-col gap-4">
               {shownEvents.map((e, idx) => (
@@ -690,7 +690,7 @@ export default function SoulDetailPage() {
                   <div
                     className={`relative z-10 inline-flex h-6 w-6 flex-none items-center justify-center rounded-full text-[12px] ring-1 ${
                       idx === 0 || e.amber
-                        ? 'bg-[#faaf2e] text-[#4b3002] ring-[#faaf2e]/60 shadow-[0_0_0_4px_rgba(250,175,46,0.15)]'
+                        ? 'bg-[var(--ember)] text-[var(--fg-on-ember)] ring-[var(--ember)]/60 shadow-[0_0_0_4px_rgba(250,175,46,0.15)]'
                         : 'bg-foreground/10 text-foreground ring-border'
                     }`}
                   >
@@ -753,7 +753,7 @@ export default function SoulDetailPage() {
                     key={s}
                     className={`flex flex-col items-center rounded-xl border p-2 text-center ${
                       reached
-                        ? 'border-[#faaf2e]/40 bg-[#faaf2e]/10'
+                        ? 'border-[var(--ember)]/40 bg-[var(--ember)]/10'
                         : 'border-border bg-card opacity-60'
                     }`}
                   >
@@ -762,7 +762,7 @@ export default function SoulDetailPage() {
                     </span>
                     <span
                       className={`mt-1 text-[14px] font-bold ${
-                        reached ? 'text-[#4b3002] dark:text-[#faaf2e]' : 'text-foreground'
+                        reached ? 'text-[var(--fg-on-ember)] dark:text-[var(--ember)]' : 'text-foreground'
                       }`}
                     >
                       {days > 0 ? (isKo ? `${days}일` : `${days}d`) : '—'}
@@ -783,7 +783,7 @@ export default function SoulDetailPage() {
             className="flex items-center justify-between rounded-2xl border border-border bg-card px-4 py-3 text-sm transition hover:bg-foreground/5"
           >
             <div className="flex items-center gap-2">
-              <Gem className="h-4 w-4 text-[#faaf2e]" />
+              <Gem className="h-4 w-4 text-[var(--ember)]" />
               <span className="font-medium">
                 {isKo ? 'Solscan에서 확인' : 'View on Solscan'}
               </span>

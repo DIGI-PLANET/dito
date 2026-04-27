@@ -212,7 +212,7 @@ export default function GuidePage() {
                 className={
                   'inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors ' +
                   (active
-                    ? 'bg-[#faaf2e] text-[#4b3002] shadow-sm'
+                    ? 'bg-[var(--ember)] text-[var(--fg-on-ember)] shadow-sm'
                     : 'text-muted-foreground hover:bg-card hover:text-foreground')
                 }
               >
@@ -236,7 +236,7 @@ export default function GuidePage() {
                 className="flex w-full items-center justify-between rounded-2xl border border-border bg-card px-4 py-3 text-left text-sm font-medium text-foreground md:hidden"
               >
                 <span className="inline-flex items-center gap-2">
-                  <Book className="h-4 w-4 text-[#faaf2e]" />
+                  <Book className="h-4 w-4 text-[var(--ember)]" />
                   {tocLabel}
                 </span>
                 <ChevronDown
@@ -267,7 +267,7 @@ export default function GuidePage() {
                           className={
                             'block w-full border-l-2 px-4 py-2 text-left text-sm transition-colors ' +
                             (active
-                              ? 'border-[#faaf2e] bg-[#faaf2e]/10 font-semibold text-foreground'
+                              ? 'border-[var(--ember)] bg-[var(--ember)]/10 font-semibold text-foreground'
                               : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground')
                           }
                         >
@@ -283,7 +283,7 @@ export default function GuidePage() {
           {tab !== 'seekers' && <div className="hidden md:block" />}
 
           {/* Content */}
-          <div className="mt-6 md:mt-0 md:max-w-[720px]">
+          <div className="mt-6 md:mt-0 md:max-w-180">
             {tab === 'seekers' && (
               <div className="space-y-6">
                 {seekerSections.map((s) => (
@@ -300,8 +300,8 @@ export default function GuidePage() {
                 ))}
 
                 {/* Pro Tip callout */}
-                <div className="rounded-2xl border border-[#faaf2e]/40 bg-[#faaf2e]/10 p-5">
-                  <div className="mb-2 inline-flex items-center gap-2 text-sm font-semibold text-[#4b3002] dark:text-[#faaf2e]">
+                <div className="rounded-2xl border border-[var(--ember)]/40 bg-[var(--ember)]/10 p-5">
+                  <div className="mb-2 inline-flex items-center gap-2 text-sm font-semibold text-[var(--fg-on-ember)] dark:text-[var(--ember)]">
                     <Flame className="h-4 w-4" />
                     {isKo ? '팁: 꾸준함' : 'Pro Tip: Consistency'}
                   </div>
@@ -318,7 +318,7 @@ export default function GuidePage() {
               <div className="space-y-6">
                 <section className="rounded-2xl border border-border bg-card p-5 md:p-7">
                   <div className="mb-2 inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground">
-                    <Sparkles className="h-4 w-4 text-[#faaf2e]" />
+                    <Sparkles className="h-4 w-4 text-[var(--ember)]" />
                     {dev.title}
                   </div>
                   <p className="text-[15px] leading-7 text-muted-foreground md:text-base md:leading-8">
@@ -469,7 +469,7 @@ const res = await anthropic.messages.create({
               <div className="space-y-6">
                 <section className="rounded-2xl border border-border bg-card p-5 md:p-7">
                   <div className="mb-2 inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground">
-                    <HelpCircle className="h-4 w-4 text-[#faaf2e]" />
+                    <HelpCircle className="h-4 w-4 text-[var(--ember)]" />
                     {faqSection?.title ?? 'FAQ'}
                   </div>
                   <p className="text-[15px] leading-7 text-muted-foreground md:text-base md:leading-8">
@@ -530,8 +530,8 @@ const res = await anthropic.messages.create({
                 </div>
 
                 {/* License note */}
-                <div className="rounded-2xl border border-[#faaf2e]/30 bg-[#faaf2e]/10 p-5">
-                  <div className="mb-2 inline-flex items-center gap-2 text-sm font-semibold text-[#4b3002] dark:text-[#faaf2e]">
+                <div className="rounded-2xl border border-[var(--ember)]/30 bg-[var(--ember)]/10 p-5">
+                  <div className="mb-2 inline-flex items-center gap-2 text-sm font-semibold text-[var(--fg-on-ember)] dark:text-[var(--ember)]">
                     <Flame className="h-4 w-4" />
                     {isKo ? '라이선스 — BUSL 1.1' : 'License — BUSL 1.1'}
                   </div>
@@ -572,7 +572,7 @@ const res = await anthropic.messages.create({
           type="button"
           onClick={scrollToTop}
           aria-label={backToTop}
-          className="fixed bottom-6 right-4 z-50 inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#faaf2e] text-[#4b3002] shadow-lg transition-all hover:brightness-110 md:bottom-10 md:right-10"
+          className="fixed bottom-6 right-4 z-50 inline-flex h-11 w-11 items-center justify-center rounded-full bg-[var(--ember)] text-[var(--fg-on-ember)] shadow-lg transition-all hover:brightness-110 md:bottom-10 md:right-10"
         >
           <ArrowUp className="h-5 w-5" />
         </button>

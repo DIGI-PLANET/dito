@@ -57,7 +57,7 @@ export function createOTPEmail(otpCode: string, language: 'ko' | 'en' = 'ko'): {
         <!-- Header -->
         <div style="text-align: center; margin-bottom: 40px;">
           <div style="font-size: 48px; margin-bottom: 16px;">🔥</div>
-          <h1 style="margin: 0; color: #ff6b35; font-size: 32px; font-weight: bold;">DITO</h1>
+          <h1 style="margin: 0; color: #D9582C; font-size: 32px; font-weight: bold;">DITO</h1>
           <p style="margin: 8px 0 0 0; color: #666; font-size: 14px;">
             ${isKorean ? 'AI와 함께하는 재능 발견 플랫폼' : 'AI-Powered Talent Discovery Platform'}
           </p>
@@ -69,7 +69,7 @@ export function createOTPEmail(otpCode: string, language: 'ko' | 'en' = 'ko'): {
             ${isKorean ? '보안 인증코드' : 'Security Verification Code'}
           </h2>
           
-          <div style="background: white; border: 2px solid #ff6b35; border-radius: 8px; padding: 24px; margin: 24px 0; font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #ff6b35; font-family: 'Courier New', monospace;">
+          <div style="background: white; border: 2px solid #D9582C; border-radius: 8px; padding: 24px; margin: 24px 0; font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #D9582C; font-family: 'Courier New', monospace;">
             ${otpCode}
           </div>
           
@@ -85,7 +85,7 @@ export function createOTPEmail(otpCode: string, language: 'ko' | 'en' = 'ko'): {
           <p style="margin: 0 0 16px 0; color: #333; font-size: 16px;">
             ${isKorean ? '재능을 발견하고 Ember와 함께 성장하세요!' : 'Discover your talent and grow with Ember!'}
           </p>
-          <a href="https://dito.guru" style="display: inline-block; background: #ff6b35; color: white; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; font-size: 16px;">
+          <a href="https://dito.guru" style="display: inline-block; background: #D9582C; color: white; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; font-size: 16px;">
             ${isKorean ? '🚀 DITO 시작하기' : '🚀 Start DITO'}
           </a>
         </div>
@@ -129,7 +129,7 @@ export function createPasswordResetEmail(resetUrl: string, language: 'ko' | 'en'
         <!-- Header -->
         <div style="text-align: center; margin-bottom: 40px;">
           <div style="font-size: 48px; margin-bottom: 16px;">🔥</div>
-          <h1 style="margin: 0; color: #ff6b35; font-size: 32px; font-weight: bold;">DITO</h1>
+          <h1 style="margin: 0; color: #D9582C; font-size: 32px; font-weight: bold;">DITO</h1>
           <p style="margin: 8px 0 0 0; color: #666; font-size: 14px;">
             ${isKorean ? 'AI와 함께하는 재능 발견 플랫폼' : 'AI-Powered Talent Discovery Platform'}
           </p>
@@ -146,7 +146,7 @@ export function createPasswordResetEmail(resetUrl: string, language: 'ko' | 'en'
               : 'You requested a password reset.<br>Click the button below to set a new password.'}
           </p>
 
-          <a href="${resetUrl}" style="display: inline-block; background: #ff6b35; color: white; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);">
+          <a href="${resetUrl}" style="display: inline-block; background: #D9582C; color: white; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);">
             ${isKorean ? '비밀번호 재설정' : 'Reset Password'}
           </a>
 
@@ -162,7 +162,7 @@ export function createPasswordResetEmail(resetUrl: string, language: 'ko' | 'en'
           <p style="margin: 0; color: #999; font-size: 12px;">
             ${isKorean ? '버튼이 작동하지 않으면 아래 링크를 복사하여 브라우저에 붙여넣으세요:' : 'If the button doesn\'t work, copy and paste this link:'}
           </p>
-          <p style="margin: 8px 0 0 0; color: #ff6b35; font-size: 12px; word-break: break-all;">
+          <p style="margin: 8px 0 0 0; color: #D9582C; font-size: 12px; word-break: break-all;">
             ${resetUrl}
           </p>
         </div>
@@ -206,7 +206,7 @@ export function createPasswordChangedEmail(language: 'ko' | 'en' = 'ko'): { subj
         <!-- Header -->
         <div style="text-align: center; margin-bottom: 40px;">
           <div style="font-size: 48px; margin-bottom: 16px;">🔥</div>
-          <h1 style="margin: 0; color: #ff6b35; font-size: 32px; font-weight: bold;">DITO</h1>
+          <h1 style="margin: 0; color: #D9582C; font-size: 32px; font-weight: bold;">DITO</h1>
           <p style="margin: 8px 0 0 0; color: #666; font-size: 14px;">
             ${isKorean ? 'AI와 함께하는 재능 발견 플랫폼' : 'AI-Powered Talent Discovery Platform'}
           </p>
@@ -235,7 +235,7 @@ export function createPasswordChangedEmail(language: 'ko' | 'en' = 'ko'): { subj
 
         <!-- CTA -->
         <div style="text-align: center; margin-bottom: 32px;">
-          <a href="https://dito.guru/auth" style="display: inline-block; background: #ff6b35; color: white; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; font-size: 16px;">
+          <a href="https://dito.guru/auth" style="display: inline-block; background: #D9582C; color: white; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; font-size: 16px;">
             ${isKorean ? '로그인하기' : 'Sign In'}
           </a>
         </div>
@@ -280,14 +280,14 @@ export function createWelcomeEmail(username: string, language: 'ko' | 'en' = 'ko
         <!-- Header -->
         <div style="text-align: center; margin-bottom: 40px;">
           <div style="font-size: 64px; margin-bottom: 16px;">🔥</div>
-          <h1 style="margin: 0; color: #ff6b35; font-size: 32px; font-weight: bold;">DITO</h1>
+          <h1 style="margin: 0; color: #D9582C; font-size: 32px; font-weight: bold;">DITO</h1>
           <p style="margin: 8px 0 0 0; color: #666; font-size: 14px;">
             ${isKorean ? 'AI와 함께하는 재능 발견 플랫폼' : 'AI-Powered Talent Discovery Platform'}
           </p>
         </div>
 
         <!-- Welcome Message -->
-        <div style="background: linear-gradient(135deg, #ff6b35, #f7931e); border-radius: 12px; padding: 32px; text-align: center; margin-bottom: 32px; color: white;">
+        <div style="background: linear-gradient(135deg, #D9582C, #f7931e); border-radius: 12px; padding: 32px; text-align: center; margin-bottom: 32px; color: white;">
           <h2 style="margin: 0 0 16px 0; font-size: 28px;">
             ${isKorean ? `환영합니다, ${username}님!` : `Welcome, ${username}!`}
           </h2>
@@ -343,7 +343,7 @@ export function createWelcomeEmail(username: string, language: 'ko' | 'en' = 'ko
 
         <!-- CTA Button -->
         <div style="text-align: center; margin-bottom: 32px;">
-          <a href="https://dito.guru/discovery" style="display: inline-block; background: #ff6b35; color: white; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: bold; font-size: 18px; box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);">
+          <a href="https://dito.guru/discovery" style="display: inline-block; background: #D9582C; color: white; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: bold; font-size: 18px; box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);">
             ${isKorean ? '🔥 재능 발견 시작하기' : '🔥 Start Discovering Talents'}
           </a>
         </div>

@@ -259,7 +259,7 @@ export default function ChatPage() {
     return (
       <div data-landing-page className="flex min-h-[100dvh] items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-3 text-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#faaf2e] border-t-transparent" />
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--ember)] border-t-transparent" />
           <p className="text-sm text-muted-foreground">
             {isKo ? 'Ember 소환 준비중…' : 'Preparing to summon Ember…'}
           </p>
@@ -300,8 +300,8 @@ export default function ChatPage() {
           </Link>
 
           <div className="flex min-w-0 flex-1 items-center gap-2">
-            <div className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#faaf2e]/15 ring-1 ring-[#faaf2e]/30">
-              <Flame className="h-3.5 w-3.5 text-[#faaf2e]" />
+            <div className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[var(--ember)]/15 ring-1 ring-[var(--ember)]/30">
+              <Flame className="h-3.5 w-3.5 text-[var(--ember)]" />
             </div>
             <div className="flex min-w-0 flex-col leading-tight">
               <span className="truncate text-[14px] font-semibold">Ember</span>
@@ -328,7 +328,7 @@ export default function ChatPage() {
                   cx={ringSize / 2}
                   cy={ringSize / 2}
                   r={ringR}
-                  stroke="#faaf2e"
+                  stroke="var(--ember)"
                   strokeWidth={ringStroke}
                   strokeLinecap="round"
                   strokeDasharray={ringC}
@@ -347,14 +347,14 @@ export default function ChatPage() {
         {/* Streak + Today's Focus strip */}
         <div className="mx-auto flex w-full max-w-[640px] items-center justify-between gap-3 px-4 pb-3 pt-1">
           <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-            <Sparkles className="h-3 w-3 text-[#faaf2e]" />
+            <Sparkles className="h-3 w-3 text-[var(--ember)]" />
             <span className="font-medium text-foreground/80">
               {isKo ? `${streak}일 연속` : `${streak} Day Streak`}
             </span>
             <span className="text-muted-foreground/60">·</span>
             <span>{isKo ? `${'Day '}${streak + 1}` : `Day ${streak + 1}`}</span>
           </div>
-          <div className="text-[11px] font-medium uppercase tracking-[0.8px] text-[#faaf2e]">
+          <div className="text-[11px] font-medium uppercase tracking-[0.8px] text-[var(--ember)]">
             {isKo ? '오늘의 초점' : "Today's Focus"}
           </div>
         </div>
@@ -368,8 +368,8 @@ export default function ChatPage() {
         <main className="mx-auto flex w-full max-w-[640px] flex-col gap-4 px-4 py-5 pb-40">
           {/* Ember "misses you" callout */}
           {streak === 0 && (
-            <div className="flex items-start gap-2 rounded-[12px] border border-[#faaf2e]/25 bg-[#faaf2e]/5 px-3 py-2.5 text-[12px] text-foreground/80">
-              <TriangleAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#faaf2e]" />
+            <div className="flex items-start gap-2 rounded-[12px] border border-[var(--ember)]/25 bg-[var(--ember)]/5 px-3 py-2.5 text-[12px] text-foreground/80">
+              <TriangleAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--ember)]" />
               <div className="flex-1">
                 <div className="font-semibold text-foreground">
                   {isKo ? 'Ember가 당신을 그리워해요' : 'Ember misses you'}
@@ -395,15 +395,15 @@ export default function ChatPage() {
             }
             return (
               <div key={m.id} className="flex items-start gap-2">
-                <div className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#faaf2e]/15 ring-1 ring-[#faaf2e]/30">
-                  <Flame className="h-3.5 w-3.5 text-[#faaf2e]" />
+                <div className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--ember)]/15 ring-1 ring-[var(--ember)]/30">
+                  <Flame className="h-3.5 w-3.5 text-[var(--ember)]" />
                 </div>
-                <div className="max-w-[82%] rounded-[14px] rounded-tl-sm border border-[#faaf2e]/25 bg-[#faaf2e]/5 px-3.5 py-2.5 text-[14px] leading-relaxed text-foreground/90">
+                <div className="max-w-[82%] rounded-[14px] rounded-tl-sm border border-[var(--ember)]/25 bg-[var(--ember)]/5 px-3.5 py-2.5 text-[14px] leading-relaxed text-foreground/90">
                   {m.content || (
                     <span className="inline-flex items-center gap-1 text-muted-foreground">
-                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#faaf2e]" />
-                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#faaf2e] [animation-delay:120ms]" />
-                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#faaf2e] [animation-delay:240ms]" />
+                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--ember)]" />
+                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--ember)] [animation-delay:120ms]" />
+                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--ember)] [animation-delay:240ms]" />
                     </span>
                   )}
                 </div>
@@ -413,14 +413,14 @@ export default function ChatPage() {
 
           {sending && messages[messages.length - 1]?.role === 'user' && (
             <div className="flex items-start gap-2">
-              <div className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#faaf2e]/15 ring-1 ring-[#faaf2e]/30">
-                <Flame className="h-3.5 w-3.5 text-[#faaf2e]" />
+              <div className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--ember)]/15 ring-1 ring-[var(--ember)]/30">
+                <Flame className="h-3.5 w-3.5 text-[var(--ember)]" />
               </div>
-              <div className="rounded-[14px] rounded-tl-sm border border-[#faaf2e]/25 bg-[#faaf2e]/5 px-3.5 py-2.5">
+              <div className="rounded-[14px] rounded-tl-sm border border-[var(--ember)]/25 bg-[var(--ember)]/5 px-3.5 py-2.5">
                 <span className="inline-flex items-center gap-1 text-muted-foreground">
-                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#faaf2e]" />
-                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#faaf2e] [animation-delay:120ms]" />
-                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#faaf2e] [animation-delay:240ms]" />
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--ember)]" />
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--ember)] [animation-delay:120ms]" />
+                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--ember)] [animation-delay:240ms]" />
                 </span>
               </div>
             </div>
@@ -439,7 +439,7 @@ export default function ChatPage() {
         <div className="mx-auto flex w-full max-w-[640px] flex-col gap-2 px-4 py-3">
           <form
             onSubmit={handleSubmit}
-            className="flex items-end gap-2 rounded-[14px] border border-border bg-card px-2.5 py-2 focus-within:border-[#faaf2e]/50 focus-within:ring-2 focus-within:ring-[#faaf2e]/20"
+            className="flex items-end gap-2 rounded-[14px] border border-border bg-card px-2.5 py-2 focus-within:border-[var(--ember)]/50 focus-within:ring-2 focus-within:ring-[var(--ember)]/20"
           >
             <textarea
               value={input}
@@ -459,7 +459,7 @@ export default function ChatPage() {
               type="submit"
               disabled={!input.trim() || sending}
               aria-label="Send"
-              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#faaf2e] text-[#4b3002] shadow-[0_4px_10px_rgba(250,175,46,0.25)] transition hover:bg-[#e8a129] disabled:opacity-50"
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--ember)] text-[var(--fg-on-ember)] shadow-[0_4px_10px_rgba(250,175,46,0.25)] transition hover:bg-[#e8a129] disabled:opacity-50"
             >
               <Send className="h-4 w-4" />
             </button>
@@ -471,8 +471,8 @@ export default function ChatPage() {
             disabled={markedDone}
             className={`inline-flex h-11 w-full items-center justify-center gap-2 rounded-[12px] text-[14px] font-semibold transition ${
               markedDone
-                ? 'bg-[#faaf2e]/20 text-[#faaf2e] ring-1 ring-inset ring-[#faaf2e]/40'
-                : 'bg-[#faaf2e] text-[#4b3002] shadow-[0_6px_14px_rgba(250,175,46,0.25)] hover:bg-[#e8a129]'
+                ? 'bg-[var(--ember)]/20 text-[var(--ember)] ring-1 ring-inset ring-[var(--ember)]/40'
+                : 'bg-[var(--ember)] text-[var(--fg-on-ember)] shadow-[0_6px_14px_rgba(250,175,46,0.25)] hover:bg-[#e8a129]'
             }`}
           >
             {markedDone ? (
@@ -489,7 +489,7 @@ export default function ChatPage() {
           </button>
 
           {achieved && !markedDone && (
-            <p className="text-center text-[11px] text-[#faaf2e]">
+            <p className="text-center text-[11px] text-[var(--ember)]">
               {isKo
                 ? '오늘의 목표 80% 달성! 완료로 표시해 연속 기록을 이어가세요.'
                 : 'Daily goal 80% reached — mark done to keep your streak.'}

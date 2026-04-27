@@ -64,13 +64,13 @@ export function ConsoleEasterEgg() {
 
     console.log(
       `%c🐉 DARGONNE sees you.\n\n%c${msg.taunt}\n\n%c— DARGONNE (@0xDARGONNE)`,
-      'color: #ff6b35; font-size: 20px; font-weight: bold;',
-      'color: #ff6b35; font-size: 13px;',
+      'color: var(--ember); font-size: 20px; font-weight: bold;',
+      'color: var(--ember); font-size: 13px;',
       'color: #888; font-size: 11px; font-style: italic;'
     );
 
     console.log(`%c${msg.warn}`, 'color: red; font-size: 14px; font-weight: bold;');
-    console.log(`%c${msg.recruit}`, 'color: #ff6b35; font-size: 11px;');
+    console.log(`%c${msg.recruit}`, 'color: var(--ember); font-size: 11px;');
   }, [lang]);
 
   return null;

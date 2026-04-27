@@ -74,7 +74,7 @@ export function DuplicateLoginDialog({
           <button
             onClick={handleReplaceExisting}
             disabled={isLoading}
-            className="w-full bg-[#ff6b35] hover:bg-[#e85d2c] disabled:opacity-50 text-white rounded-xl py-3 font-semibold"
+            className="w-full bg-[var(--ember)] hover:bg-[#e85d2c] disabled:opacity-50 text-white rounded-xl py-3 font-semibold"
           >
             {isLoading ? '처리 중...' : '다른 세션 종료 후 로그인'}
           </button>

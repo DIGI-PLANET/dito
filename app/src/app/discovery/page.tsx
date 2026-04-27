@@ -54,8 +54,8 @@ function ExitModal({ isKo, onExit, onCancel }: { isKo: boolean; onExit: () => vo
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in">
       <div className="bg-card border border-border rounded-[14px] p-6 max-w-xs w-full mx-4 space-y-4 text-center">
-        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#faaf2e]/10 ring-1 ring-[#faaf2e]/30 mx-auto">
-          <Flame className="h-5 w-5 text-[#faaf2e]" />
+        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--ember)]/10 ring-1 ring-[var(--ember)]/30 mx-auto">
+          <Flame className="h-5 w-5 text-[var(--ember)]" />
         </span>
         <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
           {isKo
@@ -72,7 +72,7 @@ function ExitModal({ isKo, onExit, onCancel }: { isKo: boolean; onExit: () => vo
           </Button>
           <Button
             onClick={onCancel}
-            className="w-full h-11 rounded-[10px] bg-[#faaf2e] hover:bg-[#e8a129] text-[#4b3002] font-semibold"
+            className="w-full h-11 rounded-[10px] bg-[var(--ember)] hover:bg-[#e8a129] text-[var(--fg-on-ember)] font-semibold"
           >
             {isKo ? '계속하기' : 'Continue'}
           </Button>
@@ -86,10 +86,10 @@ function ExitModal({ isKo, onExit, onCancel }: { isKo: boolean; onExit: () => vo
 function EmberAvatar({ size = 32 }: { size?: number }) {
   return (
     <span
-      className="flex shrink-0 items-center justify-center rounded-full bg-[#faaf2e]/12 ring-1 ring-[#faaf2e]/40"
+      className="flex shrink-0 items-center justify-center rounded-full bg-[var(--ember)]/12 ring-1 ring-[var(--ember)]/40"
       style={{ height: size, width: size }}
     >
-      <Flame className="text-[#faaf2e]" style={{ height: size * 0.45, width: size * 0.45 }} />
+      <Flame className="text-[var(--ember)]" style={{ height: size * 0.45, width: size * 0.45 }} />
     </span>
   );
 }
@@ -103,7 +103,7 @@ function ProgressChip({ current, total, isKo }: { current: number; total: number
       <span className="text-[11px] font-medium text-muted-foreground">{label}</span>
       <span className="h-1.5 w-20 overflow-hidden rounded-full bg-foreground/10">
         <span
-          className="block h-full rounded-full bg-[#faaf2e] transition-[width] duration-500"
+          className="block h-full rounded-full bg-[var(--ember)] transition-[width] duration-500"
           style={{ width: `${pct}%` }}
         />
       </span>
@@ -115,7 +115,7 @@ function ProgressChip({ current, total, isKo }: { current: number; total: number
 function ResumingChip({ isKo }: { isKo: boolean }) {
   return (
     <div className="mx-auto mb-3 inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1.5 text-[11px] text-muted-foreground backdrop-blur-sm">
-      <RefreshCw className="h-3 w-3 text-[#faaf2e]" />
+      <RefreshCw className="h-3 w-3 text-[var(--ember)]" />
       <span>{isKo ? '이어서 진행 중' : 'Resuming your journey'}</span>
     </div>
   );
@@ -528,14 +528,14 @@ export default function DiscoveryPage() {
         className="relative min-h-screen w-full bg-background text-foreground flex items-center justify-center px-5 py-10"
       >
         {/* soft amber glow */}
-        <div className="pointer-events-none absolute left-1/2 top-1/3 h-[360px] w-[360px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#faaf2e]/15 blur-[100px]" />
-        <div className="relative z-10 w-full max-w-[420px]">
+        <div className="pointer-events-none absolute left-1/2 top-1/3 h-[360px] w-[360px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--ember)]/15 blur-[100px]" />
+        <div className="relative z-10 w-full max-w-105">
           <div className="flex flex-col items-center text-center space-y-5">
-            <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[#faaf2e]/10 shadow-[0_0_40px_rgba(250,175,46,0.35)] ring-1 ring-[#faaf2e]/40">
-              <Flame className="h-6 w-6 text-[#faaf2e]" />
+            <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--ember)]/10 shadow-[0_0_40px_rgba(250,175,46,0.35)] ring-1 ring-[var(--ember)]/40">
+              <Flame className="h-6 w-6 text-[var(--ember)]" />
             </span>
 
-            <p className="text-[13px] font-semibold uppercase tracking-[1.4px] text-[#faaf2e]/85">
+            <p className="text-[13px] font-semibold uppercase tracking-[1.4px] text-[var(--ember)]/85">
               {isKo ? '5문항 · 10분 · 솔직한 한 줄' : '5 questions · 10 minutes · One honest read'}
             </p>
 
@@ -565,7 +565,7 @@ export default function DiscoveryPage() {
               <Button
                 onClick={handleEmberNameSubmit}
                 disabled={!emberName.trim()}
-                className="w-full h-12 rounded-[10px] bg-[#faaf2e] hover:bg-[#e8a129] text-[#4b3002] font-semibold text-[15px] shadow-[0_10px_24px_rgba(250,175,46,0.3)] disabled:opacity-40 disabled:shadow-none"
+                className="w-full h-12 rounded-[10px] bg-[var(--ember)] hover:bg-[#e8a129] text-[var(--fg-on-ember)] font-semibold text-[15px] shadow-[0_10px_24px_rgba(250,175,46,0.3)] disabled:opacity-40 disabled:shadow-none"
               >
                 {isKo ? '시작하기' : 'Begin'}
                 <ChevronRight className="ml-1 h-4 w-4" />
@@ -607,8 +607,8 @@ export default function DiscoveryPage() {
         </button>
 
         <div className="flex items-center gap-2">
-          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#faaf2e]/12 ring-1 ring-[#faaf2e]/30">
-            <Flame className="h-3.5 w-3.5 text-[#faaf2e]" />
+          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--ember)]/12 ring-1 ring-[var(--ember)]/30">
+            <Flame className="h-3.5 w-3.5 text-[var(--ember)]" />
           </span>
           <span className="text-[13px] font-semibold tracking-tight">
             {isKo ? '재능 발견' : 'Discovery'}
@@ -635,7 +635,7 @@ export default function DiscoveryPage() {
 
       {/* Messages */}
       <div className="relative flex-1 min-h-0 overflow-y-auto">
-        <div className="mx-auto w-full max-w-[720px] px-4 py-5 md:px-6">
+        <div className="mx-auto w-full max-w-180 px-4 py-5 md:px-6">
           {showResuming && (
             <div className="mb-4 flex justify-center">
               <ResumingChip isKo={isKo} />
@@ -653,7 +653,7 @@ export default function DiscoveryPage() {
                   className={`max-w-[82%] md:max-w-[78%] rounded-[14px] px-4 py-3 text-[14px] leading-[1.55] shadow-[0_2px_4px_rgba(0,0,0,0.15)] ${
                     msg.role === 'user'
                       ? 'rounded-br-xl bg-card border border-border/60 text-foreground/95'
-                      : 'rounded-bl-xl border border-[#faaf2e]/20 bg-[#faaf2e]/6 text-foreground/95'
+                      : 'rounded-bl-xl border border-[var(--ember)]/20 bg-[var(--ember)]/6 text-foreground/95'
                   }`}
                 >
                   <p className="whitespace-pre-line">{msg.content}</p>
@@ -670,22 +670,22 @@ export default function DiscoveryPage() {
             {loading && (
               <li className="flex items-end gap-2 justify-start">
                 <EmberAvatar />
-                <div className="rounded-[14px] rounded-bl-xl border border-[#faaf2e]/20 bg-[#faaf2e]/6 px-4 py-3">
+                <div className="rounded-[14px] rounded-bl-xl border border-[var(--ember)]/20 bg-[var(--ember)]/6 px-4 py-3">
                   <div className="flex items-center gap-2">
                     <span className="text-[12px] text-muted-foreground">
                       {isKo ? 'Ember가 생각 중' : 'Ember is thinking'}
                     </span>
                     <span className="flex items-center gap-1">
                       <span
-                        className="h-1.5 w-1.5 rounded-full bg-[#faaf2e] animate-bounce"
+                        className="h-1.5 w-1.5 rounded-full bg-[var(--ember)] animate-bounce"
                         style={{ animationDelay: '0ms' }}
                       />
                       <span
-                        className="h-1.5 w-1.5 rounded-full bg-[#faaf2e] animate-bounce"
+                        className="h-1.5 w-1.5 rounded-full bg-[var(--ember)] animate-bounce"
                         style={{ animationDelay: '150ms' }}
                       />
                       <span
-                        className="h-1.5 w-1.5 rounded-full bg-[#faaf2e] animate-bounce"
+                        className="h-1.5 w-1.5 rounded-full bg-[var(--ember)] animate-bounce"
                         style={{ animationDelay: '300ms' }}
                       />
                     </span>
@@ -753,7 +753,7 @@ export default function DiscoveryPage() {
           };
           return (
             <div className="sticky bottom-0 z-20 shrink-0 border-t border-border/60 bg-background/90 px-4 py-3 backdrop-blur-md pb-[calc(env(safe-area-inset-bottom)+0.75rem)]">
-              <div className="mx-auto flex max-w-[720px] gap-2">
+              <div className="mx-auto flex max-w-180 gap-2">
                 <Input
                   value={freeText}
                   onChange={(e) => setFreeText(e.target.value)}
@@ -766,14 +766,14 @@ export default function DiscoveryPage() {
                 <Button
                   onClick={handleFreeSubmit}
                   disabled={!freeText.trim()}
-                  className="h-12 w-12 shrink-0 rounded-full bg-[#faaf2e] p-0 text-[#4b3002] hover:bg-[#e8a129] disabled:opacity-40"
+                  className="h-12 w-12 shrink-0 rounded-full bg-[var(--ember)] p-0 text-[var(--fg-on-ember)] hover:bg-[#e8a129] disabled:opacity-40"
                   aria-label={isKo ? '전송' : 'Send'}
                 >
                   <Send className="h-4 w-4" />
                 </Button>
               </div>
               {freeInputAttempts > 0 && attemptsLeft > 0 && step === 'discovery' && (
-                <p className="mx-auto mt-2 max-w-[720px] text-center text-[11px] text-muted-foreground/60">
+                <p className="mx-auto mt-2 max-w-180 text-center text-[11px] text-muted-foreground/60">
                   {isKo ? `검색 ${freeInputAttempts}/5회` : `Search ${freeInputAttempts}/5`}
                 </p>
               )}
@@ -784,16 +784,16 @@ export default function DiscoveryPage() {
         if (!lastEmber?.choices?.length) return null;
         return (
           <div className="sticky bottom-0 z-20 shrink-0 border-t border-border/60 bg-background/90 px-4 py-3 backdrop-blur-md pb-[calc(env(safe-area-inset-bottom)+0.75rem)]">
-            <div className="mx-auto flex max-w-[720px] flex-col gap-2">
+            <div className="mx-auto flex max-w-180 flex-col gap-2">
               {lastEmber.choices.map((choice) => (
                 <Button
                   key={choice.id}
                   onClick={() => handleChoice(choice)}
                   variant="outline"
-                  className="h-12 w-full justify-between rounded-[10px] border-border bg-card px-4 text-[14px] font-medium hover:border-[#faaf2e]/50 hover:bg-[#faaf2e]/10"
+                  className="h-12 w-full justify-between rounded-[10px] border-border bg-card px-4 text-[14px] font-medium hover:border-[var(--ember)]/50 hover:bg-[var(--ember)]/10"
                 >
                   <span className="truncate text-left">{choice.text}</span>
-                  <ChevronRight className="h-4 w-4 shrink-0 text-[#faaf2e]/80" />
+                  <ChevronRight className="h-4 w-4 shrink-0 text-[var(--ember)]/80" />
                 </Button>
               ))}
             </div>
@@ -856,11 +856,11 @@ function SummaryCard({ isKo, emberName }: { isKo: boolean; emberName: string }) 
     <div className="mt-8 animate-fade-in">
       <div className="relative overflow-hidden rounded-[14px] border border-border bg-card p-5 md:p-7 shadow-[0_30px_60px_-20px_rgba(250,175,46,0.25)]">
         {/* soft glow */}
-        <div className="pointer-events-none absolute -top-20 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-[#faaf2e]/15 blur-[80px]" />
+        <div className="pointer-events-none absolute -top-20 left-1/2 h-56 w-56 -translate-x-1/2 rounded-full bg-[var(--ember)]/15 blur-[80px]" />
 
         <div className="relative flex flex-col items-center text-center">
-          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#faaf2e]/10 ring-1 ring-[#faaf2e]/30">
-            <Sparkles className="h-5 w-5 text-[#faaf2e]" />
+          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[var(--ember)]/10 ring-1 ring-[var(--ember)]/30">
+            <Sparkles className="h-5 w-5 text-[var(--ember)]" />
           </span>
           <h2 className="mt-3 text-[20px] font-bold tracking-tight md:text-[22px]">
             {isKo ? 'Ember의 솔직한 한 줄' : "Ember's Honest Read"}
@@ -875,7 +875,7 @@ function SummaryCard({ isKo, emberName }: { isKo: boolean; emberName: string }) 
           {hypotheses.map((h, i) => (
             <li
               key={i}
-              className="group flex items-center gap-3 rounded-[10px] border border-border bg-background/60 p-3 transition hover:border-[#faaf2e]/40"
+              className="group flex items-center gap-3 rounded-[10px] border border-border bg-background/60 p-3 transition hover:border-[var(--ember)]/40"
             >
               <ScoreRing value={h.score} />
               <div className="min-w-0 flex-1">
@@ -883,7 +883,7 @@ function SummaryCard({ isKo, emberName }: { isKo: boolean; emberName: string }) 
                 <p className="mt-0.5 line-clamp-2 text-[12px] leading-[1.45] text-muted-foreground">
                   {h.desc}
                 </p>
-                <p className="mt-1 text-[10px] font-bold uppercase tracking-[1px] text-[#faaf2e]">
+                <p className="mt-1 text-[10px] font-bold uppercase tracking-[1px] text-[var(--ember)]">
                   {isKo ? '이 개념 살펴보기' : 'Explore this concept'}
                 </p>
               </div>
@@ -896,7 +896,7 @@ function SummaryCard({ isKo, emberName }: { isKo: boolean; emberName: string }) 
         <div className="relative mt-6 flex flex-col gap-2">
           <Link
             href="/chat"
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-[10px] bg-[#faaf2e] text-[14px] font-semibold text-[#4b3002] shadow-[0_10px_24px_rgba(250,175,46,0.3)] transition hover:bg-[#e8a129]"
+            className="inline-flex h-12 items-center justify-center gap-2 rounded-[10px] bg-[var(--ember)] text-[14px] font-semibold text-[var(--fg-on-ember)] shadow-[0_10px_24px_rgba(250,175,46,0.3)] transition hover:bg-[#e8a129]"
           >
             <Sparkles className="h-4 w-4" />
             {isKo ? `${emberName}와 — Soul 민팅` : `Commit — Mint Soul`}
@@ -937,14 +937,14 @@ function ScoreRing({ value }: { value: number }) {
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="#faaf2e"
+          stroke="var(--ember)"
           strokeWidth={stroke}
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
         />
       </svg>
-      <span className="absolute text-[10px] font-bold text-[#faaf2e]">{value}</span>
+      <span className="absolute text-[10px] font-bold text-[var(--ember)]">{value}</span>
     </span>
   );
 }

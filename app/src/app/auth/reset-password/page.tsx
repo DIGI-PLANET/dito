@@ -98,7 +98,7 @@ function ResetPasswordContent() {
       <div className="mx-5 border-t border-border md:mx-8" />
 
       <main className="relative z-0 flex min-h-[calc(100vh-5rem)] items-center justify-center px-5 py-10 md:px-8">
-        <div className="w-full max-w-[420px]">
+        <div className="w-full max-w-105">
           {step === 'success' ? (
             <SuccessCard isKo={isKo} />
           ) : step === 'error' ? (
@@ -113,7 +113,7 @@ function ResetPasswordContent() {
 
               <div className="relative flex flex-col items-center text-center">
                 <div className="flex h-12 w-12 items-center justify-center">
-                  <KeyRound className="h-8 w-8 text-[#faaf2e]" strokeWidth={2.25} />
+                  <KeyRound className="h-8 w-8 text-[var(--ember)]" strokeWidth={2.25} />
                 </div>
 
                 <h1 className="mt-4 text-[22px] font-bold leading-tight text-foreground">
@@ -154,12 +154,12 @@ function ResetPasswordContent() {
                     {[0, 1, 2, 3].map((i) => (
                       <span
                         key={i}
-                        className={`h-[3px] flex-1 rounded-full transition-colors ${
+                        className={`h-0.75 flex-1 rounded-full transition-colors ${
                           i < strengthScore
                             ? strengthScore >= 4
-                              ? 'bg-[#faaf2e]'
+                              ? 'bg-[var(--ember)]'
                               : strengthScore === 3
-                              ? 'bg-[#faaf2e]/80'
+                              ? 'bg-[var(--ember)]/80'
                               : strengthScore === 2
                               ? 'bg-foreground/40'
                               : 'bg-foreground/25'
@@ -229,7 +229,7 @@ function ResetPasswordContent() {
                   type="button"
                   onClick={handleSubmit}
                   disabled={loading || !passwordValid || !passwordsMatch}
-                  className="mt-2 flex h-12 w-full items-center justify-center rounded-[10px] bg-[#faaf2e] text-[15px] font-semibold text-[#4b3002] transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="mt-2 flex h-12 w-full items-center justify-center rounded-[10px] bg-[var(--ember)] text-[15px] font-semibold text-[var(--fg-on-ember)] transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {loading
                     ? isKo
@@ -267,8 +267,8 @@ function SuccessCard({ isKo }: { isKo: boolean }) {
         className="pointer-events-none absolute -right-6 top-1/2 h-48 w-48 -translate-y-1/2 text-foreground/5"
       />
       <div className="relative flex flex-col items-center">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#faaf2e]/15">
-          <CheckCircle2 className="h-7 w-7 text-[#faaf2e]" />
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--ember)]/15">
+          <CheckCircle2 className="h-7 w-7 text-[var(--ember)]" />
         </div>
         <h1 className="mt-4 text-[20px] font-bold text-foreground">
           {isKo ? '비밀번호가 변경되었습니다' : 'Password reset complete'}
@@ -278,7 +278,7 @@ function SuccessCard({ isKo }: { isKo: boolean }) {
         </p>
         <Link
           href="/auth"
-          className="mt-7 inline-flex h-12 w-full items-center justify-center rounded-[10px] bg-[#faaf2e] text-[15px] font-semibold text-[#4b3002] transition hover:brightness-105"
+          className="mt-7 inline-flex h-12 w-full items-center justify-center rounded-[10px] bg-[var(--ember)] text-[15px] font-semibold text-[var(--fg-on-ember)] transition hover:brightness-105"
         >
           {isKo ? '포털 진입' : 'Enter portal'}
         </Link>
@@ -308,7 +308,7 @@ function ErrorCard({ isKo }: { isKo: boolean }) {
         </p>
         <Link
           href="/auth/forgot-password"
-          className="mt-7 inline-flex h-12 w-full items-center justify-center rounded-[10px] bg-[#faaf2e] text-[15px] font-semibold text-[#4b3002] transition hover:brightness-105"
+          className="mt-7 inline-flex h-12 w-full items-center justify-center rounded-[10px] bg-[var(--ember)] text-[15px] font-semibold text-[var(--fg-on-ember)] transition hover:brightness-105"
         >
           {isKo ? '다시 요청하기' : 'Request new link'}
         </Link>
